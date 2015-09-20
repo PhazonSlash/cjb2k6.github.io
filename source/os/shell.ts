@@ -43,6 +43,12 @@ module TSOS {
                 "- Displays the current date and time.");
             this.commandList[this.commandList.length] = sc;
 
+            // whereami
+            sc = new ShellCommand(this.shellWhereAmI,
+                "whereami",
+                "- Displays your current location.");
+            this.commandList[this.commandList.length] = sc;
+
             // help
             sc = new ShellCommand(this.shellHelp,
                                   "help",
@@ -219,6 +225,10 @@ module TSOS {
         public shellDate(args) {
             var currentDate = new Date();
             _StdOut.putText("Date: " + currentDate.toLocaleDateString() + " Time: " + currentDate.toLocaleTimeString());
+        }
+
+        public shellWhereAmI(args) {
+            _StdOut.putText("Phendrana Drifts");
         }
 
         public shellHelp(args) {
