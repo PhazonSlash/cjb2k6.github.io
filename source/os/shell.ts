@@ -37,6 +37,12 @@ module TSOS {
                                   "- Displays the current version data.");
             this.commandList[this.commandList.length] = sc;
 
+            // date
+            sc = new ShellCommand(this.shellDate,
+                "date",
+                "- Displays the current date and time.");
+            this.commandList[this.commandList.length] = sc;
+
             // help
             sc = new ShellCommand(this.shellHelp,
                                   "help",
@@ -208,6 +214,11 @@ module TSOS {
 
         public shellVer(args) {
             _StdOut.putText(APP_NAME + " version " + APP_VERSION);
+        }
+
+        public shellDate(args) {
+            var currentDate = new Date();
+            _StdOut.putText("Date: " + currentDate.toLocaleDateString() + " Time: " + currentDate.toLocaleTimeString());
         }
 
         public shellHelp(args) {
