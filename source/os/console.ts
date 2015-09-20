@@ -1,4 +1,5 @@
 ///<reference path="../globals.ts" />
+///<reference path="canvastext.ts" />
 
 /* ------------
      Console.ts
@@ -38,6 +39,7 @@ module TSOS {
             while (_KernelInputQueue.getSize() > 0) {
                 // Get the next character from the kernel input queue.
                 var chr = _KernelInputQueue.dequeue();
+                console.log("Detected keystroke: " + chr);
                 // Check to see if it's "special" (enter or ctrl-c) or "normal" (anything else that the keyboard device driver gave us).
                 if (chr === String.fromCharCode(13)) { //     Enter key
                     // The enter key marks the end of a console command, so ...
@@ -45,6 +47,9 @@ module TSOS {
                     _OsShell.handleInput(this.buffer);
                     // ... and reset our buffer.
                     this.buffer = "";
+                } else if (chr === String.fromCharCode(8)) { //check if backspace
+                    this.removeText(this.buffer.charAt(this.buffer.length - 1));
+                    this.buffer = this.buffer.substring(0, this.buffer.length - 1);
                 } else {
                     // This is a "normal" character, so ...
                     // ... draw it on the screen...
@@ -55,7 +60,16 @@ module TSOS {
                 // TODO: Write a case for Ctrl-C.
             }
         }
+        public removeText(text) {
+            if (text !== "") {
+                // Move the current X position.
+                var offset = _DrawingContext.measureText(this.currentFont, this.currentFontSize, text);
+                this.currentXPosition = this.currentXPosition - offset;
 
+                //Blank out old text
+                _DrawingContext.clearRect(this.currentXPosition, this.currentYPosition - this.currentFontSize - 1, offset, this.currentFontSize * 2);
+            }
+        }
         public putText(text): void {
             // My first inclination here was to write two functions: putChar() and putString().
             // Then I remembered that JavaScript is (sadly) untyped and it won't differentiate

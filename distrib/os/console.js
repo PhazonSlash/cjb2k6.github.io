@@ -1,4 +1,5 @@
 ///<reference path="../globals.ts" />
+///<reference path="canvastext.ts" />
 /* ------------
      Console.ts
 
@@ -37,6 +38,7 @@ var TSOS;
             while (_KernelInputQueue.getSize() > 0) {
                 // Get the next character from the kernel input queue.
                 var chr = _KernelInputQueue.dequeue();
+                console.log("Detected keystroke: " + chr);
                 // Check to see if it's "special" (enter or ctrl-c) or "normal" (anything else that the keyboard device driver gave us).
                 if (chr === String.fromCharCode(13)) {
                     // The enter key marks the end of a console command, so ...
@@ -45,6 +47,10 @@ var TSOS;
                     // ... and reset our buffer.
                     this.buffer = "";
                 }
+                else if (chr === String.fromCharCode(8)) {
+                    this.removeText(this.buffer.charAt(this.buffer.length - 1));
+                    this.buffer = this.buffer.substring(0, this.buffer.length - 1);
+                }
                 else {
                     // This is a "normal" character, so ...
                     // ... draw it on the screen...
@@ -52,6 +58,15 @@ var TSOS;
                     // ... and add it to our buffer.
                     this.buffer += chr;
                 }
+            }
+        };
+        Console.prototype.removeText = function (text) {
+            if (text !== "") {
+                // Move the current X position.
+                var offset = _DrawingContext.measureText(this.currentFont, this.currentFontSize, text);
+                this.currentXPosition = this.currentXPosition - offset;
+                //Blank out old text
+                _DrawingContext.clearRect(this.currentXPosition, this.currentYPosition - this.currentFontSize - 1, offset, this.currentFontSize * 2);
             }
         };
         Console.prototype.putText = function (text) {
