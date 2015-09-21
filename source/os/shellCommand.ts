@@ -4,5 +4,9 @@ module TSOS {
                     public command = "",
                     public description = "") {
         }
+
+        public toString() {
+            return this.command;
+        }
     }
 }

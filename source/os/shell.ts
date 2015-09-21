@@ -21,7 +21,7 @@ module TSOS {
         public promptStr = ">";
         public commandList = [];
         public curses = "[fuvg],[cvff],[shpx],[phag],[pbpxfhpxre],[zbgureshpxre],[gvgf]";
-        public apologies = "[sorry]";
+        public apologies = "[sorry]"; 
 
         constructor() {
         }
@@ -36,6 +36,7 @@ module TSOS {
                                   "ver",
                                   "- Displays the current version data.");
             this.commandList[this.commandList.length] = sc;
+
 
             // date
             sc = new ShellCommand(this.shellDate,
