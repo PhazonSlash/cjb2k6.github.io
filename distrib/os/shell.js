@@ -34,6 +34,9 @@ var TSOS;
             // whereami
             sc = new TSOS.ShellCommand(this.shellWhereAmI, "whereami", "- Displays your current location.");
             this.commandList[this.commandList.length] = sc;
+            // status
+            sc = new TSOS.ShellCommand(this.shellStatus, "status", "- Sets your current status.");
+            this.commandList[this.commandList.length] = sc;
             // help
             sc = new TSOS.ShellCommand(this.shellHelp, "help", "- This is the help command. Seek help.");
             this.commandList[this.commandList.length] = sc;
@@ -182,6 +185,10 @@ var TSOS;
             _StdOut.putText("Date: " + currentDate.toLocaleDateString() + " Time: " + currentDate.toLocaleTimeString());
         };
         Shell.prototype.shellWhereAmI = function (args) {
+            _StdOut.putText("Phendrana Drifts");
+        };
+        Shell.prototype.shellStatus = function (args) {
+            //TO-DO-------------
             _StdOut.putText("Phendrana Drifts");
         };
         Shell.prototype.shellHelp = function (args) {

@@ -37,7 +37,6 @@ module TSOS {
                                   "- Displays the current version data.");
             this.commandList[this.commandList.length] = sc;
 
-
             // date
             sc = new ShellCommand(this.shellDate,
                 "date",
@@ -48,6 +47,12 @@ module TSOS {
             sc = new ShellCommand(this.shellWhereAmI,
                 "whereami",
                 "- Displays your current location.");
+            this.commandList[this.commandList.length] = sc;
+
+            // status
+            sc = new ShellCommand(this.shellStatus,
+                "status",
+                "- Sets your current status.");
             this.commandList[this.commandList.length] = sc;
 
             // help
@@ -229,6 +234,11 @@ module TSOS {
         }
 
         public shellWhereAmI(args) {
+            _StdOut.putText("Phendrana Drifts");
+        }
+
+        public shellStatus(args) {
+            //TO-DO-------------
             _StdOut.putText("Phendrana Drifts");
         }
 

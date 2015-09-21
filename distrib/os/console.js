@@ -11,6 +11,8 @@
 var tabMode = false; //Keeps track of auto-complete mode
 var matchArray = []; //There current selection of possible commands to be auto-completed
 var matchIndex = 0; //The current index of the matchArray
+var commandHistory = []; //History of recent commands
+var historyIndex = 0; //Points to current spot in history
 var TSOS;
 (function (TSOS) {
     var Console = (function () {
@@ -49,6 +51,8 @@ var TSOS;
                     _OsShell.handleInput(this.buffer);
                     // ... and reset our buffer.
                     tabMode = false;
+                    commandHistory.push(this.buffer);
+                    this.resetHistoryIndex();
                     this.buffer = "";
                 }
                 else if (chr === String.fromCharCode(8)) {
@@ -69,6 +73,12 @@ var TSOS;
                         //Print it on the CLI
                         this.putText(this.buffer);
                     }
+                }
+                else if (chr === String.fromCharCode(38)) {
+                    this.traverseHistory("back");
+                }
+                else if (chr === String.fromCharCode(40)) {
+                    this.traverseHistory("forward");
                 }
                 else {
                     //Make sure that auto-complete mode ends since the Tab key was not pressed
@@ -107,8 +117,9 @@ var TSOS;
                 this.currentXPosition = this.currentXPosition + offset;
             }
         };
-        //Find a matching command when tab is pressed
+        //Find a matching command(s) when tab is pressed
         Console.prototype.autoComplete = function (str) {
+            str = str.toLowerCase();
             var match = "";
             if (!tabMode) {
                 tabMode = true;
@@ -132,6 +143,34 @@ var TSOS;
                 }
             }
             return match;
+        };
+        Console.prototype.traverseHistory = function (direction) {
+            tabMode = false;
+            if (commandHistory.length > 0) {
+                if (commandHistory[historyIndex].length > 0) {
+                    //Clear the current line
+                    this.removeText(this.buffer);
+                    //Fill the buffer with the command
+                    this.buffer = commandHistory[historyIndex];
+                    //Print it on the CLI
+                    this.putText(this.buffer);
+                }
+            }
+            if (direction === "back") {
+                if (historyIndex > 0) {
+                    historyIndex--;
+                }
+            }
+            else {
+                if (historyIndex < commandHistory.length - 1) {
+                    historyIndex++;
+                }
+            }
+        };
+        Console.prototype.resetHistoryIndex = function () {
+            if (commandHistory.length > 0) {
+                historyIndex = commandHistory.length - 1;
+            }
         };
         Console.prototype.advanceLine = function () {
             this.currentXPosition = 0;
