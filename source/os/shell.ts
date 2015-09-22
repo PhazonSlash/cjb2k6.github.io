@@ -55,6 +55,12 @@ module TSOS {
                 "- Sets your current status.");
             this.commandList[this.commandList.length] = sc;
 
+            // load
+            sc = new ShellCommand(this.shellLoad,
+                "load",
+                "- Loads a program from the program input.");
+            this.commandList[this.commandList.length] = sc;
+
             // help
             sc = new ShellCommand(this.shellHelp,
                                   "help",
@@ -247,6 +253,18 @@ module TSOS {
                 }
                 document.getElementById("statusLabel").innerHTML = st;
             }
+        }
+
+        public shellLoad(args) {
+            var prgm = document.getElementById("taProgramInput").innerText;
+            var pattern = /([^0123456789abcdefABCDEF\s])/g;
+            var result = prgm.search(pattern);
+            console.log("Program: " + prgm);
+            console.log("Result: " + result);
+            if (result >= 0){
+                _StdOut.putText("Error: Programs can only contain hex digits and spaces.");
+            }
+            _StdOut.putText("Program loaded.");
         }
 
         public shellHelp(args) {
