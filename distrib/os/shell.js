@@ -188,8 +188,15 @@ var TSOS;
             _StdOut.putText("Phendrana Drifts");
         };
         Shell.prototype.shellStatus = function (args) {
-            //TO-DO-------------
-            _StdOut.putText("Phendrana Drifts");
+            if (args.length > 0) {
+                var st = "Status: " + args[0];
+                if (args.length > 1) {
+                    for (var i = 1; i < args.length; i++) {
+                        st = st + " " + args[i];
+                    }
+                }
+                document.getElementById("statusLabel").innerHTML = st;
+            }
         };
         Shell.prototype.shellHelp = function (args) {
             _StdOut.putText("Commands:");

@@ -63,15 +63,17 @@ var TSOS;
                     tabMode = false;
                 }
                 else if (chr === String.fromCharCode(9)) {
-                    //Get the auto-complete command candidate
-                    var newBuff = this.autoComplete(this.buffer);
-                    if (newBuff.length > 0) {
-                        //Clear the current line
-                        this.removeText(this.buffer);
-                        //Fill the buffer with the command
-                        this.buffer = newBuff;
-                        //Print it on the CLI
-                        this.putText(this.buffer);
+                    if (this.buffer.length > 0) {
+                        //Get the auto-complete command candidate
+                        var newBuff = this.autoComplete(this.buffer);
+                        if (newBuff.length > 0) {
+                            //Clear the current line
+                            this.removeText(this.buffer);
+                            //Fill the buffer with the command
+                            this.buffer = newBuff;
+                            //Print it on the CLI
+                            this.putText(this.buffer);
+                        }
                     }
                 }
                 else if (chr === String.fromCharCode(38)) {
@@ -182,7 +184,11 @@ var TSOS;
             this.currentYPosition += _DefaultFontSize +
                 _DrawingContext.fontDescent(this.currentFont, this.currentFontSize) +
                 _FontHeightMargin;
-            // TODO: Handle scrolling. (iProject 1)
+            if (this.currentYPosition > _Canvas.height) {
+                var imgData = _DrawingContext.getImageData(0, 0, _Canvas.width, _Canvas.height);
+                _Canvas.height = _Canvas.height + _Canvas.offsetHeight;
+                _DrawingContext.putImageData(imgData, 0, 0);
+            }
         };
         return Console;
     })();
