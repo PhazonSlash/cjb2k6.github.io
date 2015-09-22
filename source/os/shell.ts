@@ -13,6 +13,9 @@
           serious injuries may occur when trying to write your own Operating System.
    ------------ */
 
+var beamWeapons: Array < String > = [];
+var weaponIndex = 0; 
+
 // TODO: Write a base class / prototype for system services and let Shell inherit from it.
 
 module TSOS {
@@ -21,12 +24,15 @@ module TSOS {
         public promptStr = ">";
         public commandList = [];
         public curses = "[fuvg],[cvff],[shpx],[phag],[pbpxfhpxre],[zbgureshpxre],[gvgf]";
-        public apologies = "[sorry]"; 
+        public apologies = "[sorry]";
 
         constructor() {
         }
 
         public init() {
+            beamWeapons = ["Power Beam", "Wave Beam", "Ice Beam", "Plasma Beam"];
+            weaponIndex = 0;
+
             var sc;
             //
             // Load the command list.
@@ -59,6 +65,18 @@ module TSOS {
             sc = new ShellCommand(this.shellLoad,
                 "load",
                 "- Loads a program from the program input.");
+            this.commandList[this.commandList.length] = sc;
+
+            // weaponchange
+            sc = new ShellCommand(this.shellChangeWeapon,
+                "changeweapon",
+                "- Switches to next beam weapon.");
+            this.commandList[this.commandList.length] = sc;
+
+            // shoot
+            sc = new ShellCommand(this.shellShoot,
+                "shoot",
+                "- Fires selected beam weapon.");
             this.commandList[this.commandList.length] = sc;
 
             // help
@@ -256,7 +274,7 @@ module TSOS {
         }
 
         public shellLoad(args) {
-            var prgm = document.getElementById("taProgramInput").innerText;
+            var prgm = document.getElementById("taProgramInput").innerHTML;
             var pattern = /([^0123456789abcdefABCDEF\s])/g;
             var result = prgm.search(pattern);
             console.log("Program: " + prgm);
@@ -265,6 +283,32 @@ module TSOS {
                 _StdOut.putText("Error: Programs can only contain hex digits and spaces.");
             }
             _StdOut.putText("Program loaded.");
+        }
+
+        public shellChangeWeapon(args) {
+            weaponIndex++;
+            if (weaponIndex >= 4) {
+               weaponIndex = 0;
+            }
+            console.log(beamWeapons[weaponIndex]);
+            _StdOut.putText(beamWeapons[weaponIndex] + " selected.");
+        }
+
+        public shellShoot(args) {
+            switch (weaponIndex) {
+                case 0:
+                    _StdOut.putText("*pew* *pew* You fired your Power Beam.");
+                    break;
+                case 1:
+                    _StdOut.putText("*zap* *zap* You fired your Wave Beam.");
+                    break;
+                case 2:
+                    _StdOut.putText("*pachink* *pachink* You fired your Ice Beam.");
+                    break;
+                case 3:
+                    _StdOut.putText("*bang* *bang* You fired your Plasma Beam.");
+                    break;
+            }
         }
 
         public shellHelp(args) {
