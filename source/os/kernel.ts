@@ -190,15 +190,15 @@ module TSOS {
             _DrawingContext.fillText('PhazonOS has crashed!', 50, 50);
             //Draw the rest of the messsage
             _DrawingContext.font = "16px Courier New";
-            _DrawingContext.fillText('What the hell do you think you are doing?  Are you', 5, 80);
+            _DrawingContext.fillText('What the hell did you just do? Seriously, are you', 5, 80);
             _DrawingContext.fillText('trying to melt the computer with your stupidity?. I', 5, 100);
             _DrawingContext.fillText('did not even think this was possible.', 5, 120);
             _DrawingContext.fillText('Check to make sure your machine is not a total', 5, 160);
             _DrawingContext.fillText('piece of garbage. Try soaking the RAM in cheetah', 5, 180);
             _DrawingContext.fillText('blood to make it faster. Your motherboard is so', 5, 200);
-            _DrawingContext.fillText('fat, it\'s BIOS has its own MAC address.', 5, 220);
+            _DrawingContext.fillText('fat, its BIOS has its own MAC address. XD', 5, 220);
             _DrawingContext.fillText('Technical information: ', 5, 260);
-            _DrawingContext.fillText('*** STOPTHAT: 0x00000BAD (0x00080F10)', 5, 280);
+            _DrawingContext.fillText('*** STOPTHAT: 0x00000BAD (0x00080F10, 0x0000DEAD)', 5, 280);
             _DrawingContext.fillText('For assistance, please mash your face on keyboard.', 5, 320);
 
             this.krnShutdown();
