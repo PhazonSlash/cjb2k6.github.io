@@ -155,13 +155,18 @@ var TSOS;
         };
         Shell.prototype.shellLoad = function (args) {
             var prgm = document.getElementById("taProgramInput").value;
-            var pattern = /([^0123456789abcdefABCDEF\s])/g;
-            var result = prgm.search(pattern);
-            if (result >= 0) {
-                _StdOut.putText("Error: Programs can only contain hex digits and spaces.");
+            if (prgm.length > 0) {
+                var pattern = /([^0123456789abcdefABCDEF\s])/g;
+                var result = prgm.search(pattern);
+                if (result >= 0) {
+                    _StdOut.putText("Error: Programs can only contain hex digits and spaces.");
+                }
+                else {
+                    _StdOut.putText("Program loaded.");
+                }
             }
             else {
-                _StdOut.putText("Program loaded.");
+                _StdOut.putText("Error: Please type in a program.");
             }
         };
         Shell.prototype.shellChangeWeapon = function (args) {

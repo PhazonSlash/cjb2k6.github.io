@@ -281,13 +281,18 @@ module TSOS {
 
         public shellLoad(args:string[]) {
             var prgm:string = document.getElementById("taProgramInput").value;
-            var pattern:RegExp = /([^0123456789abcdefABCDEF\s])/g;
-            var result:number = prgm.search(pattern);
-            if (result >= 0){
-                _StdOut.putText("Error: Programs can only contain hex digits and spaces.");
+            if(prgm.length > 0){
+              var pattern:RegExp = /([^0123456789abcdefABCDEF\s])/g;
+              var result:number = prgm.search(pattern);
+              if (result >= 0){
+                  _StdOut.putText("Error: Programs can only contain hex digits and spaces.");
+              }else{
+                  _StdOut.putText("Program loaded.");
+              }
             }else{
-                _StdOut.putText("Program loaded.");
+                _StdOut.putText("Error: Please type in a program.");
             }
+
         }
 
         //Command to change the beam weapon used for the shoot command
