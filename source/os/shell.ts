@@ -254,20 +254,20 @@ module TSOS {
            }
         }
 
-        public shellVer(args) {
+        public shellVer(args:string[]) {
             _StdOut.putText(APP_NAME + " version " + APP_VERSION);
         }
 
-        public shellDate(args) {
+        public shellDate(args:string[]) {
             var currentDate = new Date();
             _StdOut.putText("Date: " + currentDate.toLocaleDateString() + " Time: " + currentDate.toLocaleTimeString());
         }
-
-        public shellWhereAmI(args) {
-            _StdOut.putText("Phendrana Drifts");
+        //Phendrana Drifts is the snowy area of the planet Tallon IV in Metroid Prime
+        public shellWhereAmI(args:string[]) {
+            _StdOut.putText("Chillin' in Phendrana Drifts.");
         }
 
-        public shellStatus(args) {
+        public shellStatus(args:string[]) {
             if (args.length > 0) {
                 var st = "Status: " + args[0];
                 if (args.length > 1) {
@@ -279,19 +279,20 @@ module TSOS {
             }
         }
 
-        public shellLoad(args) {
-            var prgm = document.getElementById("taProgramInput").innerHTML;
-            var pattern = /([^0123456789abcdefABCDEF\s])/g;
-            var result = prgm.search(pattern);
-            console.log("Program: " + prgm);
-            console.log("Result: " + result);
+        public shellLoad(args:string[]) {
+            var prgm:string = document.getElementById("taProgramInput").value;
+            var pattern:RegExp = /([^0123456789abcdefABCDEF\s])/g;
+            var result:number = prgm.search(pattern);
             if (result >= 0){
                 _StdOut.putText("Error: Programs can only contain hex digits and spaces.");
+            }else{
+                _StdOut.putText("Program loaded.");
             }
-            _StdOut.putText("Program loaded.");
         }
 
-        public shellChangeWeapon(args) {
+        //Command to change the beam weapon used for the shoot command
+        //Weapons are Samus Aran's beam weapons from Metroid Prime
+        public shellChangeWeapon(args:string[]) {
             weaponIndex++;
             if (weaponIndex >= 4) {
                weaponIndex = 0;
@@ -299,30 +300,30 @@ module TSOS {
             console.log(beamWeapons[weaponIndex]);
             _StdOut.putText(beamWeapons[weaponIndex] + " selected.");
         }
-
-        public shellShoot(args) {
+        //Command to "fire" the selected beam weapon. Each features a unique "sound effect"
+        public shellShoot(args:string[]) {
             switch (weaponIndex) {
                 case 0:
-                    _StdOut.putText("*pew* *pew* You fired your Power Beam.");
+                    _StdOut.putText("*pew* You fired your Power Beam.");
                     break;
                 case 1:
-                    _StdOut.putText("*zap* *zap* You fired your Wave Beam.");
+                    _StdOut.putText("*zap* You fired your Wave Beam.");
                     break;
                 case 2:
-                    _StdOut.putText("*pachink* *pachink* You fired your Ice Beam.");
+                    _StdOut.putText("*pachink* You fired your Ice Beam.");
                     break;
                 case 3:
-                    _StdOut.putText("*bang* *bang* You fired your Plasma Beam.");
+                    _StdOut.putText("*bang* You fired your Plasma Beam.");
                     break;
             }
         }
 
-        public shellBSOD(args) {
+        public shellBSOD(args:string[]) {
             //_DrawingContext.clearRect(0, 0, _Canvas.width, _Canvas.height);
             _Kernel.krnTrapError("BSOD Test");
         }
 
-        public shellHelp(args) {
+        public shellHelp(args:string[]) {
             _StdOut.putText("Commands:");
             for (var i in _OsShell.commandList) {
                 _StdOut.advanceLine();
@@ -330,19 +331,19 @@ module TSOS {
             }
         }
 
-        public shellShutdown(args) {
+        public shellShutdown(args:string[]) {
              _StdOut.putText("Shutting down...");
              // Call Kernel shutdown routine.
             _Kernel.krnShutdown();
             // TODO: Stop the final prompt from being displayed.  If possible.  Not a high priority.  (Damn OCD!)
         }
 
-        public shellCls(args) {
+        public shellCls(args:string[]) {
             _StdOut.clearScreen();
             _StdOut.resetXY();
         }
 
-        public shellMan(args) {
+        public shellMan(args:string[]) {
             if (args.length > 0) {
                 var topic = args[0];
                 switch (topic) {
@@ -358,7 +359,7 @@ module TSOS {
             }
         }
 
-        public shellTrace(args) {
+        public shellTrace(args:string[]) {
             if (args.length > 0) {
                 var setting = args[0];
                 switch (setting) {
@@ -382,7 +383,7 @@ module TSOS {
             }
         }
 
-        public shellRot13(args) {
+        public shellRot13(args:string[]) {
             if (args.length > 0) {
                 // Requires Utils.ts for rot13() function.
                 _StdOut.putText(args.join(' ') + " = '" + Utils.rot13(args.join(' ')) +"'");
@@ -391,7 +392,7 @@ module TSOS {
             }
         }
 
-        public shellPrompt(args) {
+        public shellPrompt(args:string[]) {
             if (args.length > 0) {
                 _OsShell.promptStr = args[0];
             } else {

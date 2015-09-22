@@ -140,7 +140,7 @@ var TSOS;
             _StdOut.putText("Date: " + currentDate.toLocaleDateString() + " Time: " + currentDate.toLocaleTimeString());
         };
         Shell.prototype.shellWhereAmI = function (args) {
-            _StdOut.putText("Phendrana Drifts");
+            _StdOut.putText("Chillin' in Phendrana Drifts.");
         };
         Shell.prototype.shellStatus = function (args) {
             if (args.length > 0) {
@@ -154,15 +154,15 @@ var TSOS;
             }
         };
         Shell.prototype.shellLoad = function (args) {
-            var prgm = document.getElementById("taProgramInput").innerHTML;
+            var prgm = document.getElementById("taProgramInput").value;
             var pattern = /([^0123456789abcdefABCDEF\s])/g;
             var result = prgm.search(pattern);
-            console.log("Program: " + prgm);
-            console.log("Result: " + result);
             if (result >= 0) {
                 _StdOut.putText("Error: Programs can only contain hex digits and spaces.");
             }
-            _StdOut.putText("Program loaded.");
+            else {
+                _StdOut.putText("Program loaded.");
+            }
         };
         Shell.prototype.shellChangeWeapon = function (args) {
             weaponIndex++;
@@ -175,16 +175,16 @@ var TSOS;
         Shell.prototype.shellShoot = function (args) {
             switch (weaponIndex) {
                 case 0:
-                    _StdOut.putText("*pew* *pew* You fired your Power Beam.");
+                    _StdOut.putText("*pew* You fired your Power Beam.");
                     break;
                 case 1:
-                    _StdOut.putText("*zap* *zap* You fired your Wave Beam.");
+                    _StdOut.putText("*zap* You fired your Wave Beam.");
                     break;
                 case 2:
-                    _StdOut.putText("*pachink* *pachink* You fired your Ice Beam.");
+                    _StdOut.putText("*pachink* You fired your Ice Beam.");
                     break;
                 case 3:
-                    _StdOut.putText("*bang* *bang* You fired your Plasma Beam.");
+                    _StdOut.putText("*bang* You fired your Plasma Beam.");
                     break;
             }
         };

@@ -9,11 +9,11 @@
      The OS Console - stdIn and stdOut by default.
      Note: This is not the Shell. The Shell is the "command line interface" (CLI) or interpreter for this console.
      ------------ */
-var tabMode = false; //Keeps track of auto-complete mode
-var matchArray = []; //There current selection of possible commands to be auto-completed
-var matchIndex = 0; //The current index of the matchArray
-var commandHistory = []; //History of recent commands
-var historyIndex = 0; //Points to current spot in history
+var tabMode:boolean = false; //Keeps track of auto-complete mode
+var matchArray:string[] = []; //There current selection of possible commands to be auto-completed
+var matchIndex:number = 0; //The current index of the matchArray
+var commandHistory:string[] = []; //History of recent commands
+var historyIndex:number = 0; //Points to current spot in history
 
 module TSOS {
 
@@ -74,7 +74,7 @@ module TSOS {
                             this.putText(this.buffer);
                         }
                     }
-                    
+
                 } else if (chr === String.fromCharCode(38)) { //check if up
                     this.traverseHistory("back");
                 } else if (chr === String.fromCharCode(40)) { //check if down
@@ -121,14 +121,14 @@ module TSOS {
         //Find a matching command(s) when tab is pressed
         public autoComplete(str) {
             str = str.toLowerCase();
-            var match = "";
+            var match:string = "";
             if (!tabMode) {
                 tabMode = true;
-                var pattern = new RegExp("^" + str + "\\w*");
+                var pattern:RegExp = new RegExp("^" + str + "\\w*");
                 matchArray = [];
                 matchIndex = 0;
                 //Match each command against the letters the user provided
-                for (var i = 0; i < _OsShell.commandList.length; i++) {
+                for (var i:number = 0; i < _OsShell.commandList.length; i++) {
                     if (_OsShell.commandList[i].toString().search(pattern) >= 0) {
                         //Store matches
                         matchArray.push(_OsShell.commandList[i].toString());
@@ -145,8 +145,9 @@ module TSOS {
                 }
             }
             return match;
-            
+
         }
+        //Function to move through the command history using arrow keys
         public traverseHistory(direction) {
             tabMode = false;
             if (commandHistory.length > 0) {
@@ -169,6 +170,7 @@ module TSOS {
                 }
             }
         }
+        //Function to point to the most recent command in the command history
         public resetHistoryIndex() {
             if (commandHistory.length > 0) {
                 historyIndex = commandHistory.length - 1;
@@ -181,7 +183,7 @@ module TSOS {
              * Font descent measures from the baseline to the lowest point in the font.
              * Font height margin is extra spacing between the lines.
              */
-            this.currentYPosition += _DefaultFontSize + 
+            this.currentYPosition += _DefaultFontSize +
                                      _DrawingContext.fontDescent(this.currentFont, this.currentFontSize) +
                                      _FontHeightMargin;
 

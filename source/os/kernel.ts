@@ -173,17 +173,22 @@ module TSOS {
 
         public krnTrapError(msg) {
             Control.hostLog("OS ERROR - TRAP: " + msg);
+
+            //Draw the BSOD
+            //Revert to original canvas size
               _Canvas.height = 500;
               _Canvas.width = 500;
+            //Clear the canvas
             _Console.init();
+            //Change the color
             _DrawingContext.rect(0, 0, _Canvas.width, _Canvas.height);
             _DrawingContext.fillStyle = "blue";
-            _DrawingContext.fill();
-
+            _DrawingContext.fill(); //I'm afraid the canvas just blue itself
+            //Make the title
             _DrawingContext.font = "30px Courier New";
             _DrawingContext.fillStyle = "white";
             _DrawingContext.fillText('PhazonOS has crashed!', 50, 50);
-
+            //Draw the rest of the messsage
             _DrawingContext.font = "16px Courier New";
             _DrawingContext.fillText('What the hell do you think you are doing?  Are you', 5, 80);
             _DrawingContext.fillText('trying to melt the computer with your stupidity?. I', 5, 100);
