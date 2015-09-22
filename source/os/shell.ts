@@ -14,7 +14,7 @@
    ------------ */
 
 var beamWeapons: Array < String > = [];
-var weaponIndex = 0; 
+var weaponIndex = 0;
 
 // TODO: Write a base class / prototype for system services and let Shell inherit from it.
 
@@ -319,26 +319,7 @@ module TSOS {
 
         public shellBSOD(args) {
             //_DrawingContext.clearRect(0, 0, _Canvas.width, _Canvas.height);
-            _Console.init();
-            _DrawingContext.rect(0, 0, _Canvas.width, _Canvas.height);
-            _DrawingContext.fillStyle = "blue";
-            _DrawingContext.fill();
-
-            _DrawingContext.font = "30px Courier New";
-            _DrawingContext.fillStyle = "white";
-            _DrawingContext.fillText('PhazonOS has crashed!', 50, 50);
-
-            _DrawingContext.font = "16px Courier New";
-            _DrawingContext.fillText('What the hell do you think you are doing?  Are you', 5, 80);
-            _DrawingContext.fillText('trying to melt the computer with your stupidity?. I', 5, 100);
-            _DrawingContext.fillText('did not even think this was possible.', 5, 120);
-            _DrawingContext.fillText('Check to make sure your machine is not a total', 5, 160);
-            _DrawingContext.fillText('piece of garbage. Try soaking the RAM in cheetah', 5, 180);
-            _DrawingContext.fillText('blood to make it faster. Your motherboard is so', 5, 200);
-            _DrawingContext.fillText('fat, it\'s BIOS has its own MAC address.', 5, 220);
-            _DrawingContext.fillText('Technical information: ', 5, 260);
-            _DrawingContext.fillText('*** STOPTHAT: 0x00000BAD (0x00080F10)', 5, 280);
-            _DrawingContext.fillText('For assistance, please mash your face on keyboard.', 5, 320);
+            _Kernel.krnTrapError("BSOD Test");
         }
 
         public shellHelp(args) {
