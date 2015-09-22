@@ -50,6 +50,9 @@ var TSOS;
             // shoot
             sc = new TSOS.ShellCommand(this.shellShoot, "shoot", "- Fires selected beam weapon.");
             this.commandList[this.commandList.length] = sc;
+            // bsod
+            sc = new TSOS.ShellCommand(this.shellBSOD, "bsod", "- Displays a blue screen of death.");
+            this.commandList[this.commandList.length] = sc;
             // help
             sc = new TSOS.ShellCommand(this.shellHelp, "help", "- This is the help command. Seek help.");
             this.commandList[this.commandList.length] = sc;
@@ -245,6 +248,16 @@ var TSOS;
                     _StdOut.putText("*bang* *bang* You fired your Plasma Beam.");
                     break;
             }
+        };
+        Shell.prototype.shellBSOD = function (args) {
+            //_DrawingContext.clearRect(0, 0, _Canvas.width, _Canvas.height);
+            _Console.init();
+            _DrawingContext.rect(0, 0, _Canvas.width, _Canvas.height);
+            _DrawingContext.fillStyle = "blue";
+            _DrawingContext.fill();
+            _DrawingContext.font = "30px sans-serif";
+            _DrawingContext.fillStyle = "white";
+            _DrawingContext.fillText('PhazonOS has crashed!', 20, 30);
         };
         Shell.prototype.shellHelp = function (args) {
             _StdOut.putText("Commands:");

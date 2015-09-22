@@ -79,6 +79,12 @@ module TSOS {
                 "- Fires selected beam weapon.");
             this.commandList[this.commandList.length] = sc;
 
+            // bsod
+            sc = new ShellCommand(this.shellBSOD,
+                "bsod",
+                "- Displays a blue screen of death.");
+            this.commandList[this.commandList.length] = sc;
+
             // help
             sc = new ShellCommand(this.shellHelp,
                                   "help",
@@ -309,6 +315,17 @@ module TSOS {
                     _StdOut.putText("*bang* *bang* You fired your Plasma Beam.");
                     break;
             }
+        }
+
+        public shellBSOD(args) {
+            //_DrawingContext.clearRect(0, 0, _Canvas.width, _Canvas.height);
+            _Console.init();
+            _DrawingContext.rect(0, 0, _Canvas.width, _Canvas.height);
+            _DrawingContext.fillStyle = "blue";
+            _DrawingContext.fill();
+            _DrawingContext.font = "30px sans-serif";
+            _DrawingContext.fillStyle = "white";
+            _DrawingContext.fillText('PhazonOS has crashed!', 20, 30);
         }
 
         public shellHelp(args) {
