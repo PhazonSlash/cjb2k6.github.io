@@ -280,14 +280,33 @@ module TSOS {
         }
 
         public shellLoad(args:string[]) {
-            var prgm:string = document.getElementById("taProgramInput").value;
+            var prgm:string = (<HTMLInputElement>document.getElementById("taProgramInput")).value;
             if(prgm.length > 0){
               var pattern:RegExp = /([^0123456789abcdefABCDEF\s])/g;
               var result:number = prgm.search(pattern);
-              if (result >= 0){
+              if (result >= 0){ //Check to see if there are any non hex digits
                   _StdOut.putText("Error: Programs can only contain hex digits and spaces.");
               }else{
-                  _StdOut.putText("Program loaded.");
+                  prgm = Utils.removeSpaces(prgm);
+                  if(prgm.length > 512){ //Check to see if there are too many hex digits
+                    _StdOut.putText("Program cannot be more than 256 bytes long.");
+                  } else{
+                    //Clear current memory
+                    _MainMemory.clear();
+                    //Insert into memory
+                    var currByte: string = ""; //Holds the current byte from program
+                    var memLoc: number = 0; //Current location in memory to insert byte into
+                    for(var i: number = 0; i < prgm.length; i++){
+                      currByte = currByte + prgm[i];
+                      if(currByte.length > 1){
+                        _MainMemory.mainMem[memLoc].setHex(currByte);
+                        memLoc++;
+                        currByte = "";
+                      }
+                    }
+                    _StdOut.putText("Program loaded.");
+                    console.log(_MainMemory.toString());
+                  }
               }
             }else{
                 _StdOut.putText("Error: Please type in a program.");

@@ -21,6 +21,10 @@ module TSOS {
             */
         }
 
+        public static removeSpaces(str): string {
+          return str.replace(/\s/g, "");
+        }
+
         public static rot13(str: string): string {
             /*
                This is an easy-to understand implementation of the famous and common Rot13 obfuscator.

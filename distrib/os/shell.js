@@ -162,7 +162,25 @@ var TSOS;
                     _StdOut.putText("Error: Programs can only contain hex digits and spaces.");
                 }
                 else {
-                    _StdOut.putText("Program loaded.");
+                    prgm = TSOS.Utils.removeSpaces(prgm);
+                    if (prgm.length > 512) {
+                        _StdOut.putText("Program cannot be more than 256 bytes long.");
+                    }
+                    else {
+                        _MainMemory.clear();
+                        var currByte = "";
+                        var memLoc = 0;
+                        for (var i = 0; i < prgm.length; i++) {
+                            currByte = currByte + prgm[i];
+                            if (currByte.length > 1) {
+                                _MainMemory.mainMem[memLoc].setHex(currByte);
+                                memLoc++;
+                                currByte = "";
+                            }
+                        }
+                        _StdOut.putText("Program loaded.");
+                        console.log(_MainMemory.toString());
+                    }
                 }
             }
             else {
