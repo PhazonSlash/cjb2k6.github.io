@@ -37,6 +37,12 @@ module TSOS {
             //
             // Load the command list.
 
+            // test
+            sc = new ShellCommand(this.shellTest,
+                                  "test",
+                                  "- A command for testing purposes only.");
+            this.commandList[this.commandList.length] = sc;
+
             // ver
             sc = new ShellCommand(this.shellVer,
                                   "ver",
@@ -65,6 +71,12 @@ module TSOS {
             sc = new ShellCommand(this.shellLoad,
                 "load",
                 "- Loads a program from the program input.");
+            this.commandList[this.commandList.length] = sc;
+
+            // run
+            sc = new ShellCommand(this.shellRun,
+                "run",
+                "- Runs process of given Process ID (PID).");
             this.commandList[this.commandList.length] = sc;
 
             // weaponchange
@@ -254,6 +266,17 @@ module TSOS {
            }
         }
 
+        public shellTest(args:string[]) {
+            console.log("Accumulator: " + _CPU.Acc);
+            var byte: Byte = new Byte();
+            byte.setHex("00");
+            _CPU.loadAccMem(byte);
+            console.log("Accumulator: " + _CPU.Acc);
+            byte.setHex("01");
+            _CPU.storeAccMem(byte);
+            console.log(_MemoryManager.printMemory());
+        }
+
         public shellVer(args:string[]) {
             _StdOut.putText(APP_NAME + " version " + APP_VERSION);
         }
@@ -291,27 +314,34 @@ module TSOS {
                   if(prgm.length > 512){ //Check to see if there are too many hex digits
                     _StdOut.putText("Program cannot be more than 256 bytes long.");
                   } else{
-                    //Clear current memory
-                    _MainMemory.clear();
-                    //Insert into memory
-                    var currByte: string = ""; //Holds the current byte from program
-                    var memLoc: number = 0; //Current location in memory to insert byte into
-                    for(var i: number = 0; i < prgm.length; i++){
-                      currByte = currByte + prgm[i];
-                      if(currByte.length > 1){
-                        _MainMemory.mainMem[memLoc].setHex(currByte);
-                        memLoc++;
-                        currByte = "";
-                      }
-                    }
-                    _StdOut.putText("Program loaded.");
-                    console.log(_MainMemory.toString());
+                    _MemoryManager.loadProgram(prgm);
+                    //Creates a new PCB for the process. Stores it in temp variable
+                    //that will be replaced with the Ready Queue in the future
+                    _CurrentPCB = new Pcb();
+                    _StdOut.putText("Program loaded. PID: " + _CurrentPCB.processID);
+                    //console.log(_MemoryManager.printMemory());
                   }
               }
             }else{
                 _StdOut.putText("Error: Please type in a program.");
             }
 
+        }
+
+        public shellRun(args:string[]) {
+            if(args.length > 0){
+              if(args[0].match(/[0-9]+/g)){
+                if(parseInt(args[0]) === _CurrentPCB.processID){
+                  console.log("Running process: " + _CurrentPCB.processID);
+                } else {
+                  _StdOut.putText("Error: PID " + args[0] + " does not exist currently.");
+                }
+              } else {
+                _StdOut.putText("Error: Please enter a numeric PID.");
+              }
+            } else {
+              _StdOut.putText("Error: Please enter a PID.");
+            }
         }
 
         //Command to change the beam weapon used for the shoot command

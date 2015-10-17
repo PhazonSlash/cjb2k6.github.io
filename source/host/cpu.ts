@@ -42,5 +42,23 @@ module TSOS {
             // TODO: Accumulate CPU usage and profiling statistics here.
             // Do the real work here. Be sure to set this.isExecuting appropriately.
         }
+
+        //Op Codes
+        //A9 - Load the accumulator with a constant
+        public loadAccConst(constant: Byte): void {
+          this.Acc = constant.getDec();
+        }
+
+        //AD - Load the accumulator from memory
+        public loadAccMem(address: Byte): void {
+          this.Acc = _MemoryManager.getByteFromAddr(address.getDec()).getDec();
+        }
+
+        //8D - Store the accumulator in memory
+        public storeAccMem(address: TSOS.Byte): void {
+          var byte: Byte = new Byte();
+          byte.setHex(this.Acc.toString(16));
+          _MemoryManager.setByteAtAddr(byte, address.getDec());
+        }
     }
 }

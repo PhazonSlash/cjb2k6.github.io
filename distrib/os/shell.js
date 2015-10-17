@@ -13,6 +13,8 @@ var TSOS;
             beamWeapons = ["Power Beam", "Wave Beam", "Ice Beam", "Plasma Beam"];
             weaponIndex = 0;
             var sc;
+            sc = new TSOS.ShellCommand(this.shellTest, "test", "- A command for testing purposes only.");
+            this.commandList[this.commandList.length] = sc;
             sc = new TSOS.ShellCommand(this.shellVer, "ver", "- Displays the current version data.");
             this.commandList[this.commandList.length] = sc;
             sc = new TSOS.ShellCommand(this.shellDate, "date", "- Displays the current date and time.");
@@ -22,6 +24,8 @@ var TSOS;
             sc = new TSOS.ShellCommand(this.shellStatus, "status", "- Sets your current status.");
             this.commandList[this.commandList.length] = sc;
             sc = new TSOS.ShellCommand(this.shellLoad, "load", "- Loads a program from the program input.");
+            this.commandList[this.commandList.length] = sc;
+            sc = new TSOS.ShellCommand(this.shellRun, "run", "- Runs process of given Process ID (PID).");
             this.commandList[this.commandList.length] = sc;
             sc = new TSOS.ShellCommand(this.shellChangeWeapon, "changeweapon", "- Switches to next beam weapon.");
             this.commandList[this.commandList.length] = sc;
@@ -132,6 +136,16 @@ var TSOS;
                 _StdOut.putText("For what?");
             }
         };
+        Shell.prototype.shellTest = function (args) {
+            console.log("Accumulator: " + _CPU.Acc);
+            var byte = new TSOS.Byte();
+            byte.setHex("00");
+            _CPU.loadAccMem(byte);
+            console.log("Accumulator: " + _CPU.Acc);
+            byte.setHex("01");
+            _CPU.storeAccMem(byte);
+            console.log(_MemoryManager.printMemory());
+        };
         Shell.prototype.shellVer = function (args) {
             _StdOut.putText(APP_NAME + " version " + APP_VERSION);
         };
@@ -167,24 +181,32 @@ var TSOS;
                         _StdOut.putText("Program cannot be more than 256 bytes long.");
                     }
                     else {
-                        _MainMemory.clear();
-                        var currByte = "";
-                        var memLoc = 0;
-                        for (var i = 0; i < prgm.length; i++) {
-                            currByte = currByte + prgm[i];
-                            if (currByte.length > 1) {
-                                _MainMemory.mainMem[memLoc].setHex(currByte);
-                                memLoc++;
-                                currByte = "";
-                            }
-                        }
-                        _StdOut.putText("Program loaded.");
-                        console.log(_MainMemory.toString());
+                        _MemoryManager.loadProgram(prgm);
+                        _CurrentPCB = new TSOS.Pcb();
+                        _StdOut.putText("Program loaded. PID: " + _CurrentPCB.processID);
                     }
                 }
             }
             else {
                 _StdOut.putText("Error: Please type in a program.");
+            }
+        };
+        Shell.prototype.shellRun = function (args) {
+            if (args.length > 0) {
+                if (args[0].match(/[0-9]+/g)) {
+                    if (parseInt(args[0]) === _CurrentPCB.processID) {
+                        console.log("Running process: " + _CurrentPCB.processID);
+                    }
+                    else {
+                        _StdOut.putText("Error: PID " + args[0] + " does not exist currently.");
+                    }
+                }
+                else {
+                    _StdOut.putText("Error: Please enter a numeric PID.");
+                }
+            }
+            else {
+                _StdOut.putText("Error: Please enter a PID.");
             }
         };
         Shell.prototype.shellChangeWeapon = function (args) {

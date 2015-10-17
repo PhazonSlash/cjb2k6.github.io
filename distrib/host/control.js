@@ -29,7 +29,7 @@ var TSOS;
             document.getElementById("display").focus();
             _CPU = new TSOS.Cpu();
             _CPU.init();
-            _MainMemory = new TSOS.Memory();
+            _MemoryManager = new TSOS.MemoryManager();
             _hardwareClockID = setInterval(TSOS.Devices.hostClockPulse, CPU_CLOCK_INTERVAL);
             _Kernel = new TSOS.Kernel();
             _Kernel.krnBootstrap();

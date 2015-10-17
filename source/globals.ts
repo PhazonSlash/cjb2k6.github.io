@@ -33,7 +33,10 @@ var _OSclock: number = 0;  // Page 23.
 
 var _Mode: number = 0;     // (currently unused)  0 = Kernel Mode, 1 = User Mode.  See page 21.
 
-var _MainMemory: TSOS.Memory;
+var _MemoryManager: TSOS.MemoryManager;
+
+//Temporary spot for PCB until the Ready Queue is implemented
+var _CurrentPCB: TSOS.Pcb;
 
 var _Canvas: HTMLCanvasElement;         // Initialized in Control.hostInit().
 var _DrawingContext: any; // = _Canvas.getContext("2d");  // Assigned here for type safety, but re-initialized in Control.hostInit() for OCD and logic.
