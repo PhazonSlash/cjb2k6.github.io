@@ -137,13 +137,6 @@ var TSOS;
             }
         };
         Shell.prototype.shellTest = function (args) {
-            console.log("Accumulator: " + _CPU.Acc);
-            var byte = new TSOS.Byte();
-            byte.setHex("00");
-            _CPU.loadAccMem(byte);
-            console.log("Accumulator: " + _CPU.Acc);
-            byte.setHex("01");
-            _CPU.storeAccMem(byte);
             console.log(_MemoryManager.printMemory());
         };
         Shell.prototype.shellVer = function (args) {
@@ -195,7 +188,7 @@ var TSOS;
             if (args.length > 0) {
                 if (args[0].match(/[0-9]+/g)) {
                     if (parseInt(args[0]) === _CurrentPCB.processID) {
-                        console.log("Running process: " + _CurrentPCB.processID);
+                        _CPU.isExecuting = true;
                     }
                     else {
                         _StdOut.putText("Error: PID " + args[0] + " does not exist currently.");

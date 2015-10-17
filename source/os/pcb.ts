@@ -27,5 +27,9 @@ module TSOS {
             this.processID = Pcb.currentProcessNum;
             Pcb.currentProcessNum++;
         }
+
+        public incrementPC(): void{
+          this.programCounter++;
+        }
     }
 }

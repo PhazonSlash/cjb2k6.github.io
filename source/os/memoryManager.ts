@@ -37,12 +37,22 @@ module TSOS {
       }
 
       public getByteFromAddr(address: number): Byte {
+        if(address >= this.mainMemory.mainMem.length){
+          _Kernel.krnTrapError("Memory access violation.");
+        } else {
         return this.mainMemory.mainMem[address];
       }
 
+      }
+
       public setByteAtAddr(byte: Byte, address: number): boolean {
-        this.mainMemory.mainMem[address] = byte;
-        return true;
+        if(address >= this.mainMemory.mainMem.length){
+          _Kernel.krnTrapError("Memory access violation.");
+        } else {
+          this.mainMemory.mainMem[address] = byte;
+          return true;
+        }
+        return false;
       }
 
       public printMemory(): string {

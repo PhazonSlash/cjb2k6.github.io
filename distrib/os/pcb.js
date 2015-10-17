@@ -22,6 +22,9 @@ var TSOS;
             this.processID = Pcb.currentProcessNum;
             Pcb.currentProcessNum++;
         };
+        Pcb.prototype.incrementPC = function () {
+            this.programCounter++;
+        };
         Pcb.currentProcessNum = 0;
         return Pcb;
     })();

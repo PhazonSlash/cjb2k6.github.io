@@ -40,25 +40,81 @@ module TSOS {
         public cycle(): void {
             _Kernel.krnTrace('CPU cycle');
             // TODO: Accumulate CPU usage and profiling statistics here.
-            // Do the real work here. Be sure to set this.isExecuting appropriately.
+
+            //Fetch/Decode/Execute
+            this.executeCode(_CurrentPCB, _MemoryManager.getByteFromAddr(_CurrentPCB.programCounter));
         }
 
-        //Op Codes
+        public executeCode(pcb: Pcb, code: Byte): boolean{
+          switch(code.getHex().toUpperCase()){
+            case "A9":
+                      pcb.incrementPC();
+                      this.loadAccConst(_MemoryManager.getByteFromAddr(pcb.programCounter));
+                      pcb.incrementPC();
+                      console.log("A9 - Accumlator: " + this.Acc);
+                      break;
+            case "AD":
+                      pcb.incrementPC();
+                      this.loadAccMem(this.littleEndianAddress(pcb));
+                      pcb.incrementPC();
+                      console.log("AD - Accumlator: " + this.Acc);
+                      break;
+            case "8D":
+                      pcb.incrementPC();
+                      this.storeAccMem(this.littleEndianAddress(pcb));
+                      pcb.incrementPC();
+                      console.log("8D - Acc stored.");
+                      break;
+            case "00":
+                      this.endOfProgram();
+                      console.log("00 - End of Program");
+                      break;
+            default:
+                    console.log("Code: " + code.getHex() + " not found.");
+                    return false;
+          }
+
+          return true;
+        }
+
+        //Op Codes -----------------------------------------------------------------
         //A9 - Load the accumulator with a constant
         public loadAccConst(constant: Byte): void {
           this.Acc = constant.getDec();
         }
 
         //AD - Load the accumulator from memory
-        public loadAccMem(address: Byte): void {
-          this.Acc = _MemoryManager.getByteFromAddr(address.getDec()).getDec();
+        public loadAccMem(address: number): void {
+          this.Acc = _MemoryManager.getByteFromAddr(address).getDec();
         }
 
         //8D - Store the accumulator in memory
-        public storeAccMem(address: TSOS.Byte): void {
+        public storeAccMem(address: number): void {
           var byte: Byte = new Byte();
-          byte.setHex(this.Acc.toString(16));
-          _MemoryManager.setByteAtAddr(byte, address.getDec());
+          var str: string = "";
+          str = this.Acc.toString(16);
+          if(str.length < 2){
+            str = "0" + str;
+          }
+          byte.setHex(str);
+          _MemoryManager.setByteAtAddr(byte, address);
+        }
+        //00 - Break
+        public endOfProgram(): void {
+          this.isExecuting = false;
+        }
+        //-------------------------------------------------------------------------
+
+        public littleEndianAddress(pcb: Pcb): number {
+          var address: number = 0;
+          var bytes: string = "";
+
+          bytes = _MemoryManager.getByteFromAddr(pcb.programCounter).getHex();
+          pcb.incrementPC();
+          bytes = _MemoryManager.getByteFromAddr(pcb.programCounter).getHex() + bytes;
+          address = parseInt(bytes, 16);
+          console.log("LE Address: " + address);
+          return address;
         }
     }
 }
