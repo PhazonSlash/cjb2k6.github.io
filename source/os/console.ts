@@ -188,9 +188,9 @@ module TSOS {
                                      _FontHeightMargin;
 
             if (this.currentYPosition > _Canvas.height) {
-                var imgData = _DrawingContext.getImageData(0, 0, _Canvas.width, _Canvas.height);
-                _Canvas.height = _Canvas.height + _Canvas.offsetHeight;
-                _DrawingContext.putImageData(imgData, 0, 0);
+             var img = _DrawingContext.getImageData(0, 20, _Canvas.width, _Canvas.height);
+             _DrawingContext.putImageData(img, 0, 0);
+             this.currentYPosition = 495;
             }
         }
     }
