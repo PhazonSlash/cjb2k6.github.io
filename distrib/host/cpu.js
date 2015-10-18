@@ -28,33 +28,70 @@ var TSOS;
             this.executeCode(_CurrentPCB, _MemoryManager.getByteFromAddr(_CurrentPCB.programCounter));
         };
         Cpu.prototype.executeCode = function (pcb, code) {
+            pcb.incrementPC();
             switch (code.getHex().toUpperCase()) {
                 case "A9":
-                    pcb.incrementPC();
                     this.loadAccConst(_MemoryManager.getByteFromAddr(pcb.programCounter));
-                    pcb.incrementPC();
                     console.log("A9 - Accumlator: " + this.Acc);
                     break;
                 case "AD":
-                    pcb.incrementPC();
                     this.loadAccMem(this.littleEndianAddress(pcb));
-                    pcb.incrementPC();
                     console.log("AD - Accumlator: " + this.Acc);
                     break;
                 case "8D":
-                    pcb.incrementPC();
                     this.storeAccMem(this.littleEndianAddress(pcb));
-                    pcb.incrementPC();
                     console.log("8D - Acc stored.");
+                    break;
+                case "6D":
+                    this.addWithCarry(this.littleEndianAddress(pcb));
+                    console.log("6D - Added. Accumlator: " + this.Acc);
+                    break;
+                case "A2":
+                    this.loadXConst(_MemoryManager.getByteFromAddr(pcb.programCounter));
+                    console.log("A2 - X Register: " + this.Xreg);
+                    break;
+                case "AE":
+                    this.loadXMem(this.littleEndianAddress(pcb));
+                    console.log("AE - X Register: " + this.Xreg);
+                    break;
+                case "A0":
+                    this.loadYConst(_MemoryManager.getByteFromAddr(pcb.programCounter));
+                    console.log("A2 - Y Register: " + this.Yreg);
+                    break;
+                case "AC":
+                    this.loadYMem(this.littleEndianAddress(pcb));
+                    console.log("AE - Y Register: " + this.Yreg);
+                    break;
+                case "EA":
+                    this.noOperation();
+                    return true;
                     break;
                 case "00":
                     this.endOfProgram();
                     console.log("00 - End of Program");
                     break;
+                case "EC":
+                    this.compareZ(this.littleEndianAddress(pcb));
+                    console.log("EC - Z Flag: " + this.Zflag);
+                    break;
+                case "D0":
+                    this.branchNotEqual(pcb, _MemoryManager.getByteFromAddr(pcb.programCounter).getDec());
+                    console.log("D0 - PC: " + pcb.programCounter);
+                    break;
+                case "EE":
+                    this.incrementByte(this.littleEndianAddress(pcb));
+                    console.log("EE - Byte Incremented");
+                    break;
+                case "FF":
+                    this.systemCall();
+                    console.log("FF - System Call");
+                    return true;
+                    break;
                 default:
                     console.log("Code: " + code.getHex() + " not found.");
                     return false;
             }
+            pcb.incrementPC();
             return true;
         };
         Cpu.prototype.loadAccConst = function (constant) {
@@ -73,8 +110,70 @@ var TSOS;
             byte.setHex(str);
             _MemoryManager.setByteAtAddr(byte, address);
         };
+        Cpu.prototype.addWithCarry = function (address) {
+            this.Acc = this.Acc + _MemoryManager.getByteFromAddr(address).getDec();
+        };
+        Cpu.prototype.loadXConst = function (constant) {
+            this.Xreg = constant.getDec();
+        };
+        Cpu.prototype.loadXMem = function (address) {
+            this.Xreg = _MemoryManager.getByteFromAddr(address).getDec();
+        };
+        Cpu.prototype.loadYConst = function (constant) {
+            this.Yreg = constant.getDec();
+        };
+        Cpu.prototype.loadYMem = function (address) {
+            this.Yreg = _MemoryManager.getByteFromAddr(address).getDec();
+        };
+        Cpu.prototype.noOperation = function () {
+            console.log("EA sucks balls.");
+        };
         Cpu.prototype.endOfProgram = function () {
             this.isExecuting = false;
+        };
+        Cpu.prototype.compareZ = function (address) {
+            if (_MemoryManager.getByteFromAddr(address).getDec() === this.Xreg) {
+                this.Zflag = 1;
+            }
+            else {
+                this.Zflag = 0;
+            }
+        };
+        Cpu.prototype.branchNotEqual = function (pcb, numBytes) {
+            if (this.Zflag === 0) {
+                for (var i = 0; i < numBytes; i++) {
+                    pcb.incrementPC();
+                }
+            }
+        };
+        Cpu.prototype.incrementByte = function (address) {
+            var value = _MemoryManager.getByteFromAddr(address).getDec();
+            value++;
+            var newValue = value.toString(16);
+            if (newValue.length < 2) {
+                newValue = "0" + newValue;
+            }
+            newValue = newValue.toUpperCase();
+            var byte = new TSOS.Byte();
+            byte.setHex(newValue);
+            _MemoryManager.setByteAtAddr(byte, address);
+        };
+        Cpu.prototype.systemCall = function () {
+            if (this.Xreg === 1) {
+                console.log("Printing Y reg int: " + this.Yreg);
+                _StdOut.putText("" + this.Yreg);
+            }
+            else if (this.Xreg === 2) {
+                var address = this.Yreg;
+                var value = _MemoryManager.getByteFromAddr(address).getDec();
+                var str = "";
+                while (value !== 0) {
+                    str += String.fromCharCode(value);
+                    address++;
+                    value = _MemoryManager.getByteFromAddr(address).getDec();
+                }
+                _StdOut.putText(str);
+            }
         };
         Cpu.prototype.littleEndianAddress = function (pcb) {
             var address = 0;

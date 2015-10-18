@@ -46,34 +46,73 @@ module TSOS {
         }
 
         public executeCode(pcb: Pcb, code: Byte): boolean{
+          //Since we have the current code, we can increment PC here
+          pcb.incrementPC();
+          //Decode the code
           switch(code.getHex().toUpperCase()){
             case "A9":
-                      pcb.incrementPC();
                       this.loadAccConst(_MemoryManager.getByteFromAddr(pcb.programCounter));
-                      pcb.incrementPC();
                       console.log("A9 - Accumlator: " + this.Acc);
                       break;
             case "AD":
-                      pcb.incrementPC();
                       this.loadAccMem(this.littleEndianAddress(pcb));
-                      pcb.incrementPC();
                       console.log("AD - Accumlator: " + this.Acc);
                       break;
             case "8D":
-                      pcb.incrementPC();
                       this.storeAccMem(this.littleEndianAddress(pcb));
-                      pcb.incrementPC();
                       console.log("8D - Acc stored.");
                       break;
+            case "6D":
+                      this.addWithCarry(this.littleEndianAddress(pcb));
+                      console.log("6D - Added. Accumlator: " + this.Acc);
+                      break;
+            case "A2":
+                      this.loadXConst(_MemoryManager.getByteFromAddr(pcb.programCounter));
+                      console.log("A2 - X Register: " + this.Xreg);
+                      break;
+            case "AE":
+                      this.loadXMem(this.littleEndianAddress(pcb));
+                      console.log("AE - X Register: " + this.Xreg);
+                      break;
+            case "A0":
+                      this.loadYConst(_MemoryManager.getByteFromAddr(pcb.programCounter));
+                      console.log("A2 - Y Register: " + this.Yreg);
+                      break;
+            case "AC":
+                      this.loadYMem(this.littleEndianAddress(pcb));
+                      console.log("AE - Y Register: " + this.Yreg);
+                      break;
+            case "EA":
+                      this.noOperation();
+                      return true; //Returning here so we don't increment PC again
+                      break; //This line will never right run and is stupid, just like EA the company
             case "00":
                       this.endOfProgram();
                       console.log("00 - End of Program");
+                      break;
+            case "EC":
+                      this.compareZ(this.littleEndianAddress(pcb));
+                      console.log("EC - Z Flag: " + this.Zflag);
+                      break;
+            case "D0":
+                      this.branchNotEqual(pcb, _MemoryManager.getByteFromAddr(pcb.programCounter).getDec());
+                      console.log("D0 - PC: " + pcb.programCounter);
+                      break;
+            case "EE":
+                      this.incrementByte(this.littleEndianAddress(pcb));
+                      console.log("EE - Byte Incremented");
+                      break;
+            case "FF":
+                      this.systemCall();
+                      console.log("FF - System Call");
+                      return true;
                       break;
             default:
                     console.log("Code: " + code.getHex() + " not found.");
                     return false;
           }
-
+          //Move on to the next code
+          pcb.incrementPC();
           return true;
         }
 
@@ -99,12 +138,87 @@ module TSOS {
           byte.setHex(str);
           _MemoryManager.setByteAtAddr(byte, address);
         }
+        //6D - Add the contents of an address to the contents of the accumulator
+        //     and keep the result in the accumulator
+        public addWithCarry(address: number): void{
+          this.Acc = this.Acc + _MemoryManager.getByteFromAddr(address).getDec();
+        }
+        //A2 - Load the X register with a constant
+        public loadXConst(constant: Byte): void{
+          this.Xreg = constant.getDec();
+        }
+        //AE - Load the X register with a constant
+        public loadXMem(address: number): void{
+          this.Xreg = _MemoryManager.getByteFromAddr(address).getDec();
+        }
+        //A0 - Load the Y register with a constant
+        public loadYConst(constant: Byte): void{
+          this.Yreg = constant.getDec();
+        }
+        //AC - Load the Y register with a constant
+        public loadYMem(address: number): void{
+          this.Yreg = _MemoryManager.getByteFromAddr(address).getDec();
+        }
+        //EA - No Operation - almost as stupid as the game publishing company EA
+        public noOperation(): void{
+          console.log("EA sucks balls.");
+        }
         //00 - Break
         public endOfProgram(): void {
           this.isExecuting = false;
         }
+        //EC - Compare a byte in memory to the X reg, Sets the Z (zero) flag if equal
+        public compareZ(address: number): void {
+          if(_MemoryManager.getByteFromAddr(address).getDec() === this.Xreg){
+            this.Zflag = 1;
+          } else {
+            this.Zflag = 0;
+          }
+        }
+        //D0 - Branch n bytes if z flag = 0
+        public branchNotEqual(pcb: Pcb, numBytes: number): void {
+          if(this.Zflag === 0){
+            for(var i: number = 0; i < numBytes; i++){
+              pcb.incrementPC();
+            }
+          }
+        }
+        //EE - Increment the value of a byte
+        public incrementByte(address: number): void {
+          //Get the value
+          var value: number = _MemoryManager.getByteFromAddr(address).getDec();
+          value++; //Increment it
+          var newValue: string = value.toString(16); //Convert it to hex
+          if(newValue.length < 2){
+            newValue = "0" + newValue; //Add a leading zero if needed
+          }
+          newValue = newValue.toUpperCase(); //Make it uppercase to make it pretty
+          var byte: Byte = new Byte();
+          byte.setHex(newValue); //Shove it in a new byte
+          _MemoryManager.setByteAtAddr(byte, address); //Shove that new byte into the same address
+        }
+        //FF - System call to print
+        public systemCall(): void {
+          if(this.Xreg === 1){
+            //Print the int in the Y register
+            console.log("Printing Y reg int: " + this.Yreg);
+            _StdOut.putText("" + this.Yreg);
+          } else if(this.Xreg === 2){
+            //Print the 00 terminated string in memory
+            var address: number = this.Yreg;
+            var value: number = _MemoryManager.getByteFromAddr(address).getDec();
+            var str: string = "";
+            while(value !== 0){
+              str += String.fromCharCode(value);
+              address++;
+              value = _MemoryManager.getByteFromAddr(address).getDec();
+            }
+            _StdOut.putText(str);
+          }
+        }
         //-------------------------------------------------------------------------
-
+        //Calculates the little endian address off of the next two memory locations
+        //and returns it
         public littleEndianAddress(pcb: Pcb): number {
           var address: number = 0;
           var bytes: string = "";

@@ -24,6 +24,9 @@ var TSOS;
         };
         Pcb.prototype.incrementPC = function () {
             this.programCounter++;
+            if (this.programCounter > MEMORY_SIZE - 1) {
+                this.programCounter = 0;
+            }
         };
         Pcb.currentProcessNum = 0;
         return Pcb;

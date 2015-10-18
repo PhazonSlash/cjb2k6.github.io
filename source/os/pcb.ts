@@ -30,6 +30,10 @@ module TSOS {
 
         public incrementPC(): void{
           this.programCounter++;
+          //If PC excedes memory size, wrap-around to start of memory
+          if(this.programCounter > MEMORY_SIZE - 1){
+            this.programCounter = 0;
+          }
         }
     }
 }
