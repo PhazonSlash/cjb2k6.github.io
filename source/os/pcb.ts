@@ -5,12 +5,14 @@
 
      Requires global.ts.
 
-
+     Process Control Block Object, used to keep track
+     of data related to a process that is in execution.
      ------------ */
 
 module TSOS {
 
     export class Pcb {
+        //Used to keep track and assign new process IDs
         public static currentProcessNum: number = 0;
 
         constructor(public processState: number = 0,

@@ -105,8 +105,8 @@ module TSOS {
             case "FF":
                       this.systemCall();
                       console.log("FF - System Call");
-                      return true;
-                      break;
+                      return true; //Returning here so we don't increment PC again
+                      break; //Pointless, but I like it. Keeps things consistent
             default:
                     console.log("Code: " + code.getHex() + " not found.");
                     return false;
@@ -222,10 +222,13 @@ module TSOS {
         public littleEndianAddress(pcb: Pcb): number {
           var address: number = 0;
           var bytes: string = "";
-
+          //Get the first byte, which will be the last part of the final address
           bytes = _MemoryManager.getByteFromAddr(pcb.programCounter).getHex();
+          //Get the second byte
           pcb.incrementPC();
+          //Tack on the first byte to the end and store the final address
           bytes = _MemoryManager.getByteFromAddr(pcb.programCounter).getHex() + bytes;
+          //Make it a decimal number
           address = parseInt(bytes, 16);
           console.log("LE Address: " + address);
           return address;

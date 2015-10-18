@@ -4,8 +4,7 @@
      memory.ts
 
      Requires global.ts.
-
-
+     Routines for memory hardware simulation.
      ------------ */
 
 module TSOS {
@@ -17,18 +16,18 @@ module TSOS {
         }
 
         public init(): void {
-            //Fill the array
+            //Fill the array with empty bytes
             for(var i: number = 0; i < MEMORY_SIZE; i++){
             this.mainMem[i] = new Byte();
             }
         }
-
+        //Clears memory
         public clear(): void {
             for(var i: number = 0; i < MEMORY_SIZE; i++){
               this.mainMem[i].reset();
             }
         }
-
+        //Prints the whole memory array for testing purposes
         public toString(): string {
           var str: string = "";
           for(var i: number = 0; i < MEMORY_SIZE; i++){
@@ -37,12 +36,13 @@ module TSOS {
           return str;
         }
     }
+    //Byte object to use in memory
     export class Byte {
 
         constructor(private hex: string = "00") {
 
         }
-
+        
         public reset(): void {
           this.hex = "00";
         }
