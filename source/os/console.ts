@@ -110,12 +110,15 @@ module TSOS {
             //
             // UPDATE: Even though we are now working in TypeScript, char and string remain undistinguished.
             //         Consider fixing that.
-            if (text !== "") {
-                // Draw the text at the current X and Y coordinates.
-                _DrawingContext.drawText(this.currentFont, this.currentFontSize, this.currentXPosition, this.currentYPosition, text);
-                // Move the current X position.
-                var offset = _DrawingContext.measureText(this.currentFont, this.currentFontSize, text);
-                this.currentXPosition = this.currentXPosition + offset;
+            if (text !== ""){
+              var offset = _DrawingContext.measureText(this.currentFont, this.currentFontSize, text);
+              if (this.currentXPosition + offset > _Canvas.width) {
+                this.advanceLine();
+              }
+              // Draw the text at the current X and Y coordinates.
+              _DrawingContext.drawText(this.currentFont, this.currentFontSize, this.currentXPosition, this.currentYPosition, text);
+              // Move the current X position.
+              this.currentXPosition = this.currentXPosition + offset;
             }
         }
         //Find a matching command(s) when tab is pressed

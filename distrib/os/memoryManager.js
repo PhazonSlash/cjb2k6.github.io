@@ -23,16 +23,16 @@ var TSOS;
             return true;
         };
         MemoryManager.prototype.getByteFromAddr = function (address) {
-            if (address >= this.mainMemory.mainMem.length) {
-                _Kernel.krnTrapError("Memory access violation.");
+            if (address >= this.mainMemory.mainMem.length || address < 0) {
+                _Kernel.krnTrapError("MEMORY ACCESS VIOLATION");
             }
             else {
                 return this.mainMemory.mainMem[address];
             }
         };
         MemoryManager.prototype.setByteAtAddr = function (byte, address) {
-            if (address >= this.mainMemory.mainMem.length) {
-                _Kernel.krnTrapError("Memory access violation.");
+            if (address >= this.mainMemory.mainMem.length || address < 0) {
+                _Kernel.krnTrapError("MEMORY ACCESS VIOLATION");
             }
             else {
                 this.mainMemory.mainMem[address] = byte;

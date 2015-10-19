@@ -100,6 +100,7 @@ var TSOS;
             _DrawingContext.fillText('*** STOPTHAT: 0x00000BAD (0x00080F10, 0x0000DEAD)', 5, 280);
             _DrawingContext.fillText('For assistance, please mash your face on keyboard.', 5, 320);
             this.krnShutdown();
+            clearInterval(_hardwareClockID);
         };
         return Kernel;
     })();

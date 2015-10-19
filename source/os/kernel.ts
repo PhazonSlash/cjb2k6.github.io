@@ -202,6 +202,7 @@ module TSOS {
             _DrawingContext.fillText('For assistance, please mash your face on keyboard.', 5, 320);
 
             this.krnShutdown();
+            clearInterval(_hardwareClockID);
         }
     }
 }
