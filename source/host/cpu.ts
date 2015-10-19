@@ -43,6 +43,7 @@ module TSOS {
 
             //Fetch/Decode/Execute
             this.executeCode(_CurrentPCB, _MemoryManager.getByteFromAddr(_CurrentPCB.programCounter));
+            Control.updateMemoryTable();
         }
 
         public executeCode(pcb: Pcb, code: Byte): boolean{

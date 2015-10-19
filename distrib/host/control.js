@@ -33,6 +33,7 @@ var TSOS;
             _hardwareClockID = setInterval(TSOS.Devices.hostClockPulse, CPU_CLOCK_INTERVAL);
             _Kernel = new TSOS.Kernel();
             _Kernel.krnBootstrap();
+            this.updateMemoryTable();
         };
         Control.hostBtnHaltOS_click = function (btn) {
             Control.hostLog("Emergency halt", "host");
@@ -42,6 +43,30 @@ var TSOS;
         };
         Control.hostBtnReset_click = function (btn) {
             location.reload(true);
+        };
+        Control.updateMemoryTable = function () {
+            var table = "<tbody>";
+            var rowHeader = "0x";
+            var rowNumber = 0;
+            var currRow = "";
+            var memoryIndex = 0;
+            for (var i = 0; i < 32; i++) {
+                table += "<tr>";
+                currRow = rowNumber.toString(16);
+                while (currRow.length < 3) {
+                    currRow = "0" + currRow;
+                }
+                currRow = currRow.toUpperCase();
+                table += "<td>" + rowHeader + currRow + "</td>";
+                for (var j = 0; j < 8; j++) {
+                    table += "<td>" + _MemoryManager.getByteFromAddr(memoryIndex).getHex().toUpperCase() + "</td>";
+                    memoryIndex++;
+                }
+                table += "</tr>";
+                rowNumber = rowNumber + 8;
+            }
+            table += "</tbody>";
+            document.getElementById("memoryTable").innerHTML = table;
         };
         return Control;
     })();

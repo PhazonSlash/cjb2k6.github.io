@@ -26,6 +26,7 @@ var TSOS;
         Cpu.prototype.cycle = function () {
             _Kernel.krnTrace('CPU cycle');
             this.executeCode(_CurrentPCB, _MemoryManager.getByteFromAddr(_CurrentPCB.programCounter));
+            TSOS.Control.updateMemoryTable();
         };
         Cpu.prototype.executeCode = function (pcb, code) {
             pcb.incrementPC();

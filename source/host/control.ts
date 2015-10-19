@@ -100,6 +100,7 @@ module TSOS {
             // .. and call the OS Kernel Bootstrap routine.
             _Kernel = new Kernel();
             _Kernel.krnBootstrap();  // _GLaDOS.afterStartup() will get called in there, if configured.
+            this.updateMemoryTable();
         }
 
         public static hostBtnHaltOS_click(btn): void {
@@ -119,5 +120,30 @@ module TSOS {
             // be reloaded from the server. If it is false or not specified the browser may reload the
             // page from its cache, which is not what we want.
         }
+       public static updateMemoryTable(): void{
+         var table: string = "<tbody>";
+         var rowHeader: string = "0x";
+         var rowNumber: number = 0;
+         var currRow: string = "";
+         var memoryIndex: number = 0;
+
+         for(var i: number = 0; i < 32; i++){
+           table += "<tr>";
+           currRow = rowNumber.toString(16);
+           while(currRow.length < 3){
+             currRow = "0" + currRow;
+           }
+           currRow = currRow.toUpperCase();
+           table += "<td>" + rowHeader + currRow + "</td>";
+           for(var j: number = 0; j < 8; j++){
+             table += "<td>" + _MemoryManager.getByteFromAddr(memoryIndex).getHex().toUpperCase() + "</td>"
+             memoryIndex++;
+           }
+           table += "</tr>";
+           rowNumber = rowNumber + 8;
+         }
+         table += "</tbody>";
+         (<HTMLInputElement> document.getElementById("memoryTable")).innerHTML = table;
+       }
     }
 }
