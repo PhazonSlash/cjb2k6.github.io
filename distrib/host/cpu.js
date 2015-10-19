@@ -139,6 +139,9 @@ var TSOS;
         };
         Cpu.prototype.endOfProgram = function () {
             this.isExecuting = false;
+            if (_SingleStepMode) {
+                TSOS.Control.hostBtnSSToggle_click();
+            }
         };
         Cpu.prototype.compareZ = function (address) {
             if (_MemoryManager.getByteFromAddr(address).getDec() === this.Xreg) {

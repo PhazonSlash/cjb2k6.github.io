@@ -24,6 +24,7 @@ var _StdOut;
 var _Console;
 var _OsShell;
 var _SarcasticMode = false;
+var _SingleStepMode = false;
 var _krnKeyboardDriver;
 var _hardwareClockID = null;
 var Glados = null;

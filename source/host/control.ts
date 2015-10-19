@@ -82,9 +82,10 @@ module TSOS {
             // Disable the (passed-in) start button...
             btn.disabled = true;
 
-            // .. enable the Halt and Reset buttons ...
+            // .. enable the other buttons ...
             (<HTMLButtonElement>document.getElementById("btnHaltOS")).disabled = false;
             (<HTMLButtonElement>document.getElementById("btnReset")).disabled = false;
+            (<HTMLButtonElement>document.getElementById("btnSSToggle")).disabled = false;
 
             // .. set focus on the OS console display ...
             document.getElementById("display").focus();
@@ -121,6 +122,24 @@ module TSOS {
             // be reloaded from the server. If it is false or not specified the browser may reload the
             // page from its cache, which is not what we want.
         }
+
+        public static hostBtnSSToggle_click(btn?): void {
+          _SingleStepMode = !_SingleStepMode;
+          if(_SingleStepMode){
+            _Kernel.krnTrace("Single Step Mode: ACTIVATED");
+            (<HTMLButtonElement>document.getElementById("btnSSToggle")).innerHTML = "Single Step: ON  ";
+            (<HTMLButtonElement>document.getElementById("btnStep")).disabled = false;
+          } else {
+            _Kernel.krnTrace("Single Step Mode: DEACTIVATED");
+            (<HTMLButtonElement>document.getElementById("btnSSToggle")).innerHTML = "Single Step: OFF";
+            (<HTMLButtonElement>document.getElementById("btnStep")).disabled = true;
+          }
+        }
+
+        public static hostBtnStep_click(btn): void {
+          _CPU.cycle();
+        }
+
        public static updateMemoryTable(): void {
          var table: string = "<tbody>";
          var rowHeader: string = "0x";

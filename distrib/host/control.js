@@ -26,6 +26,7 @@ var TSOS;
             btn.disabled = true;
             document.getElementById("btnHaltOS").disabled = false;
             document.getElementById("btnReset").disabled = false;
+            document.getElementById("btnSSToggle").disabled = false;
             document.getElementById("display").focus();
             _CPU = new TSOS.Cpu();
             _CPU.init();
@@ -44,6 +45,22 @@ var TSOS;
         };
         Control.hostBtnReset_click = function (btn) {
             location.reload(true);
+        };
+        Control.hostBtnSSToggle_click = function (btn) {
+            _SingleStepMode = !_SingleStepMode;
+            if (_SingleStepMode) {
+                _Kernel.krnTrace("Single Step Mode: ACTIVATED");
+                document.getElementById("btnSSToggle").innerHTML = "Single Step: ON  ";
+                document.getElementById("btnStep").disabled = false;
+            }
+            else {
+                _Kernel.krnTrace("Single Step Mode: DEACTIVATED");
+                document.getElementById("btnSSToggle").innerHTML = "Single Step: OFF";
+                document.getElementById("btnStep").disabled = true;
+            }
+        };
+        Control.hostBtnStep_click = function (btn) {
+            _CPU.cycle();
         };
         Control.updateMemoryTable = function () {
             var table = "<tbody>";

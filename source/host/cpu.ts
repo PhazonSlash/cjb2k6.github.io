@@ -174,6 +174,9 @@ module TSOS {
         //00 - Break
         public endOfProgram(): void {
           this.isExecuting = false;
+          if(_SingleStepMode){
+            Control.hostBtnSSToggle_click();
+          }
         }
         //EC - Compare a byte in memory to the X reg, Sets the Z (zero) flag if equal
         public compareZ(address: number): void {

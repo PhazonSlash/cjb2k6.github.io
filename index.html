@@ -57,33 +57,44 @@
       </div>
       <br>
       <div id="divButtonBar" style="margin:4px; float:right; width:500px; height:20px;">
-        <input type="button"
+        <button type="button"
                id = "btnStartOS"
                name="brnStartOS"
-               class="normal_button"
-               value="Start"
+               class="btn btn-sm btn-success"
                tabindex="0"
-               onclick="TSOS.Control.hostBtnStartOS_click(this);">
+               onclick="TSOS.Control.hostBtnStartOS_click(this);">Start</button>
 
-        <input type="button"
+        <button type="button"
                id = "btnHaltOS"
                name="brnHaltOS"
-               class="normal_button"
+               class="btn btn-sm btn-danger"
                disabled="disabled"
-               value="Halt"
                tabindex="1"
-               onclick="TSOS.Control.hostBtnHaltOS_click(this);">
+               onclick="TSOS.Control.hostBtnHaltOS_click(this);">Halt</button>
 
-        <input type="button"
+        <button type="button"
                id = "btnReset"
                name="brnReset"
-               class="normal_button"
+               class="btn btn-sm btn-info"
                disabled="disabled"
-               value="Reset"
                tabindex="2"
-               onclick="TSOS.Control.hostBtnReset_click(this);">
+               onclick="TSOS.Control.hostBtnReset_click(this);">Reset</button>
+         <button type="button"
+                id = "btnSSToggle"
+                name="brnSSToggle"
+                class="btn btn-sm btn-default"
+                disabled="disabled"
+                tabindex="3"
+                onclick="TSOS.Control.hostBtnSSToggle_click(this);">Single Step: OFF</button>
+          <button type="button"
+                 id = "btnStep"
+                 name="brnStep"
+                 class="btn btn-sm btn-success"
+                 disabled="disabled"
+                 tabindex="4"
+                 onclick="TSOS.Control.hostBtnStep_click(this);">></button>
        </div>
-       <div id="divConsole" style="margin:4px; width:500px; height:500px; float:right;">
+       <div id="divConsole" style="margin:10px; width:500px; height:500px; float:right;">
           <canvas id="display"
                   width="500px"
                   height="500px"
