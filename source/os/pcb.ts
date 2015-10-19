@@ -19,6 +19,7 @@ module TSOS {
                     public processID: number = 0,
                     public programCounter: number = 0,
                     public accumulator: number = 0,
+                    public IR: Byte = new Byte(),
                     public x: number = 0,
                     public y: number = 0,
                     public z: number = 0) {
@@ -32,10 +33,20 @@ module TSOS {
 
         public incrementPC(): void{
           this.programCounter++;
+          _CPU.PC++;
           //If PC excedes memory size, wrap-around to start of memory
           if(this.programCounter > MEMORY_SIZE - 1){
             this.programCounter = 0;
+            _CPU.PC = 0;
           }
+        }
+        public updatePcb(): void{
+          this.programCounter = _CPU.PC;
+          this.accumulator = _CPU.Acc;
+          this.IR = _CPU.IR;
+          this.x = _CPU.Xreg;
+          this.y = _CPU.Yreg;
+          this.z = _CPU.Zflag;
         }
     }
 }

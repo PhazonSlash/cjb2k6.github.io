@@ -1,15 +1,17 @@
 var TSOS;
 (function (TSOS) {
     var Cpu = (function () {
-        function Cpu(PC, Acc, Xreg, Yreg, Zflag, isExecuting) {
+        function Cpu(PC, Acc, IR, Xreg, Yreg, Zflag, isExecuting) {
             if (PC === void 0) { PC = 0; }
             if (Acc === void 0) { Acc = 0; }
+            if (IR === void 0) { IR = null; }
             if (Xreg === void 0) { Xreg = 0; }
             if (Yreg === void 0) { Yreg = 0; }
             if (Zflag === void 0) { Zflag = 0; }
             if (isExecuting === void 0) { isExecuting = false; }
             this.PC = PC;
             this.Acc = Acc;
+            this.IR = IR;
             this.Xreg = Xreg;
             this.Yreg = Yreg;
             this.Zflag = Zflag;
@@ -18,6 +20,7 @@ var TSOS;
         Cpu.prototype.init = function () {
             this.PC = 0;
             this.Acc = 0;
+            this.IR = new TSOS.Byte();
             this.Xreg = 0;
             this.Yreg = 0;
             this.Zflag = 0;
@@ -27,10 +30,12 @@ var TSOS;
             _Kernel.krnTrace('CPU cycle');
             this.executeCode(_CurrentPCB, _MemoryManager.getByteFromAddr(_CurrentPCB.programCounter));
             TSOS.Control.updateMemoryTable();
+            TSOS.Control.updateCpuTable();
         };
         Cpu.prototype.executeCode = function (pcb, code) {
+            this.IR = code;
             pcb.incrementPC();
-            switch (code.getHex().toUpperCase()) {
+            switch (this.IR.getHex().toUpperCase()) {
                 case "A9":
                     this.loadAccConst(_MemoryManager.getByteFromAddr(pcb.programCounter));
                     console.log("A9 - Accumlator: " + this.Acc);
@@ -69,7 +74,10 @@ var TSOS;
                     break;
                 case "00":
                     this.endOfProgram();
+                    pcb.updatePcb();
+                    TSOS.Control.updatePcbTable(pcb);
                     console.log("00 - End of Program");
+                    return true;
                     break;
                 case "EC":
                     this.compareZ(this.littleEndianAddress(pcb));

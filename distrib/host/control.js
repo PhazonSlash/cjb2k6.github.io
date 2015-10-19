@@ -34,6 +34,7 @@ var TSOS;
             _Kernel = new TSOS.Kernel();
             _Kernel.krnBootstrap();
             this.updateMemoryTable();
+            this.updateCpuTable();
         };
         Control.hostBtnHaltOS_click = function (btn) {
             Control.hostLog("Emergency halt", "host");
@@ -67,6 +68,26 @@ var TSOS;
             }
             table += "</tbody>";
             document.getElementById("memoryTable").innerHTML = table;
+        };
+        Control.updateCpuTable = function () {
+            var table = "";
+            table += "<td>" + _CPU.PC + "</td>";
+            table += "<td>" + _CPU.Acc + "</td>";
+            table += "<td>" + _CPU.IR.getHex().toUpperCase() + "</td>";
+            table += "<td>" + _CPU.Xreg + "</td>";
+            table += "<td>" + _CPU.Yreg + "</td>";
+            table += "<td>" + _CPU.Zflag + "</td>";
+            document.getElementById("cpuTableBody").innerHTML = table;
+        };
+        Control.updatePcbTable = function (pcb) {
+            var table = "";
+            table += "<td>" + pcb.programCounter + "</td>";
+            table += "<td>" + pcb.accumulator + "</td>";
+            table += "<td>" + pcb.IR.getHex().toUpperCase() + "</td>";
+            table += "<td>" + pcb.x + "</td>";
+            table += "<td>" + pcb.y + "</td>";
+            table += "<td>" + pcb.z + "</td>";
+            document.getElementById("pcbTableBody").innerHTML = table;
         };
         return Control;
     })();

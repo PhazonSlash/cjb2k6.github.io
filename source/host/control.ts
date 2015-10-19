@@ -101,6 +101,7 @@ module TSOS {
             _Kernel = new Kernel();
             _Kernel.krnBootstrap();  // _GLaDOS.afterStartup() will get called in there, if configured.
             this.updateMemoryTable();
+            this.updateCpuTable();
         }
 
         public static hostBtnHaltOS_click(btn): void {
@@ -120,7 +121,7 @@ module TSOS {
             // be reloaded from the server. If it is false or not specified the browser may reload the
             // page from its cache, which is not what we want.
         }
-       public static updateMemoryTable(): void{
+       public static updateMemoryTable(): void {
          var table: string = "<tbody>";
          var rowHeader: string = "0x";
          var rowNumber: number = 0;
@@ -144,6 +145,26 @@ module TSOS {
          }
          table += "</tbody>";
          (<HTMLInputElement> document.getElementById("memoryTable")).innerHTML = table;
+       }
+       public static updateCpuTable(): void {
+         var table: string = "";
+         table += "<td>" + _CPU.PC + "</td>";
+         table += "<td>" + _CPU.Acc + "</td>";
+         table += "<td>" + _CPU.IR.getHex().toUpperCase() + "</td>";
+         table += "<td>" + _CPU.Xreg + "</td>";
+         table += "<td>" + _CPU.Yreg + "</td>";
+         table += "<td>" + _CPU.Zflag + "</td>";
+        (<HTMLInputElement> document.getElementById("cpuTableBody")).innerHTML = table;
+       }
+       public static updatePcbTable(pcb: Pcb): void {
+         var table: string = "";
+         table += "<td>" + pcb.programCounter + "</td>";
+         table += "<td>" + pcb.accumulator + "</td>";
+         table += "<td>" + pcb.IR.getHex().toUpperCase() + "</td>";
+         table += "<td>" + pcb.x + "</td>";
+         table += "<td>" + pcb.y + "</td>";
+         table += "<td>" + pcb.z + "</td>";
+        (<HTMLInputElement> document.getElementById("pcbTableBody")).innerHTML = table;
        }
     }
 }

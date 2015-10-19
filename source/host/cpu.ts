@@ -21,6 +21,7 @@ module TSOS {
 
         constructor(public PC: number = 0,
                     public Acc: number = 0,
+                    public IR: Byte = null,
                     public Xreg: number = 0,
                     public Yreg: number = 0,
                     public Zflag: number = 0,
@@ -31,6 +32,7 @@ module TSOS {
         public init(): void {
             this.PC = 0;
             this.Acc = 0;
+            this.IR = new Byte();
             this.Xreg = 0;
             this.Yreg = 0;
             this.Zflag = 0;
@@ -44,13 +46,15 @@ module TSOS {
             //Fetch/Decode/Execute
             this.executeCode(_CurrentPCB, _MemoryManager.getByteFromAddr(_CurrentPCB.programCounter));
             Control.updateMemoryTable();
+            Control.updateCpuTable();
         }
 
         public executeCode(pcb: Pcb, code: Byte): boolean{
+          this.IR = code;
           //Since we have the current code, we can increment PC here
           pcb.incrementPC();
           //Decode the code
-          switch(code.getHex().toUpperCase()){
+          switch(this.IR.getHex().toUpperCase()){
             case "A9":
                       this.loadAccConst(_MemoryManager.getByteFromAddr(pcb.programCounter));
                       console.log("A9 - Accumlator: " + this.Acc);
@@ -89,8 +93,11 @@ module TSOS {
                       break; //This line will never right run and is stupid, just like EA the company
             case "00":
                       this.endOfProgram();
+                      pcb.updatePcb();
+                      Control.updatePcbTable(pcb);
                       console.log("00 - End of Program");
-                      break;
+                      return true;
+                      break; //This again
             case "EC":
                       this.compareZ(this.littleEndianAddress(pcb));
                       console.log("EC - Z Flag: " + this.Zflag);
