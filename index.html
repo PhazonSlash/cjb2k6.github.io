@@ -43,7 +43,7 @@
 <div id="divMain" style="width:100%;" class="container">
   <div class="row">
     <div class="col-md-6">
-      <div id="hud" style="margin:4px">
+      <div id="hud" style="margin:4px; float:right; width:500px; height:20px;">
           <label id="dateTimeLabel">
               Time:
           </label>
@@ -54,7 +54,8 @@
               Status:
           </label>
       </div>
-      <div id="divButtonBar" style="margin:4px;">
+      <br>
+      <div id="divButtonBar" style="margin:4px; float:right; width:500px; height:20px;">
         <input type="button"
                id = "btnStartOS"
                name="brnStartOS"
@@ -81,7 +82,7 @@
                tabindex="2"
                onclick="TSOS.Control.hostBtnReset_click(this);">
        </div>
-       <div id="divConsole" style="margin:4px; width:500px; height:500px; float:left;">
+       <div id="divConsole" style="margin:4px; width:500px; height:500px; float:right;">
           <canvas id="display"
                   width="500px"
                   height="500px"
@@ -92,6 +93,7 @@
        <div class="col-md-6">
          <div id="divLog">
           <label>
+             <br>
              Host Log
              <br>
              <textarea name="taHostLog"
@@ -105,13 +107,11 @@
          <label>
             Memory Display
          </label>
-         <div id="memoryTableDiv" style="background-color:#FFFFFF; width:400px; height:160px; overflow:scroll">
-          <table class="table table-bordered" id="memoryTable">
-
-         </table>
+         <div id="memoryTableDiv" style="background-color:#FFFFFF; float:left; width:400px; height:160px; overflow:scroll">
+          <table class="table table-bordered" id="memoryTable"></table>
         </div>
        </div>
-       <div id="divUserProgramInput">
+       <div id="divUserProgramInput" style="float:left; width:600px; height:160px;">
           <label>
              User Program Input
              <br>
@@ -127,7 +127,7 @@
 </div>
 
 <p class="footerText" style="clear:both;">
-   <br>
+   <br><br><br>
    Copyright &copy; 2008 - 2015 No Rights Reserved.
    <br>
    Reproduction is inhibited without the express written consent of

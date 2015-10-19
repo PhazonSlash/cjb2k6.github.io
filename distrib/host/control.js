@@ -57,7 +57,7 @@ var TSOS;
                     currRow = "0" + currRow;
                 }
                 currRow = currRow.toUpperCase();
-                table += "<td>" + rowHeader + currRow + "</td>";
+                table += "<td style=\"font-weight:bold\">" + rowHeader + currRow + "</td>";
                 for (var j = 0; j < 8; j++) {
                     table += "<td>" + _MemoryManager.getByteFromAddr(memoryIndex).getHex().toUpperCase() + "</td>";
                     memoryIndex++;
