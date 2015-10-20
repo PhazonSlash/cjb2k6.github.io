@@ -13,6 +13,7 @@ var TSOS;
                 _GLaDOS = new Glados();
                 _GLaDOS.init();
             }
+            this.timeStatusUpdate();
         };
         Control.hostLog = function (msg, source) {
             if (source === void 0) { source = "?"; }
@@ -61,6 +62,16 @@ var TSOS;
         };
         Control.hostBtnStep_click = function (btn) {
             _CPU.cycle();
+        };
+        Control.timeStatusUpdate = function () {
+            var currentDate = new Date();
+            var hours = currentDate.getHours().toString();
+            var minutes = currentDate.getMinutes().toString();
+            if (minutes.length < 2) {
+                minutes = "0" + minutes;
+            }
+            document.getElementById("dateTimeLabel").innerHTML = "Time: " + hours + ":" + minutes + " " + currentDate.toLocaleDateString()
+                + " | Status: " + _Status;
         };
         Control.updateMemoryTable = function () {
             var table = "<tbody>";

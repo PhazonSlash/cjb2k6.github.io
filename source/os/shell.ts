@@ -285,13 +285,14 @@ module TSOS {
 
         public shellStatus(args:string[]) {
             if (args.length > 0) {
-                var st = "Status: " + args[0];
+                var st = "" + args[0];
                 if (args.length > 1) {
                     for (var i = 1; i < args.length; i++) {
                         st = st + " " + args[i];
                     }
                 }
-                document.getElementById("statusLabel").innerHTML = st;
+                _Status = st;
+                Control.timeStatusUpdate();
             }
         }
 

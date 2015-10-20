@@ -42,6 +42,7 @@ var TSOS;
             else {
                 this.krnTrace("Idle");
             }
+            TSOS.Control.timeStatusUpdate();
         };
         Kernel.prototype.krnEnableInterrupts = function () {
             TSOS.Devices.hostEnableKeyboardInterrupt();

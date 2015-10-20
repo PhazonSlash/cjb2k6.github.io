@@ -12,7 +12,7 @@
 // Global CONSTANTS (TypeScript 1.5 introduced const. Very cool.)
 //
 const APP_NAME: string    = "PhazonOS";   // 'cause Metroid Prime is awesome.
-const APP_VERSION: string = "0.01";   // What did you expect?
+const APP_VERSION: string = "0.06";   // What did you expect?
 
 const CPU_CLOCK_INTERVAL: number = 100;   // This is in ms (milliseconds) so 1000 = 1 second.
 
@@ -46,6 +46,7 @@ var _FontHeightMargin: number = 4;              // Additional space added to fon
 
 var _Trace: boolean = true;  // Default the OS trace to be on.
 
+var _Status: string = "";
 
 // The OS Kernel and its queues.
 var _Kernel: TSOS.Kernel;
@@ -76,9 +77,5 @@ var Glados: any = null;  // This is the function Glados() in glados.js on Labous
 var _GLaDOS: any = null; // If the above is linked in, this is the instantiated instance of Glados.
 
 var onDocumentLoad = function () {
-    var currentDate = new Date();
     TSOS.Control.hostInit();
-    setInterval(function () {
-        document.getElementById("dateTimeLabel").innerHTML = "Time: " + currentDate.getHours() + ":" + currentDate.getMinutes() + " " + currentDate.toLocaleDateString();
-    }, 1000);
 };

@@ -55,6 +55,8 @@ module TSOS {
                 _GLaDOS = new Glados();
                 _GLaDOS.init();
             }
+
+            this.timeStatusUpdate();
         }
 
         public static hostLog(msg: string, source: string = "?"): void {
@@ -138,6 +140,17 @@ module TSOS {
 
         public static hostBtnStep_click(btn): void {
           _CPU.cycle();
+        }
+
+        public static timeStatusUpdate(): void {
+          var currentDate: Date = new Date();
+          var hours: string = currentDate.getHours().toString();
+          var minutes: string = currentDate.getMinutes().toString();
+          if(minutes.length < 2){
+            minutes = "0" + minutes;
+          }
+          document.getElementById("dateTimeLabel").innerHTML = "Time: " + hours + ":" + minutes + " " + currentDate.toLocaleDateString()
+          + " | Status: " + _Status;
         }
 
        public static updateMemoryTable(): void {

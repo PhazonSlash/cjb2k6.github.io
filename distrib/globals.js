@@ -1,5 +1,5 @@
 var APP_NAME = "PhazonOS";
-var APP_VERSION = "0.01";
+var APP_VERSION = "0.06";
 var CPU_CLOCK_INTERVAL = 100;
 var TIMER_IRQ = 0;
 var KEYBOARD_IRQ = 1;
@@ -15,6 +15,7 @@ var _DefaultFontFamily = "sans";
 var _DefaultFontSize = 13;
 var _FontHeightMargin = 4;
 var _Trace = true;
+var _Status = "";
 var _Kernel;
 var _KernelInterruptQueue;
 var _KernelInputQueue = null;
@@ -30,9 +31,5 @@ var _hardwareClockID = null;
 var Glados = null;
 var _GLaDOS = null;
 var onDocumentLoad = function () {
-    var currentDate = new Date();
     TSOS.Control.hostInit();
-    setInterval(function () {
-        document.getElementById("dateTimeLabel").innerHTML = "Time: " + currentDate.getHours() + ":" + currentDate.getMinutes() + " " + currentDate.toLocaleDateString();
-    }, 1000);
 };
