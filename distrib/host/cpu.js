@@ -28,12 +28,14 @@ var TSOS;
         };
         Cpu.prototype.cycle = function () {
             _Kernel.krnTrace('CPU cycle');
-            this.executeCode(_CurrentPCB, _MemoryManager.getByteFromAddr(_CurrentPCB.programCounter));
             TSOS.Control.updateMemoryTable();
             TSOS.Control.updateCpuTable();
+            this.IR = _MemoryManager.getByteFromAddr(_CurrentPCB.programCounter);
+            TSOS.Control.updateMemoryTable();
+            TSOS.Control.updateCpuTable();
+            this.executeCode(_CurrentPCB);
         };
-        Cpu.prototype.executeCode = function (pcb, code) {
-            this.IR = code;
+        Cpu.prototype.executeCode = function (pcb) {
             pcb.incrementPC();
             switch (this.IR.getHex().toUpperCase()) {
                 case "A9":
@@ -97,7 +99,7 @@ var TSOS;
                     return true;
                     break;
                 default:
-                    console.log("Code: " + code.getHex() + " not found.");
+                    console.log("Code: " + this.IR.getHex() + " not found.");
                     return false;
             }
             pcb.incrementPC();
@@ -196,6 +198,14 @@ var TSOS;
             address = parseInt(bytes, 16);
             console.log("LE Address: " + address);
             return address;
+        };
+        Cpu.prototype.setCPU = function (pcb) {
+            this.PC = pcb.programCounter;
+            this.Acc = pcb.accumulator;
+            this.IR = _MemoryManager.getByteFromAddr(_CurrentPCB.programCounter);
+            this.Xreg = pcb.x;
+            this.Yreg = pcb.y;
+            this.Zflag = pcb.z;
         };
         return Cpu;
     })();

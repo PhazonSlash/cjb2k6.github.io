@@ -42,15 +42,16 @@ module TSOS {
         public cycle(): void {
             _Kernel.krnTrace('CPU cycle');
             // TODO: Accumulate CPU usage and profiling statistics here.
-
-            //Fetch/Decode/Execute
-            this.executeCode(_CurrentPCB, _MemoryManager.getByteFromAddr(_CurrentPCB.programCounter));
             Control.updateMemoryTable();
             Control.updateCpuTable();
+            //Fetch/Decode/Execute
+            this.IR = _MemoryManager.getByteFromAddr(_CurrentPCB.programCounter);
+            Control.updateMemoryTable();
+            Control.updateCpuTable();
+            this.executeCode(_CurrentPCB);
         }
 
-        public executeCode(pcb: Pcb, code: Byte): boolean{
-          this.IR = code;
+        public executeCode(pcb: Pcb): boolean{
           //Since we have the current code, we can increment PC here
           pcb.incrementPC();
           //Decode the code
@@ -116,7 +117,7 @@ module TSOS {
                       return true; //Returning here so we don't increment PC again
                       break; //Pointless, but I like it. Keeps things consistent
             default:
-                    console.log("Code: " + code.getHex() + " not found.");
+                    console.log("Code: " + this.IR.getHex() + " not found.");
                     return false;
           }
           //Move on to the next code
@@ -243,6 +244,15 @@ module TSOS {
           address = parseInt(bytes, 16);
           console.log("LE Address: " + address);
           return address;
+        }
+
+        public setCPU(pcb: Pcb): void {
+          this.PC = pcb.programCounter;
+          this.Acc = pcb.accumulator;
+          this.IR = _MemoryManager.getByteFromAddr(_CurrentPCB.programCounter);
+          this.Xreg = pcb.x;
+          this.Yreg = pcb.y;
+          this.Zflag = pcb.z;
         }
     }
 }
