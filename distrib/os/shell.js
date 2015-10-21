@@ -189,6 +189,7 @@ var TSOS;
             if (args.length > 0) {
                 if (args[0].match(/[0-9]+/g)) {
                     if (parseInt(args[0]) === _CurrentPCB.processID) {
+                        _CPU.PC = _CurrentPCB.programCounter;
                         _CPU.isExecuting = true;
                     }
                     else {
