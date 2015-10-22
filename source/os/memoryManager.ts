@@ -11,7 +11,8 @@
 module TSOS {
 
     export class MemoryManager {
-        constructor(private mainMemory: Memory = new Memory()) {
+        constructor(private mainMemory: Memory = new Memory(),
+                    private partitions: boolean[] = []) {
           this.init();
         }
 
@@ -41,8 +42,23 @@ module TSOS {
         Control.updateMemoryTable();
       }
 
-      public clearPartition(partition: number){
+      public partitionIsValid(partition: number): boolean {
         if(partition < 1 || partition > MEMORY_PARTITIONS){
+          return false;
+        }
+        return true;
+      }
+
+      public partitionIsAvailable(partition: number): boolean{
+        if(this.partitionIsValid(partition)){
+          return this.partitions[partition];
+        }
+        return false;
+      }
+
+
+      public clearPartition(partition: number){
+        if(!this.partitionIsValid(partition)){
           console.log("Invalid memory partition: " + partition);
         } else {
           this.mainMemory.clear(partition);

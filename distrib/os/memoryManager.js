@@ -1,9 +1,11 @@
 var TSOS;
 (function (TSOS) {
     var MemoryManager = (function () {
-        function MemoryManager(mainMemory) {
+        function MemoryManager(mainMemory, partitions) {
             if (mainMemory === void 0) { mainMemory = new TSOS.Memory(); }
+            if (partitions === void 0) { partitions = []; }
             this.mainMemory = mainMemory;
+            this.partitions = partitions;
             this.init();
         }
         MemoryManager.prototype.init = function () {
@@ -26,8 +28,20 @@ var TSOS;
             this.mainMemory.clear(0);
             TSOS.Control.updateMemoryTable();
         };
-        MemoryManager.prototype.clearPartition = function (partition) {
+        MemoryManager.prototype.partitionIsValid = function (partition) {
             if (partition < 1 || partition > MEMORY_PARTITIONS) {
+                return false;
+            }
+            return true;
+        };
+        MemoryManager.prototype.partitionIsAvailable = function (partition) {
+            if (this.partitionIsValid(partition)) {
+                return this.partitions[partition];
+            }
+            return false;
+        };
+        MemoryManager.prototype.clearPartition = function (partition) {
+            if (!this.partitionIsValid(partition)) {
                 console.log("Invalid memory partition: " + partition);
             }
             else {
