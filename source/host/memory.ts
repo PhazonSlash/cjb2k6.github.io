@@ -17,20 +17,28 @@ module TSOS {
 
         public init(): void {
             //Fill the array with empty bytes
-            for(var i: number = 0; i < MEMORY_SIZE; i++){
+            for(var i: number = 0; i < TOTAL_MEMORY_SIZE; i++){
             this.mainMem[i] = new Byte();
             }
         }
         //Clears memory
-        public clear(): void {
-            for(var i: number = 0; i < MEMORY_SIZE; i++){
+        public clear(partition: number): void {
+          if(partition === 0){ //Clear all memory
+            for(var i: number = 0; i < TOTAL_MEMORY_SIZE; i++){
               this.mainMem[i].reset();
             }
+          } else {
+            var startAddress: number = partition * MEMORY_SIZE;
+            var endAddress: number = startAddress + MEMORY_SIZE;
+            for(var i: number = startAddress; i < endAddress; i++){
+              this.mainMem[i].reset();
+            }
+          }
         }
         //Prints the whole memory array for testing purposes
         public toString(): string {
           var str: string = "";
-          for(var i: number = 0; i < MEMORY_SIZE; i++){
+          for(var i: number = 0; i < TOTAL_MEMORY_SIZE; i++){
             str = str + this.mainMem[i].getHex() + " ";
           }
           return str;
@@ -42,7 +50,7 @@ module TSOS {
         constructor(private hex: string = "00") {
 
         }
-        
+
         public reset(): void {
           this.hex = "00";
         }

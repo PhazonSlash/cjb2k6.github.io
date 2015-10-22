@@ -160,7 +160,7 @@ module TSOS {
          var currRow: string = "";
          var memoryIndex: number = 0;
 
-         for(var i: number = 0; i < 32; i++){
+         for(var i: number = 0; i < TOTAL_MEMORY_SIZE / 8; i++){
            table += "<tr>";
            currRow = rowNumber.toString(16);
            while(currRow.length < 3){

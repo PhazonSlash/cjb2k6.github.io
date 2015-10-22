@@ -79,6 +79,12 @@ module TSOS {
                 "- Runs process of given Process ID (PID).");
             this.commandList[this.commandList.length] = sc;
 
+            // run
+            sc = new ShellCommand(this.shellClearMem,
+                "clearmem",
+                "- Clears all partitions of memory.");
+            this.commandList[this.commandList.length] = sc;
+
             // weaponchange
             sc = new ShellCommand(this.shellChangeWeapon,
                 "changeweapon",
@@ -339,6 +345,9 @@ module TSOS {
             }
         }
 
+        public shellClearMem(args:string[]) {
+          _MemoryManager.clearAllMem();
+        }
         //Command to change the beam weapon used for the shoot command
         //Weapons are Samus Aran's beam weapons from Metroid Prime
         public shellChangeWeapon(args:string[]) {

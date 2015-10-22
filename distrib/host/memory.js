@@ -7,18 +7,27 @@ var TSOS;
             this.init();
         }
         Memory.prototype.init = function () {
-            for (var i = 0; i < MEMORY_SIZE; i++) {
+            for (var i = 0; i < TOTAL_MEMORY_SIZE; i++) {
                 this.mainMem[i] = new Byte();
             }
         };
-        Memory.prototype.clear = function () {
-            for (var i = 0; i < MEMORY_SIZE; i++) {
-                this.mainMem[i].reset();
+        Memory.prototype.clear = function (partition) {
+            if (partition === 0) {
+                for (var i = 0; i < TOTAL_MEMORY_SIZE; i++) {
+                    this.mainMem[i].reset();
+                }
+            }
+            else {
+                var startAddress = partition * MEMORY_SIZE;
+                var endAddress = startAddress + MEMORY_SIZE;
+                for (var i = startAddress; i < endAddress; i++) {
+                    this.mainMem[i].reset();
+                }
             }
         };
         Memory.prototype.toString = function () {
             var str = "";
-            for (var i = 0; i < MEMORY_SIZE; i++) {
+            for (var i = 0; i < TOTAL_MEMORY_SIZE; i++) {
                 str = str + this.mainMem[i].getHex() + " ";
             }
             return str;

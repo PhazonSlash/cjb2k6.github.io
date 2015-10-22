@@ -27,6 +27,8 @@ var TSOS;
             this.commandList[this.commandList.length] = sc;
             sc = new TSOS.ShellCommand(this.shellRun, "run", "- Runs process of given Process ID (PID).");
             this.commandList[this.commandList.length] = sc;
+            sc = new TSOS.ShellCommand(this.shellClearMem, "clearmem", "- Clears all partitions of memory.");
+            this.commandList[this.commandList.length] = sc;
             sc = new TSOS.ShellCommand(this.shellChangeWeapon, "changeweapon", "- Switches to next beam weapon.");
             this.commandList[this.commandList.length] = sc;
             sc = new TSOS.ShellCommand(this.shellShoot, "shoot", "- Fires selected beam weapon.");
@@ -203,6 +205,9 @@ var TSOS;
             else {
                 _StdOut.putText("Error: Please enter a PID.");
             }
+        };
+        Shell.prototype.shellClearMem = function (args) {
+            _MemoryManager.clearAllMem();
         };
         Shell.prototype.shellChangeWeapon = function (args) {
             weaponIndex++;

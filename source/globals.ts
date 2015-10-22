@@ -21,6 +21,8 @@ const TIMER_IRQ: number = 0;  // Pages 23 (timer), 9 (interrupts), and 561 (inte
 const KEYBOARD_IRQ: number = 1;
 
 const MEMORY_SIZE: number = 256;
+const MEMORY_PARTITIONS: number = 3;
+const TOTAL_MEMORY_SIZE: number = MEMORY_PARTITIONS * MEMORY_SIZE;
 
 
 //

@@ -9,7 +9,7 @@ var TSOS;
         MemoryManager.prototype.init = function () {
         };
         MemoryManager.prototype.loadProgram = function (prgm) {
-            this.mainMemory.clear();
+            this.clearAllMem();
             var currByte = "";
             var memLoc = 0;
             for (var i = 0; i < prgm.length; i++) {
@@ -21,6 +21,19 @@ var TSOS;
                 }
             }
             return true;
+        };
+        MemoryManager.prototype.clearAllMem = function () {
+            this.mainMemory.clear(0);
+            TSOS.Control.updateMemoryTable();
+        };
+        MemoryManager.prototype.clearPartition = function (partition) {
+            if (partition < 1 || partition > MEMORY_PARTITIONS) {
+                console.log("Invalid memory partition: " + partition);
+            }
+            else {
+                this.mainMemory.clear(partition);
+                TSOS.Control.updateMemoryTable();
+            }
         };
         MemoryManager.prototype.getByteFromAddr = function (address) {
             if (address >= this.mainMemory.mainMem.length || address < 0) {

@@ -21,7 +21,7 @@ module TSOS {
 
         public loadProgram(prgm: string): boolean{
           //Clear current memory
-          this.mainMemory.clear();
+          this.clearAllMem();
           //Insert into memory
           var currByte: string = ""; //Holds the current byte from program
           var memLoc: number = 0; //Current location in memory to insert byte into
@@ -34,6 +34,20 @@ module TSOS {
             }
           }
           return true;
+      }
+
+      public clearAllMem(){
+        this.mainMemory.clear(0);
+        Control.updateMemoryTable();
+      }
+
+      public clearPartition(partition: number){
+        if(partition < 1 || partition > MEMORY_PARTITIONS){
+          console.log("Invalid memory partition: " + partition);
+        } else {
+          this.mainMemory.clear(partition);
+          Control.updateMemoryTable();
+        }
       }
 
       public getByteFromAddr(address: number): Byte {

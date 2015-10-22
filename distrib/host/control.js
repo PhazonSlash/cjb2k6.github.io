@@ -79,7 +79,7 @@ var TSOS;
             var rowNumber = 0;
             var currRow = "";
             var memoryIndex = 0;
-            for (var i = 0; i < 32; i++) {
+            for (var i = 0; i < TOTAL_MEMORY_SIZE / 8; i++) {
                 table += "<tr>";
                 currRow = rowNumber.toString(16);
                 while (currRow.length < 3) {
