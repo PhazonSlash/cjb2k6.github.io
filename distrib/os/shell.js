@@ -177,9 +177,16 @@ var TSOS;
                         _StdOut.putText("Program cannot be more than 256 bytes long.");
                     }
                     else {
-                        _MemoryManager.loadProgram(prgm);
-                        _CurrentPCB = new TSOS.Pcb();
-                        _StdOut.putText("Program loaded. PID: " + _CurrentPCB.processID);
+                        var partition = _MemoryManager.getNextFreePartition();
+                        if (partition === -1) {
+                            _StdOut.putText("Error: No memory partitions available.");
+                        }
+                        else {
+                            _MemoryManager.loadProgram(prgm, partition);
+                            _CurrentPCB = new TSOS.Pcb();
+                            _CurrentPCB.setPartition(partition);
+                            _StdOut.putText("Program loaded. PID: " + _CurrentPCB.processID);
+                        }
                     }
                 }
             }

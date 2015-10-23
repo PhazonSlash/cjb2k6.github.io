@@ -314,12 +314,18 @@ module TSOS {
                   if(prgm.length > 512){ //Check to see if there are too many hex digits
                     _StdOut.putText("Program cannot be more than 256 bytes long.");
                   } else{
-                    _MemoryManager.loadProgram(prgm);
-                    //Creates a new PCB for the process. Stores it in temp variable
-                    //that will be replaced with the Ready Queue in the future
-                    _CurrentPCB = new Pcb();
-                    _StdOut.putText("Program loaded. PID: " + _CurrentPCB.processID);
-                    //console.log(_MemoryManager.printMemory());
+                    var partition: number = _MemoryManager.getNextFreePartition();
+                    if(partition === -1){
+                      _StdOut.putText("Error: No memory partitions available.");
+                    } else {
+                      _MemoryManager.loadProgram(prgm, partition);
+                      //Creates a new PCB for the process. Stores it in temp variable
+                      //that will be replaced with the Ready Queue in the future
+                      _CurrentPCB = new Pcb();
+                      _CurrentPCB.setPartition(partition);
+                      _StdOut.putText("Program loaded. PID: " + _CurrentPCB.processID);
+                      //console.log(_MemoryManager.printMemory());
+                    }
                   }
               }
             }else{

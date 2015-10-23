@@ -95,6 +95,7 @@ module TSOS {
             case "00":
                       this.endOfProgram();
                       pcb.updatePcb();
+                      _MemoryManager.clearPartition(pcb.partition);
                       Control.updatePcbTable(pcb);
                       console.log("00 - End of Program");
                       return true;

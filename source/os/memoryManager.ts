@@ -20,12 +20,11 @@ module TSOS {
 
         }
 
-        public loadProgram(prgm: string): boolean{
-          //Clear current memory
-          this.clearAllMem();
+        public loadProgram(prgm: string, partition:number): boolean{
           //Insert into memory
           var currByte: string = ""; //Holds the current byte from program
-          var memLoc: number = 0; //Current location in memory to insert byte into
+          var memLoc: number = (MEMORY_SIZE * partition) - MEMORY_SIZE; //Current location in memory to insert byte into
+          console.log("Loading at :" + memLoc);
           for(var i: number = 0; i < prgm.length; i++){
             currByte = currByte + prgm[i];
             if(currByte.length > 1){
@@ -34,12 +33,27 @@ module TSOS {
               currByte = "";
             }
           }
+          this.setPartition(partition, true);
+          Control.updateMemoryTable();
           return true;
       }
 
-      public clearAllMem(){
+      public clearAllMem(): void {
         this.mainMemory.clear(0);
+        for(var i: number = 1; i < MEMORY_PARTITIONS + 1; i++){
+          this.partitions[i] = false;
+        }
         Control.updateMemoryTable();
+      }
+
+      public clearPartition(partition: number): void {
+        if(!this.partitionIsValid(partition)){
+          console.log("Invalid memory partition: " + partition);
+        } else {
+          this.mainMemory.clear(partition);
+          this.setPartition(partition, false);
+          Control.updateMemoryTable();
+        }
       }
 
       public partitionIsValid(partition: number): boolean {
@@ -51,19 +65,24 @@ module TSOS {
 
       public partitionIsAvailable(partition: number): boolean{
         if(this.partitionIsValid(partition)){
-          return this.partitions[partition];
+          return !this.partitions[partition];
         }
         return false;
       }
 
-
-      public clearPartition(partition: number){
-        if(!this.partitionIsValid(partition)){
-          console.log("Invalid memory partition: " + partition);
-        } else {
-          this.mainMemory.clear(partition);
-          Control.updateMemoryTable();
+      public setPartition(partition: number, isUsed: boolean): void{
+        if(this.partitionIsValid(partition)){
+          this.partitions[partition] = isUsed;
         }
+      }
+
+      public getNextFreePartition(): number {
+        for(var i: number = 1; i < MEMORY_PARTITIONS + 1; i++){
+          if(this.partitionIsAvailable(i)){
+            return i;
+          }
+        }
+        return -1;
       }
 
       public getByteFromAddr(address: number): Byte {

@@ -77,6 +77,7 @@ var TSOS;
                 case "00":
                     this.endOfProgram();
                     pcb.updatePcb();
+                    _MemoryManager.clearPartition(pcb.partition);
                     TSOS.Control.updatePcbTable(pcb);
                     console.log("00 - End of Program");
                     return true;

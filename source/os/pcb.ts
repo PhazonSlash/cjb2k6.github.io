@@ -22,13 +22,17 @@ module TSOS {
                     public IR: Byte = new Byte(),
                     public x: number = 0,
                     public y: number = 0,
-                    public z: number = 0) {
+                    public z: number = 0,
+                    public partition: number = 0) {
           this.init();
         }
 
         public init(): void {
             this.processID = Pcb.currentProcessNum;
             Pcb.currentProcessNum++;
+        }
+        public setPartition(partition: number): void{
+          this.partition = partition;
         }
 
         public incrementPC(): void{
@@ -40,6 +44,7 @@ module TSOS {
             _CPU.PC = 0;
           }
         }
+        
         public updatePcb(): void{
           this.programCounter = _CPU.PC;
           this.accumulator = _CPU.Acc;

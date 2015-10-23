@@ -10,10 +10,10 @@ var TSOS;
         }
         MemoryManager.prototype.init = function () {
         };
-        MemoryManager.prototype.loadProgram = function (prgm) {
-            this.clearAllMem();
+        MemoryManager.prototype.loadProgram = function (prgm, partition) {
             var currByte = "";
-            var memLoc = 0;
+            var memLoc = (MEMORY_SIZE * partition) - MEMORY_SIZE;
+            console.log("Loading at :" + memLoc);
             for (var i = 0; i < prgm.length; i++) {
                 currByte = currByte + prgm[i];
                 if (currByte.length > 1) {
@@ -22,11 +22,26 @@ var TSOS;
                     currByte = "";
                 }
             }
+            this.setPartition(partition, true);
+            TSOS.Control.updateMemoryTable();
             return true;
         };
         MemoryManager.prototype.clearAllMem = function () {
             this.mainMemory.clear(0);
+            for (var i = 1; i < MEMORY_PARTITIONS + 1; i++) {
+                this.partitions[i] = false;
+            }
             TSOS.Control.updateMemoryTable();
+        };
+        MemoryManager.prototype.clearPartition = function (partition) {
+            if (!this.partitionIsValid(partition)) {
+                console.log("Invalid memory partition: " + partition);
+            }
+            else {
+                this.mainMemory.clear(partition);
+                this.setPartition(partition, false);
+                TSOS.Control.updateMemoryTable();
+            }
         };
         MemoryManager.prototype.partitionIsValid = function (partition) {
             if (partition < 1 || partition > MEMORY_PARTITIONS) {
@@ -36,18 +51,22 @@ var TSOS;
         };
         MemoryManager.prototype.partitionIsAvailable = function (partition) {
             if (this.partitionIsValid(partition)) {
-                return this.partitions[partition];
+                return !this.partitions[partition];
             }
             return false;
         };
-        MemoryManager.prototype.clearPartition = function (partition) {
-            if (!this.partitionIsValid(partition)) {
-                console.log("Invalid memory partition: " + partition);
+        MemoryManager.prototype.setPartition = function (partition, isUsed) {
+            if (this.partitionIsValid(partition)) {
+                this.partitions[partition] = isUsed;
             }
-            else {
-                this.mainMemory.clear(partition);
-                TSOS.Control.updateMemoryTable();
+        };
+        MemoryManager.prototype.getNextFreePartition = function () {
+            for (var i = 1; i < MEMORY_PARTITIONS + 1; i++) {
+                if (this.partitionIsAvailable(i)) {
+                    return i;
+                }
             }
+            return -1;
         };
         MemoryManager.prototype.getByteFromAddr = function (address) {
             if (address >= this.mainMemory.mainMem.length || address < 0) {
