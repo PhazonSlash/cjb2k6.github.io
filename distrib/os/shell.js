@@ -139,7 +139,11 @@ var TSOS;
             }
         };
         Shell.prototype.shellTest = function (args) {
-            console.log(_MemoryManager.printMemory());
+            var q = new TSOS.Queue();
+            q.enqueue("hi");
+            q.enqueue("bye");
+            console.log(q.dequeue());
+            console.log(q.dequeue());
         };
         Shell.prototype.shellVer = function (args) {
             _StdOut.putText(APP_NAME + " version " + APP_VERSION);

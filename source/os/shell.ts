@@ -273,7 +273,11 @@ module TSOS {
         }
 
         public shellTest(args:string[]) {
-            console.log(_MemoryManager.printMemory());
+            var q = new Queue<string>();
+            q.enqueue("hi");
+            q.enqueue("bye");
+            console.log(q.dequeue());
+            console.log(q.dequeue());
         }
 
         public shellVer(args:string[]) {

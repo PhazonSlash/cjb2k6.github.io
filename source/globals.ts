@@ -37,8 +37,10 @@ var _Mode: number = 0;     // (currently unused)  0 = Kernel Mode, 1 = User Mode
 
 var _MemoryManager: TSOS.MemoryManager;
 
-//Temporary spot for PCB until the Ready Queue is implemented
-var _CurrentPCB: TSOS.Pcb;
+var _CurrentPCB: TSOS.Pcb;  //The currently executing process's PCB
+var _ReadyQueue: TSOS.Queue<TSOS.Pcb>;
+
+var _TimeQuantum: number = 6;  //Measured in clock cycles
 
 var _Canvas: HTMLCanvasElement;         // Initialized in Control.hostInit().
 var _DrawingContext: any; // = _Canvas.getContext("2d");  // Assigned here for type safety, but re-initialized in Control.hostInit() for OCD and logic.

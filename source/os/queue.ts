@@ -9,32 +9,32 @@
    ------------ */
 
 module TSOS {
-    export class Queue {
-        constructor(public q = new Array()) {
+    export class Queue <T>{
+        constructor(public q = new Array<T>()) {
         }
 
-        public getSize() {
+        public getSize(): number {
             return this.q.length;
         }
 
-        public isEmpty(){
+        public isEmpty(): boolean{
             return (this.q.length == 0);
         }
 
-        public enqueue(element) {
+        public enqueue(element: T): void {
             this.q.push(element);
         }
 
-        public dequeue() {
-            var retVal = null;
+        public dequeue(): T {
+            var retVal: T = null;
             if (this.q.length > 0) {
                 retVal = this.q.shift();
             }
             return retVal;
         }
 
-        public toString() {
-            var retVal = "";
+        public toString(): string {
+            var retVal:string = "";
             for (var i in this.q) {
                 retVal += "[" + this.q[i] + "] ";
             }
