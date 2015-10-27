@@ -23,7 +23,9 @@ module TSOS {
                     public x: number = 0,
                     public y: number = 0,
                     public z: number = 0,
-                    public partition: number = 0) {
+                    public partition: number = 0,
+                    public base: number = 0,
+                    public limit: number = 0) {
           this.init();
         }
 
@@ -33,6 +35,9 @@ module TSOS {
         }
         public setPartition(partition: number): void{
           this.partition = partition;
+          this.base = (partition - 1) * MEMORY_SIZE;
+          this.limit = (partition * MEMORY_SIZE) - 1;
+          console.log("Partition: " + this.partition + " Base: " + this.base + " Limit: " + this.limit);
         }
 
         public incrementPC(): void{
@@ -44,7 +49,7 @@ module TSOS {
             _CPU.PC = 0;
           }
         }
-        
+
         public updatePcb(): void{
           this.programCounter = _CPU.PC;
           this.accumulator = _CPU.Acc;

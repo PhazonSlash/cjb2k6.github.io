@@ -18,7 +18,7 @@ module TSOS {
         public init(): void {
             //Fill the array with empty bytes
             for(var i: number = 0; i < TOTAL_MEMORY_SIZE; i++){
-            this.mainMem[i] = new Byte();
+              this.mainMem[i] = new Byte();
             }
         }
         //Clears memory
