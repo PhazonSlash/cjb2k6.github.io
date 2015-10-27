@@ -273,11 +273,11 @@ module TSOS {
         }
 
         public shellTest(args:string[]) {
-            var q = new Queue<string>();
-            q.enqueue("hi");
-            q.enqueue("bye");
-            console.log(q.dequeue());
-            console.log(q.dequeue());
+            var pcb: Pcb;
+            while((pcb =_ResidentList.pop()) !== undefined){
+              console.log(pcb.processID);
+              _MemoryManager.setPartition(pcb.partition, false);
+            }
         }
 
         public shellVer(args:string[]) {
@@ -325,9 +325,11 @@ module TSOS {
                       _MemoryManager.loadProgram(prgm, partition);
                       //Creates a new PCB for the process. Stores it in temp variable
                       //that will be replaced with the Ready Queue in the future
-                      _CurrentPCB = new Pcb();
-                      _CurrentPCB.setPartition(partition);
-                      _StdOut.putText("Program loaded. PID: " + _CurrentPCB.processID);
+                      var pcb: Pcb = new Pcb();
+                      pcb.setPartition(partition);
+                      _ResidentList.push(pcb);
+
+                      _StdOut.putText("Program loaded. PID: " + pcb.processID);
                       //console.log(_MemoryManager.printMemory());
                     }
                   }

@@ -139,11 +139,11 @@ var TSOS;
             }
         };
         Shell.prototype.shellTest = function (args) {
-            var q = new TSOS.Queue();
-            q.enqueue("hi");
-            q.enqueue("bye");
-            console.log(q.dequeue());
-            console.log(q.dequeue());
+            var pcb;
+            while ((pcb = _ResidentList.pop()) !== undefined) {
+                console.log(pcb.processID);
+                _MemoryManager.setPartition(pcb.partition, false);
+            }
         };
         Shell.prototype.shellVer = function (args) {
             _StdOut.putText(APP_NAME + " version " + APP_VERSION);
@@ -187,9 +187,10 @@ var TSOS;
                         }
                         else {
                             _MemoryManager.loadProgram(prgm, partition);
-                            _CurrentPCB = new TSOS.Pcb();
-                            _CurrentPCB.setPartition(partition);
-                            _StdOut.putText("Program loaded. PID: " + _CurrentPCB.processID);
+                            var pcb = new TSOS.Pcb();
+                            pcb.setPartition(partition);
+                            _ResidentList.push(pcb);
+                            _StdOut.putText("Program loaded. PID: " + pcb.processID);
                         }
                     }
                 }

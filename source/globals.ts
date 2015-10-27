@@ -38,7 +38,8 @@ var _Mode: number = 0;     // (currently unused)  0 = Kernel Mode, 1 = User Mode
 var _MemoryManager: TSOS.MemoryManager;
 
 var _CurrentPCB: TSOS.Pcb;  //The currently executing process's PCB
-var _ReadyQueue: TSOS.Queue<TSOS.Pcb>;
+var _ReadyQueue: TSOS.Queue<TSOS.Pcb>;  //Queue of processes waiting to execute
+var _ResidentList: TSOS.Pcb[];  //List of processes currently occupying memory
 
 var _TimeQuantum: number = 6;  //Measured in clock cycles
 

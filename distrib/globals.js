@@ -12,6 +12,7 @@ var _Mode = 0;
 var _MemoryManager;
 var _CurrentPCB;
 var _ReadyQueue;
+var _ResidentList;
 var _TimeQuantum = 6;
 var _Canvas;
 var _DrawingContext;
