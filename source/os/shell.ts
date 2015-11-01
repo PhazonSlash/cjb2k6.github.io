@@ -273,10 +273,10 @@ module TSOS {
         }
 
         public shellTest(args:string[]) {
+            _ResidentList.fillReadyQueue();
             var pcb: Pcb;
-            while((pcb =_ResidentList.pop()) !== undefined){
-              console.log(pcb.processID);
-              _MemoryManager.setPartition(pcb.partition, false);
+            while((pcb = _ReadyQueue.dequeue()) != undefined){
+              console.log("Dequeued: " + pcb.processID);
             }
         }
 
@@ -327,7 +327,7 @@ module TSOS {
                       //that will be replaced with the Ready Queue in the future
                       var pcb: Pcb = new Pcb();
                       pcb.setPartition(partition);
-                      _ResidentList.push(pcb);
+                      _ResidentList.add(pcb);
 
                       _StdOut.putText("Program loaded. PID: " + pcb.processID);
                       //console.log(_MemoryManager.printMemory());

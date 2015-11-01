@@ -39,7 +39,7 @@ var _MemoryManager: TSOS.MemoryManager;
 
 var _CurrentPCB: TSOS.Pcb;  //The currently executing process's PCB
 var _ReadyQueue: TSOS.Queue<TSOS.Pcb>;  //Queue of processes waiting to execute
-var _ResidentList: TSOS.Pcb[];  //List of processes currently occupying memory
+var _ResidentList: TSOS.ResidentList;  //List of processes currently occupying memory
 
 var _TimeQuantum: number = 6;  //Measured in clock cycles
 

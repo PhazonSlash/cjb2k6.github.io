@@ -33,7 +33,7 @@ var TSOS;
             _CPU.init();
             _MemoryManager = new TSOS.MemoryManager();
             _ReadyQueue = new TSOS.Queue();
-            _ResidentList = [];
+            _ResidentList = new TSOS.ResidentList();
             _hardwareClockID = setInterval(TSOS.Devices.hostClockPulse, CPU_CLOCK_INTERVAL);
             _Kernel = new TSOS.Kernel();
             _Kernel.krnBootstrap();

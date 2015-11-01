@@ -139,10 +139,10 @@ var TSOS;
             }
         };
         Shell.prototype.shellTest = function (args) {
+            _ResidentList.fillReadyQueue();
             var pcb;
-            while ((pcb = _ResidentList.pop()) !== undefined) {
-                console.log(pcb.processID);
-                _MemoryManager.setPartition(pcb.partition, false);
+            while ((pcb = _ReadyQueue.dequeue()) != undefined) {
+                console.log("Dequeued: " + pcb.processID);
             }
         };
         Shell.prototype.shellVer = function (args) {
@@ -189,7 +189,7 @@ var TSOS;
                             _MemoryManager.loadProgram(prgm, partition);
                             var pcb = new TSOS.Pcb();
                             pcb.setPartition(partition);
-                            _ResidentList.push(pcb);
+                            _ResidentList.add(pcb);
                             _StdOut.putText("Program loaded. PID: " + pcb.processID);
                         }
                     }
