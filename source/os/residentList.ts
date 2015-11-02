@@ -38,6 +38,15 @@ module TSOS {
           return false;
         }
 
+        public getPcb(processID: number): Pcb {
+          for(var i: number = 0; i < this.size; i++){
+            if(processID === this.list[i].processID){
+              return this.list[i];
+            }
+          }
+          return null;
+        }
+
         public fillReadyQueue(): void{
           for(var i: number = 0; i < this.size; i++){
             _ReadyQueue.enqueue(this.list[i]);

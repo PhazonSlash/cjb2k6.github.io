@@ -96,6 +96,8 @@ module TSOS {
                       this.endOfProgram();
                       pcb.updatePcb();
                       _MemoryManager.clearPartition(pcb.partition);
+                      _MemoryManager.setPartition(pcb.partition, false);
+                      _ResidentList.remove(pcb);
                       Control.updatePcbTable(pcb);
                       console.log("00 - End of Program");
                       return true;
@@ -250,7 +252,7 @@ module TSOS {
         public setCPU(pcb: Pcb): void {
           this.PC = pcb.programCounter;
           this.Acc = pcb.accumulator;
-          this.IR = _MemoryManager.getByteFromAddr(_CurrentPCB.programCounter);
+          this.IR = _MemoryManager.getByteFromAddr(pcb.programCounter);
           this.Xreg = pcb.x;
           this.Yreg = pcb.y;
           this.Zflag = pcb.z;

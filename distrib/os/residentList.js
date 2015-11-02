@@ -24,6 +24,14 @@ var TSOS;
             }
             return false;
         };
+        ResidentList.prototype.getPcb = function (processID) {
+            for (var i = 0; i < this.size; i++) {
+                if (processID === this.list[i].processID) {
+                    return this.list[i];
+                }
+            }
+            return null;
+        };
         ResidentList.prototype.fillReadyQueue = function () {
             for (var i = 0; i < this.size; i++) {
                 _ReadyQueue.enqueue(this.list[i]);

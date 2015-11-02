@@ -276,8 +276,11 @@ module TSOS {
             _ResidentList.fillReadyQueue();
             var pcb: Pcb;
             while((pcb = _ReadyQueue.dequeue()) != undefined){
-              console.log("Dequeued: " + pcb.processID);
+              _ResidentList.remove(pcb);
+              _MemoryManager.setPartition(pcb.partition, false);
+              console.log("Removed: " + pcb.processID);
             }
+            console.log(_ResidentList.printList());
         }
 
         public shellVer(args:string[]) {
@@ -343,8 +346,11 @@ module TSOS {
         public shellRun(args:string[]) {
             if(args.length > 0){
               if(args[0].match(/[0-9]+/g)){
-                if(parseInt(args[0]) === _CurrentPCB.processID){
-                  _CPU.setCPU(_CurrentPCB);
+                var pcb: Pcb = _ResidentList.getPcb(parseInt(args[0]));
+                console.log("The procID: " + pcb.processID);
+                if(pcb !== null && pcb !== undefined){
+                  _CPU.setCPU(pcb);
+                  _CurrentPCB = pcb;
                   _CPU.isExecuting = true;
                 } else {
                   _StdOut.putText("Error: PID " + args[0] + " does not exist currently.");

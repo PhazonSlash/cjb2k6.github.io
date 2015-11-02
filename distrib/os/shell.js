@@ -142,8 +142,11 @@ var TSOS;
             _ResidentList.fillReadyQueue();
             var pcb;
             while ((pcb = _ReadyQueue.dequeue()) != undefined) {
-                console.log("Dequeued: " + pcb.processID);
+                _ResidentList.remove(pcb);
+                _MemoryManager.setPartition(pcb.partition, false);
+                console.log("Removed: " + pcb.processID);
             }
+            console.log(_ResidentList.printList());
         };
         Shell.prototype.shellVer = function (args) {
             _StdOut.putText(APP_NAME + " version " + APP_VERSION);
@@ -202,8 +205,11 @@ var TSOS;
         Shell.prototype.shellRun = function (args) {
             if (args.length > 0) {
                 if (args[0].match(/[0-9]+/g)) {
-                    if (parseInt(args[0]) === _CurrentPCB.processID) {
-                        _CPU.setCPU(_CurrentPCB);
+                    var pcb = _ResidentList.getPcb(parseInt(args[0]));
+                    console.log("The procID: " + pcb.processID);
+                    if (pcb !== null && pcb !== undefined) {
+                        _CPU.setCPU(pcb);
+                        _CurrentPCB = pcb;
                         _CPU.isExecuting = true;
                     }
                     else {
