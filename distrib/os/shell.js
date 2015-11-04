@@ -27,7 +27,9 @@ var TSOS;
             this.commandList[this.commandList.length] = sc;
             sc = new TSOS.ShellCommand(this.shellRun, "run", "- Runs process of given Process ID (PID).");
             this.commandList[this.commandList.length] = sc;
-            sc = new TSOS.ShellCommand(this.shellRunAll, "runall", "- Runs process of given Process ID (PID).");
+            sc = new TSOS.ShellCommand(this.shellRunAll, "runall", "- Runs all loaded processes.");
+            this.commandList[this.commandList.length] = sc;
+            sc = new TSOS.ShellCommand(this.shellQuantum, "quantum", "- Sets the time quantum for round robin scheduling.");
             this.commandList[this.commandList.length] = sc;
             sc = new TSOS.ShellCommand(this.shellClearMem, "clearmem", "- Clears all partitions of memory.");
             this.commandList[this.commandList.length] = sc;
@@ -233,6 +235,26 @@ var TSOS;
                 _ResidentList.fillReadyQueue();
                 _CpuScheduler.init();
                 _CPU.isExecuting = true;
+            }
+        };
+        Shell.prototype.shellQuantum = function (args) {
+            if (args.length > 0) {
+                if (args[0].match(/[0-9]+/g)) {
+                    var quant = parseInt(args[0]);
+                    if (quant < 0) {
+                        _StdOut.putText("Error: You can't have negative time.");
+                    }
+                    else {
+                        _TimeQuantum = quant;
+                        _StdOut.putText("Time quantum is now " + quant + ".");
+                    }
+                }
+                else {
+                    _StdOut.putText("Error: Please enter a positive numeric quantum.");
+                }
+            }
+            else {
+                _StdOut.putText("Error: Please enter a positive number.");
             }
         };
         Shell.prototype.shellClearMem = function (args) {

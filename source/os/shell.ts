@@ -82,7 +82,13 @@ module TSOS {
             // runall
             sc = new ShellCommand(this.shellRunAll,
                 "runall",
-                "- Runs process of given Process ID (PID).");
+                "- Runs all loaded processes.");
+            this.commandList[this.commandList.length] = sc;
+
+            // quantum
+            sc = new ShellCommand(this.shellQuantum,
+                "quantum",
+                "- Sets the time quantum for round robin scheduling.");
             this.commandList[this.commandList.length] = sc;
 
             // clearmem
@@ -378,6 +384,25 @@ module TSOS {
             _CPU.isExecuting = true;
           }
         }
+
+          public shellQuantum(args:string[]) {
+            if (args.length > 0){
+              if(args[0].match(/[0-9]+/g)){
+                var quant: number = parseInt(args[0]);
+                if(quant < 0){
+                    _StdOut.putText("Error: You can't have negative time.");
+                  } else {
+                    _TimeQuantum = quant;
+                    _StdOut.putText("Time quantum is now " + quant + ".");
+                  }
+
+                }  else {
+                _StdOut.putText("Error: Please enter a positive numeric quantum.");
+              }
+            } else {
+              _StdOut.putText("Error: Please enter a positive number.");
+            }
+          }
 
         public shellClearMem(args:string[]) {
           _MemoryManager.clearAllMem();
