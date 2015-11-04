@@ -15,7 +15,7 @@ module TSOS {
         //Used to keep track and assign new process IDs
         public static currentProcessNum: number = 0;
 
-        constructor(public processState: number = 0,
+        constructor(public processState: number = NEW,
                     public processID: number = 0,
                     public programCounter: number = 0,
                     public accumulator: number = 0,
@@ -37,6 +37,7 @@ module TSOS {
           this.partition = partition;
           this.base = (partition - 1) * MEMORY_SIZE;
           this.limit = (partition * MEMORY_SIZE) - 1;
+          this.programCounter = this.base;
           console.log("Partition: " + this.partition + " Base: " + this.base + " Limit: " + this.limit);
         }
 
@@ -44,7 +45,7 @@ module TSOS {
           this.programCounter++;
           _CPU.PC++;
           //If PC excedes memory size, wrap-around to start of memory
-          if(this.programCounter > MEMORY_SIZE - 1){
+          if(this.programCounter > this.limit){
             this.programCounter = 0;
             _CPU.PC = 0;
           }

@@ -99,6 +99,7 @@ module TSOS {
             _MemoryManager = new MemoryManager();
             _ReadyQueue = new Queue<Pcb>();
             _ResidentList = new ResidentList();
+            _CpuScheduler = new CpuScheduler();
 
             // ... then set the host clock pulse ...
             _hardwareClockID = setInterval(Devices.hostClockPulse, CPU_CLOCK_INTERVAL);

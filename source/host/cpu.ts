@@ -45,7 +45,7 @@ module TSOS {
             Control.updateMemoryTable();
             Control.updateCpuTable();
             //Fetch/Decode/Execute
-            this.IR = _MemoryManager.getByteFromAddr(_CurrentPCB.programCounter);
+            this.IR = _MemoryManager.getByteFromAddr(_CurrentPCB.programCounter, _CurrentPCB);
             Control.updateMemoryTable();
             Control.updateCpuTable();
             this.executeCode(_CurrentPCB);
@@ -57,7 +57,7 @@ module TSOS {
           //Decode the code
           switch(this.IR.getHex().toUpperCase()){
             case "A9":
-                      this.loadAccConst(_MemoryManager.getByteFromAddr(pcb.programCounter));
+                      this.loadAccConst(_MemoryManager.getByteFromAddr(pcb.programCounter, pcb));
                       console.log("A9 - Accumlator: " + this.Acc);
                       break;
             case "AD":
@@ -73,7 +73,7 @@ module TSOS {
                       console.log("6D - Added. Accumlator: " + this.Acc);
                       break;
             case "A2":
-                      this.loadXConst(_MemoryManager.getByteFromAddr(pcb.programCounter));
+                      this.loadXConst(_MemoryManager.getByteFromAddr(pcb.programCounter, pcb));
                       console.log("A2 - X Register: " + this.Xreg);
                       break;
             case "AE":
@@ -81,7 +81,7 @@ module TSOS {
                       console.log("AE - X Register: " + this.Xreg);
                       break;
             case "A0":
-                      this.loadYConst(_MemoryManager.getByteFromAddr(pcb.programCounter));
+                      this.loadYConst(_MemoryManager.getByteFromAddr(pcb.programCounter, pcb));
                       console.log("A2 - Y Register: " + this.Yreg);
                       break;
             case "AC":
@@ -94,6 +94,7 @@ module TSOS {
                       break; //This line will never right run and is stupid, just like EA the company
             case "00":
                       this.endOfProgram();
+                      pcb.processState = TERMINATED;
                       pcb.updatePcb();
                       _MemoryManager.clearPartition(pcb.partition);
                       _MemoryManager.setPartition(pcb.partition, false);
@@ -107,7 +108,7 @@ module TSOS {
                       console.log("EC - Z Flag: " + this.Zflag);
                       break;
             case "D0":
-                      this.branchNotEqual(pcb, _MemoryManager.getByteFromAddr(pcb.programCounter).getDec());
+                      this.branchNotEqual(pcb, _MemoryManager.getByteFromAddr(pcb.programCounter, pcb).getDec());
                       console.log("D0 - PC: " + pcb.programCounter);
                       break;
             case "EE":
@@ -136,7 +137,7 @@ module TSOS {
 
         //AD - Load the accumulator from memory
         public loadAccMem(address: number): void {
-          this.Acc = _MemoryManager.getByteFromAddr(address).getDec();
+          this.Acc = _MemoryManager.getByteFromAddr(address, _CurrentPCB).getDec();
         }
 
         //8D - Store the accumulator in memory
@@ -148,12 +149,12 @@ module TSOS {
             str = "0" + str;
           }
           byte.setHex(str);
-          _MemoryManager.setByteAtAddr(byte, address);
+          _MemoryManager.setByteAtAddr(byte, address, _CurrentPCB);
         }
         //6D - Add the contents of an address to the contents of the accumulator
         //     and keep the result in the accumulator
         public addWithCarry(address: number): void{
-          this.Acc = this.Acc + _MemoryManager.getByteFromAddr(address).getDec();
+          this.Acc = this.Acc + _MemoryManager.getByteFromAddr(address, _CurrentPCB).getDec();
         }
         //A2 - Load the X register with a constant
         public loadXConst(constant: Byte): void{
@@ -161,7 +162,7 @@ module TSOS {
         }
         //AE - Load the X register with a constant
         public loadXMem(address: number): void{
-          this.Xreg = _MemoryManager.getByteFromAddr(address).getDec();
+          this.Xreg = _MemoryManager.getByteFromAddr(address, _CurrentPCB).getDec();
         }
         //A0 - Load the Y register with a constant
         public loadYConst(constant: Byte): void{
@@ -169,7 +170,7 @@ module TSOS {
         }
         //AC - Load the Y register with a constant
         public loadYMem(address: number): void{
-          this.Yreg = _MemoryManager.getByteFromAddr(address).getDec();
+          this.Yreg = _MemoryManager.getByteFromAddr(address, _CurrentPCB).getDec();
         }
         //EA - No Operation - almost as stupid as the game publishing company EA
         public noOperation(): void{
@@ -177,14 +178,14 @@ module TSOS {
         }
         //00 - Break
         public endOfProgram(): void {
-          this.isExecuting = false;
+          //this.isExecuting = false;
           if(_SingleStepMode){
             Control.hostBtnSSToggle_click();
           }
         }
         //EC - Compare a byte in memory to the X reg, Sets the Z (zero) flag if equal
         public compareZ(address: number): void {
-          if(_MemoryManager.getByteFromAddr(address).getDec() === this.Xreg){
+          if(_MemoryManager.getByteFromAddr(address, _CurrentPCB).getDec() === this.Xreg){
             this.Zflag = 1;
           } else {
             this.Zflag = 0;
@@ -201,7 +202,7 @@ module TSOS {
         //EE - Increment the value of a byte
         public incrementByte(address: number): void {
           //Get the value
-          var value: number = _MemoryManager.getByteFromAddr(address).getDec();
+          var value: number = _MemoryManager.getByteFromAddr(address, _CurrentPCB).getDec();
           value++; //Increment it
           var newValue: string = value.toString(16); //Convert it to hex
           if(newValue.length < 2){
@@ -210,7 +211,7 @@ module TSOS {
           newValue = newValue.toUpperCase(); //Make it uppercase to make it pretty
           var byte: Byte = new Byte();
           byte.setHex(newValue); //Shove it in a new byte
-          _MemoryManager.setByteAtAddr(byte, address); //Shove that new byte into the same address
+          _MemoryManager.setByteAtAddr(byte, address, _CurrentPCB); //Shove that new byte into the same address
         }
         //FF - System call to print
         public systemCall(): void {
@@ -221,12 +222,12 @@ module TSOS {
           } else if(this.Xreg === 2){
             //Print the 00 terminated string in memory
             var address: number = this.Yreg;
-            var value: number = _MemoryManager.getByteFromAddr(address).getDec();
+            var value: number = _MemoryManager.getByteFromAddr(address, _CurrentPCB).getDec();
             var str: string = "";
             while(value !== 0){
               str += String.fromCharCode(value);
               address++;
-              value = _MemoryManager.getByteFromAddr(address).getDec();
+              value = _MemoryManager.getByteFromAddr(address, _CurrentPCB).getDec();
             }
             _StdOut.putText(str);
           }
@@ -238,11 +239,11 @@ module TSOS {
           var address: number = 0;
           var bytes: string = "";
           //Get the first byte, which will be the last part of the final address
-          bytes = _MemoryManager.getByteFromAddr(pcb.programCounter).getHex();
+          bytes = _MemoryManager.getByteFromAddr(pcb.programCounter, pcb).getHex();
           //Get the second byte
           pcb.incrementPC();
           //Tack on the first byte to the end and store the final address
-          bytes = _MemoryManager.getByteFromAddr(pcb.programCounter).getHex() + bytes;
+          bytes = _MemoryManager.getByteFromAddr(pcb.programCounter, pcb).getHex() + bytes;
           //Make it a decimal number
           address = parseInt(bytes, 16);
           console.log("LE Address: " + address);
@@ -252,7 +253,7 @@ module TSOS {
         public setCPU(pcb: Pcb): void {
           this.PC = pcb.programCounter;
           this.Acc = pcb.accumulator;
-          this.IR = _MemoryManager.getByteFromAddr(pcb.programCounter);
+          this.IR = _MemoryManager.getByteFromAddr(pcb.programCounter, pcb);
           this.Xreg = pcb.x;
           this.Yreg = pcb.y;
           this.Zflag = pcb.z;

@@ -24,6 +24,13 @@ const MEMORY_SIZE: number = 256;
 const MEMORY_PARTITIONS: number = 3;
 const TOTAL_MEMORY_SIZE: number = MEMORY_PARTITIONS * MEMORY_SIZE;
 
+//Process States
+const NEW: number = 0;
+const RUNNING: number = 1;
+const WAITING: number = 2;
+const READY: number = 3;
+const TERMINATED: number = 4;
+
 
 //
 // Global Variables
@@ -37,9 +44,10 @@ var _Mode: number = 0;     // (currently unused)  0 = Kernel Mode, 1 = User Mode
 
 var _MemoryManager: TSOS.MemoryManager;
 
-var _CurrentPCB: TSOS.Pcb;  //The currently executing process's PCB
+var _CurrentPCB: TSOS.Pcb = null;  //The currently executing process's PCB
 var _ReadyQueue: TSOS.Queue<TSOS.Pcb>;  //Queue of processes waiting to execute
 var _ResidentList: TSOS.ResidentList;  //List of processes currently occupying memory
+var _CpuScheduler: TSOS.CpuScheduler;
 
 var _TimeQuantum: number = 6;  //Measured in clock cycles
 

@@ -18,7 +18,7 @@ var TSOS;
                 }
             }
             else {
-                var startAddress = partition * MEMORY_SIZE;
+                var startAddress = (partition - 1) * MEMORY_SIZE;
                 var endAddress = startAddress + MEMORY_SIZE;
                 for (var i = startAddress; i < endAddress; i++) {
                     this.mainMem[i].reset();

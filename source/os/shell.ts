@@ -347,10 +347,10 @@ module TSOS {
             if(args.length > 0){
               if(args[0].match(/[0-9]+/g)){
                 var pcb: Pcb = _ResidentList.getPcb(parseInt(args[0]));
-                console.log("The procID: " + pcb.processID);
+                //console.log("The procID: " + pcb.processID);
                 if(pcb !== null && pcb !== undefined){
-                  _CPU.setCPU(pcb);
-                  _CurrentPCB = pcb;
+                  _ReadyQueue.enqueue(pcb);
+                  _CpuScheduler.init();
                   _CPU.isExecuting = true;
                 } else {
                   _StdOut.putText("Error: PID " + args[0] + " does not exist currently.");

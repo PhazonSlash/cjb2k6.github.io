@@ -37,7 +37,7 @@ var TSOS;
                 this.krnInterruptHandler(interrupt.irq, interrupt.params);
             }
             else if (_CPU.isExecuting && !_SingleStepMode) {
-                _CPU.cycle();
+                _CpuScheduler.schedule();
             }
             else {
                 this.krnTrace("Idle");

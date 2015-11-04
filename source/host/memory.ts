@@ -28,7 +28,7 @@ module TSOS {
               this.mainMem[i].reset();
             }
           } else {
-            var startAddress: number = partition * MEMORY_SIZE;
+            var startAddress: number = (partition - 1) * MEMORY_SIZE;
             var endAddress: number = startAddress + MEMORY_SIZE;
             for(var i: number = startAddress; i < endAddress; i++){
               this.mainMem[i].reset();

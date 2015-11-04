@@ -68,16 +68,22 @@ var TSOS;
             }
             return -1;
         };
-        MemoryManager.prototype.getByteFromAddr = function (address) {
-            if (address >= this.mainMemory.mainMem.length || address < 0) {
+        MemoryManager.prototype.getByteFromAddr = function (address, pcb) {
+            var base = 0;
+            var limit = TOTAL_MEMORY_SIZE;
+            if (pcb !== undefined) {
+                base = pcb.base;
+                limit = pcb.limit;
+            }
+            if (address >= limit || address < base) {
                 _Kernel.krnTrapError("MEMORY ACCESS VIOLATION");
             }
             else {
                 return this.mainMemory.mainMem[address];
             }
         };
-        MemoryManager.prototype.setByteAtAddr = function (byte, address) {
-            if (address >= this.mainMemory.mainMem.length || address < 0) {
+        MemoryManager.prototype.setByteAtAddr = function (byte, address, pcb) {
+            if (address >= pcb.limit || address < pcb.base) {
                 _Kernel.krnTrapError("MEMORY ACCESS VIOLATION");
             }
             else {

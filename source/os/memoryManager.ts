@@ -85,8 +85,14 @@ module TSOS {
         return -1;
       }
 
-      public getByteFromAddr(address: number): Byte {
-        if(address >= this.mainMemory.mainMem.length || address < 0){
+      public getByteFromAddr(address: number, pcb?: Pcb): Byte {
+        var base: number = 0;
+        var limit: number = TOTAL_MEMORY_SIZE;
+        if(pcb !== undefined){
+          base = pcb.base;
+          limit = pcb.limit;
+        }
+        if(address >= limit || address < base){
           _Kernel.krnTrapError("MEMORY ACCESS VIOLATION");
         } else {
         return this.mainMemory.mainMem[address];
@@ -94,8 +100,8 @@ module TSOS {
 
       }
 
-      public setByteAtAddr(byte: Byte, address: number): boolean {
-        if(address >= this.mainMemory.mainMem.length || address < 0){
+      public setByteAtAddr(byte: Byte, address: number, pcb: Pcb): boolean {
+        if(address >= pcb.limit || address < pcb.base){
           _Kernel.krnTrapError("MEMORY ACCESS VIOLATION");
         } else {
           this.mainMemory.mainMem[address] = byte;
