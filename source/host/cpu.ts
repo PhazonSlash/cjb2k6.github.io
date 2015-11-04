@@ -93,13 +93,7 @@ module TSOS {
                       return true; //Returning here so we don't increment PC again
                       break; //This line will never right run and is stupid, just like EA the company
             case "00":
-                      this.endOfProgram();
-                      pcb.processState = TERMINATED;
-                      pcb.updatePcb();
-                      _MemoryManager.clearPartition(pcb.partition);
-                      _MemoryManager.setPartition(pcb.partition, false);
-                      _ResidentList.remove(pcb);
-                      Control.updatePcbTable(pcb);
+                      this.endOfProgram(pcb);
                       console.log("00 - End of Program");
                       return true;
                       break; //This again
@@ -137,6 +131,7 @@ module TSOS {
 
         //AD - Load the accumulator from memory
         public loadAccMem(address: number): void {
+          address += _CurrentPCB.base;
           this.Acc = _MemoryManager.getByteFromAddr(address, _CurrentPCB).getDec();
         }
 
@@ -144,6 +139,7 @@ module TSOS {
         public storeAccMem(address: number): void {
           var byte: Byte = new Byte();
           var str: string = "";
+          address += _CurrentPCB.base;
           str = this.Acc.toString(16);
           if(str.length < 2){
             str = "0" + str;
@@ -154,6 +150,7 @@ module TSOS {
         //6D - Add the contents of an address to the contents of the accumulator
         //     and keep the result in the accumulator
         public addWithCarry(address: number): void{
+          address += _CurrentPCB.base;
           this.Acc = this.Acc + _MemoryManager.getByteFromAddr(address, _CurrentPCB).getDec();
         }
         //A2 - Load the X register with a constant
@@ -162,6 +159,7 @@ module TSOS {
         }
         //AE - Load the X register with a constant
         public loadXMem(address: number): void{
+          address += _CurrentPCB.base;
           this.Xreg = _MemoryManager.getByteFromAddr(address, _CurrentPCB).getDec();
         }
         //A0 - Load the Y register with a constant
@@ -170,6 +168,7 @@ module TSOS {
         }
         //AC - Load the Y register with a constant
         public loadYMem(address: number): void{
+          address += _CurrentPCB.base;
           this.Yreg = _MemoryManager.getByteFromAddr(address, _CurrentPCB).getDec();
         }
         //EA - No Operation - almost as stupid as the game publishing company EA
@@ -177,14 +176,17 @@ module TSOS {
           console.log("EA sucks balls.");
         }
         //00 - Break
-        public endOfProgram(): void {
-          //this.isExecuting = false;
-          if(_SingleStepMode){
-            Control.hostBtnSSToggle_click();
-          }
+        public endOfProgram(pcb: Pcb): void {
+          pcb.processState = TERMINATED;
+          pcb.updatePcb();
+          _MemoryManager.clearPartition(pcb.partition);
+          _MemoryManager.setPartition(pcb.partition, false);
+          _ResidentList.remove(pcb);
+          Control.updatePcbTable(pcb);
         }
         //EC - Compare a byte in memory to the X reg, Sets the Z (zero) flag if equal
         public compareZ(address: number): void {
+          address += _CurrentPCB.base;
           if(_MemoryManager.getByteFromAddr(address, _CurrentPCB).getDec() === this.Xreg){
             this.Zflag = 1;
           } else {
@@ -201,6 +203,7 @@ module TSOS {
         }
         //EE - Increment the value of a byte
         public incrementByte(address: number): void {
+          address += _CurrentPCB.base;
           //Get the value
           var value: number = _MemoryManager.getByteFromAddr(address, _CurrentPCB).getDec();
           value++; //Increment it
@@ -222,6 +225,7 @@ module TSOS {
           } else if(this.Xreg === 2){
             //Print the 00 terminated string in memory
             var address: number = this.Yreg;
+            address += _CurrentPCB.base;
             var value: number = _MemoryManager.getByteFromAddr(address, _CurrentPCB).getDec();
             var str: string = "";
             while(value !== 0){

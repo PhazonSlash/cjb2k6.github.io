@@ -142,7 +142,7 @@ module TSOS {
         }
 
         public static hostBtnStep_click(btn): void {
-          _CPU.cycle();
+          _CpuScheduler.schedule();
         }
 
         public static timeStatusUpdate(): void {

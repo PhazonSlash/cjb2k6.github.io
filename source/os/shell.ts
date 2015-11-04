@@ -79,7 +79,13 @@ module TSOS {
                 "- Runs process of given Process ID (PID).");
             this.commandList[this.commandList.length] = sc;
 
-            // run
+            // runall
+            sc = new ShellCommand(this.shellRunAll,
+                "runall",
+                "- Runs process of given Process ID (PID).");
+            this.commandList[this.commandList.length] = sc;
+
+            // clearmem
             sc = new ShellCommand(this.shellClearMem,
                 "clearmem",
                 "- Clears all partitions of memory.");
@@ -344,11 +350,11 @@ module TSOS {
         }
 
         public shellRun(args:string[]) {
-            if(args.length > 0){
+            if (args.length > 0){
               if(args[0].match(/[0-9]+/g)){
                 var pcb: Pcb = _ResidentList.getPcb(parseInt(args[0]));
                 //console.log("The procID: " + pcb.processID);
-                if(pcb !== null && pcb !== undefined){
+                if (pcb !== null && pcb !== undefined){
                   _ReadyQueue.enqueue(pcb);
                   _CpuScheduler.init();
                   _CPU.isExecuting = true;
@@ -361,6 +367,16 @@ module TSOS {
             } else {
               _StdOut.putText("Error: Please enter a PID.");
             }
+        }
+
+        public shellRunAll(args:string[]) {
+          if (_ResidentList.isEmpty()){
+            _StdOut.putText("Error: No programs loaded.");
+          } else {
+            _ResidentList.fillReadyQueue();
+            _CpuScheduler.init();
+            _CPU.isExecuting = true;
+          }
         }
 
         public shellClearMem(args:string[]) {

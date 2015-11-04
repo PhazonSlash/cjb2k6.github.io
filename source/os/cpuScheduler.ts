@@ -25,9 +25,13 @@ module TSOS {
           if(_CurrentPCB === null || _CurrentPCB.processState === TERMINATED){
             if(!_ReadyQueue.isEmpty()){
               _CurrentPCB = _ReadyQueue.dequeue();
+              _CPU.setCPU(_CurrentPCB);
             } else {
               console.log("There was nothing in the ready queue.");
               _CPU.isExecuting = false;
+              if(_SingleStepMode){
+                Control.hostBtnSSToggle_click();
+              }
             }
           }
           console.log("Clock Cycle: " + this.currCycle);
@@ -56,7 +60,6 @@ module TSOS {
             console.log("Switching to PCB: " + _CurrentPCB.processID);
           }else{
             console.log("End of Scheduling");
-            _CPU.isExecuting = false;
           }
 
 

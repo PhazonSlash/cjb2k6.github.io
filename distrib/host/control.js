@@ -64,7 +64,7 @@ var TSOS;
             }
         };
         Control.hostBtnStep_click = function (btn) {
-            _CPU.cycle();
+            _CpuScheduler.schedule();
         };
         Control.timeStatusUpdate = function () {
             var currentDate = new Date();

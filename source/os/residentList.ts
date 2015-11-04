@@ -47,6 +47,10 @@ module TSOS {
           return null;
         }
 
+        public isEmpty(): boolean{
+          return this.size === 0;
+        }
+
         public fillReadyQueue(): void{
           for(var i: number = 0; i < this.size; i++){
             _ReadyQueue.enqueue(this.list[i]);

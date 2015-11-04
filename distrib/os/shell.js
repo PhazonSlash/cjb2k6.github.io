@@ -27,6 +27,8 @@ var TSOS;
             this.commandList[this.commandList.length] = sc;
             sc = new TSOS.ShellCommand(this.shellRun, "run", "- Runs process of given Process ID (PID).");
             this.commandList[this.commandList.length] = sc;
+            sc = new TSOS.ShellCommand(this.shellRunAll, "runall", "- Runs process of given Process ID (PID).");
+            this.commandList[this.commandList.length] = sc;
             sc = new TSOS.ShellCommand(this.shellClearMem, "clearmem", "- Clears all partitions of memory.");
             this.commandList[this.commandList.length] = sc;
             sc = new TSOS.ShellCommand(this.shellChangeWeapon, "changeweapon", "- Switches to next beam weapon.");
@@ -221,6 +223,16 @@ var TSOS;
             }
             else {
                 _StdOut.putText("Error: Please enter a PID.");
+            }
+        };
+        Shell.prototype.shellRunAll = function (args) {
+            if (_ResidentList.isEmpty()) {
+                _StdOut.putText("Error: No programs loaded.");
+            }
+            else {
+                _ResidentList.fillReadyQueue();
+                _CpuScheduler.init();
+                _CPU.isExecuting = true;
             }
         };
         Shell.prototype.shellClearMem = function (args) {

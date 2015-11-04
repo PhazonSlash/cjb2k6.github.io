@@ -32,6 +32,9 @@ var TSOS;
             }
             return null;
         };
+        ResidentList.prototype.isEmpty = function () {
+            return this.size === 0;
+        };
         ResidentList.prototype.fillReadyQueue = function () {
             for (var i = 0; i < this.size; i++) {
                 _ReadyQueue.enqueue(this.list[i]);

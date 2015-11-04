@@ -46,8 +46,8 @@ module TSOS {
           _CPU.PC++;
           //If PC excedes memory size, wrap-around to start of memory
           if(this.programCounter > this.limit){
-            this.programCounter = 0;
-            _CPU.PC = 0;
+            this.programCounter = this.base;
+            _CPU.PC = this.base;
           }
         }
 

@@ -41,8 +41,8 @@ var TSOS;
             this.programCounter++;
             _CPU.PC++;
             if (this.programCounter > this.limit) {
-                this.programCounter = 0;
-                _CPU.PC = 0;
+                this.programCounter = this.base;
+                _CPU.PC = this.base;
             }
         };
         Pcb.prototype.updatePcb = function () {

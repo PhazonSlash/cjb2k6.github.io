@@ -75,13 +75,7 @@ var TSOS;
                     return true;
                     break;
                 case "00":
-                    this.endOfProgram();
-                    pcb.processState = TERMINATED;
-                    pcb.updatePcb();
-                    _MemoryManager.clearPartition(pcb.partition);
-                    _MemoryManager.setPartition(pcb.partition, false);
-                    _ResidentList.remove(pcb);
-                    TSOS.Control.updatePcbTable(pcb);
+                    this.endOfProgram(pcb);
                     console.log("00 - End of Program");
                     return true;
                     break;
@@ -113,11 +107,13 @@ var TSOS;
             this.Acc = constant.getDec();
         };
         Cpu.prototype.loadAccMem = function (address) {
+            address += _CurrentPCB.base;
             this.Acc = _MemoryManager.getByteFromAddr(address, _CurrentPCB).getDec();
         };
         Cpu.prototype.storeAccMem = function (address) {
             var byte = new TSOS.Byte();
             var str = "";
+            address += _CurrentPCB.base;
             str = this.Acc.toString(16);
             if (str.length < 2) {
                 str = "0" + str;
@@ -126,29 +122,36 @@ var TSOS;
             _MemoryManager.setByteAtAddr(byte, address, _CurrentPCB);
         };
         Cpu.prototype.addWithCarry = function (address) {
+            address += _CurrentPCB.base;
             this.Acc = this.Acc + _MemoryManager.getByteFromAddr(address, _CurrentPCB).getDec();
         };
         Cpu.prototype.loadXConst = function (constant) {
             this.Xreg = constant.getDec();
         };
         Cpu.prototype.loadXMem = function (address) {
+            address += _CurrentPCB.base;
             this.Xreg = _MemoryManager.getByteFromAddr(address, _CurrentPCB).getDec();
         };
         Cpu.prototype.loadYConst = function (constant) {
             this.Yreg = constant.getDec();
         };
         Cpu.prototype.loadYMem = function (address) {
+            address += _CurrentPCB.base;
             this.Yreg = _MemoryManager.getByteFromAddr(address, _CurrentPCB).getDec();
         };
         Cpu.prototype.noOperation = function () {
             console.log("EA sucks balls.");
         };
-        Cpu.prototype.endOfProgram = function () {
-            if (_SingleStepMode) {
-                TSOS.Control.hostBtnSSToggle_click();
-            }
+        Cpu.prototype.endOfProgram = function (pcb) {
+            pcb.processState = TERMINATED;
+            pcb.updatePcb();
+            _MemoryManager.clearPartition(pcb.partition);
+            _MemoryManager.setPartition(pcb.partition, false);
+            _ResidentList.remove(pcb);
+            TSOS.Control.updatePcbTable(pcb);
         };
         Cpu.prototype.compareZ = function (address) {
+            address += _CurrentPCB.base;
             if (_MemoryManager.getByteFromAddr(address, _CurrentPCB).getDec() === this.Xreg) {
                 this.Zflag = 1;
             }
@@ -164,6 +167,7 @@ var TSOS;
             }
         };
         Cpu.prototype.incrementByte = function (address) {
+            address += _CurrentPCB.base;
             var value = _MemoryManager.getByteFromAddr(address, _CurrentPCB).getDec();
             value++;
             var newValue = value.toString(16);
@@ -182,6 +186,7 @@ var TSOS;
             }
             else if (this.Xreg === 2) {
                 var address = this.Yreg;
+                address += _CurrentPCB.base;
                 var value = _MemoryManager.getByteFromAddr(address, _CurrentPCB).getDec();
                 var str = "";
                 while (value !== 0) {
