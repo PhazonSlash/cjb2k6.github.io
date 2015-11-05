@@ -21,7 +21,7 @@ module TSOS {
           this.currCycle = 0;
         }
 
-        public schedule(): void{
+        public schedule(): void {
           if(_CurrentPCB === null || _CurrentPCB.processState === TERMINATED){
             if(!_ReadyQueue.isEmpty()){
               _CurrentPCB = _ReadyQueue.dequeue();
@@ -32,6 +32,7 @@ module TSOS {
               if(_SingleStepMode){
                 Control.hostBtnSSToggle_click();
               }
+              _CurrentPCB = null;
             }
           }
           console.log("Clock Cycle: " + this.currCycle);
@@ -49,7 +50,7 @@ module TSOS {
 
         }
 
-        public contextSwitch(): void{
+        public contextSwitch(): void {
           if(!_ReadyQueue.isEmpty()){
             if(_CurrentPCB.processState !== TERMINATED){
               _CurrentPCB.updatePcb();

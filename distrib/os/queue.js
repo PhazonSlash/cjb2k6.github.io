@@ -21,6 +21,9 @@ var TSOS;
             }
             return retVal;
         };
+        Queue.prototype.peek = function (index) {
+            return (this.q[index]);
+        };
         Queue.prototype.toString = function () {
             var retVal = "";
             for (var i in this.q) {

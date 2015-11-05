@@ -9,7 +9,7 @@
    ------------ */
 
 module TSOS {
-    export class Queue <T>{
+    export class Queue <T> {
         constructor(public q = new Array<T>()) {
         }
 
@@ -31,6 +31,10 @@ module TSOS {
                 retVal = this.q.shift();
             }
             return retVal;
+        }
+
+        public peek(index: number): T {
+          return(this.q[index]);
         }
 
         public toString(): string {

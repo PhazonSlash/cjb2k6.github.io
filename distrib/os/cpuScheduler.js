@@ -21,6 +21,7 @@ var TSOS;
                     if (_SingleStepMode) {
                         TSOS.Control.hostBtnSSToggle_click();
                     }
+                    _CurrentPCB = null;
                 }
             }
             console.log("Clock Cycle: " + this.currCycle);

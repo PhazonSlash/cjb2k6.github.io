@@ -31,6 +31,10 @@ var TSOS;
             this.commandList[this.commandList.length] = sc;
             sc = new TSOS.ShellCommand(this.shellQuantum, "quantum", "- Sets the time quantum for round robin scheduling.");
             this.commandList[this.commandList.length] = sc;
+            sc = new TSOS.ShellCommand(this.shellPs, "ps", "- Displays all running processes.");
+            this.commandList[this.commandList.length] = sc;
+            sc = new TSOS.ShellCommand(this.shellKill, "kill", "- Terminates a given process.");
+            this.commandList[this.commandList.length] = sc;
             sc = new TSOS.ShellCommand(this.shellClearMem, "clearmem", "- Clears all partitions of memory.");
             this.commandList[this.commandList.length] = sc;
             sc = new TSOS.ShellCommand(this.shellChangeWeapon, "changeweapon", "- Switches to next beam weapon.");
@@ -255,6 +259,62 @@ var TSOS;
             }
             else {
                 _StdOut.putText("Error: Please enter a positive number.");
+            }
+        };
+        Shell.prototype.shellPs = function (args) {
+            if (_CurrentPCB !== null) {
+                _StdOut.putText("PID " + _CurrentPCB.processID + " is currently running. ");
+            }
+            var str = "PID ";
+            if (!_ReadyQueue.isEmpty()) {
+                for (var i = 0; i < _ReadyQueue.getSize(); i++) {
+                    if (i < _ReadyQueue.getSize() - 1) {
+                        str += _ReadyQueue.peek(i).processID + ", ";
+                    }
+                    else {
+                        if (i > 0) {
+                            str += "and " + _ReadyQueue.peek(i).processID + " are waiting.";
+                        }
+                        else {
+                            str += _ReadyQueue.peek(i).processID + " is waiting.";
+                        }
+                    }
+                }
+                _StdOut.putText(str);
+            }
+        };
+        Shell.prototype.shellKill = function (args) {
+            if (args.length > 0) {
+                if (args[0].match(/[0-9]+/g)) {
+                    var id = parseInt(args[0]);
+                    var killed = false;
+                    if (_CurrentPCB.processID === id) {
+                        _CurrentPCB.processState = TERMINATED;
+                        _MemoryManager.setPartition(_CurrentPCB.partition, false);
+                        killed = true;
+                    }
+                    else if (!_ReadyQueue.isEmpty()) {
+                        for (var i = 0; i < _ReadyQueue.getSize(); i++) {
+                            if (_ReadyQueue.peek(i).processID === id) {
+                                _ReadyQueue.peek(i).processState = TERMINATED;
+                                _MemoryManager.setPartition(_ReadyQueue.peek(i).partition, false);
+                                killed = true;
+                            }
+                        }
+                    }
+                    if (killed) {
+                        _StdOut.putText("PID " + args[0] + " was killed.");
+                    }
+                    else {
+                        _StdOut.putText("Error: PID " + args[0] + " is not currently running.");
+                    }
+                }
+                else {
+                    _StdOut.putText("Error: Please enter a numeric PID.");
+                }
+            }
+            else {
+                _StdOut.putText("Error: Please enter a PID.");
             }
         };
         Shell.prototype.shellClearMem = function (args) {

@@ -91,6 +91,18 @@ module TSOS {
                 "- Sets the time quantum for round robin scheduling.");
             this.commandList[this.commandList.length] = sc;
 
+            // ps
+            sc = new ShellCommand(this.shellPs,
+                "ps",
+                "- Displays all running processes.");
+            this.commandList[this.commandList.length] = sc;
+
+            // kill
+            sc = new ShellCommand(this.shellKill,
+                "kill",
+                "- Terminates a given process.");
+            this.commandList[this.commandList.length] = sc;
+
             // clearmem
             sc = new ShellCommand(this.shellClearMem,
                 "clearmem",
@@ -385,24 +397,79 @@ module TSOS {
           }
         }
 
-          public shellQuantum(args:string[]) {
-            if (args.length > 0){
-              if(args[0].match(/[0-9]+/g)){
-                var quant: number = parseInt(args[0]);
-                if(quant < 0){
-                    _StdOut.putText("Error: You can't have negative time.");
-                  } else {
-                    _TimeQuantum = quant;
-                    _StdOut.putText("Time quantum is now " + quant + ".");
-                  }
+        public shellQuantum(args:string[]) {
+          if (args.length > 0){
+            if (args[0].match(/[0-9]+/g)){
+              var quant: number = parseInt(args[0]);
+              if (quant < 0){
+                  _StdOut.putText("Error: You can't have negative time.");
+                } else {
+                  _TimeQuantum = quant;
+                  _StdOut.putText("Time quantum is now " + quant + ".");
+                }
 
-                }  else {
-                _StdOut.putText("Error: Please enter a positive numeric quantum.");
+              }  else {
+              _StdOut.putText("Error: Please enter a positive numeric quantum.");
+            }
+          } else {
+            _StdOut.putText("Error: Please enter a positive number.");
+          }
+        }
+
+        public shellPs(args:string[]) {
+          if (_CurrentPCB !== null){
+            _StdOut.putText("PID " + _CurrentPCB.processID + " is currently running. ");
+          }
+          var str: string = "PID ";
+          if (!_ReadyQueue.isEmpty()){
+            for(var i: number = 0; i < _ReadyQueue.getSize(); i++){
+              if(i < _ReadyQueue.getSize() - 1){
+                str += _ReadyQueue.peek(i).processID + ", ";
+              } else {
+                if (i > 0){
+                  str += "and " + _ReadyQueue.peek(i).processID + " are waiting.";
+                } else {
+                  str += _ReadyQueue.peek(i).processID + " is waiting.";
+                }
+              }
+
+            }
+            _StdOut.putText(str);
+          }
+        }
+
+        public shellKill(args:string[]) {
+          if (args.length > 0){
+            if(args[0].match(/[0-9]+/g)){
+              var id: number = parseInt(args[0]);
+              var killed: boolean = false;
+              //Check current process
+              if (_CurrentPCB.processID === id){
+                _CurrentPCB.processState = TERMINATED;
+                _MemoryManager.setPartition(_CurrentPCB.partition, false);
+                killed = true;
+              } else if (!_ReadyQueue.isEmpty()){
+                for(var i: number = 0; i < _ReadyQueue.getSize(); i++){
+                  if(_ReadyQueue.peek(i).processID === id){
+                    _ReadyQueue.peek(i).processState = TERMINATED;
+                    _MemoryManager.setPartition(_ReadyQueue.peek(i).partition, false);
+                    killed = true;
+                  }
+                }
+              }
+              //Did it die?
+              if (killed){
+                _StdOut.putText("PID " + args[0] + " was killed.");
+              } else {
+                _StdOut.putText("Error: PID " + args[0] + " is not currently running.");
               }
             } else {
-              _StdOut.putText("Error: Please enter a positive number.");
+              _StdOut.putText("Error: Please enter a numeric PID.");
             }
+          } else {
+            _StdOut.putText("Error: Please enter a PID.");
           }
+        }
 
         public shellClearMem(args:string[]) {
           _MemoryManager.clearAllMem();
