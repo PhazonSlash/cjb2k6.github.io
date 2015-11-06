@@ -33,6 +33,9 @@ module TSOS {
             this.processID = Pcb.currentProcessNum;
             Pcb.currentProcessNum++;
         }
+
+        //Assigns a memory partition to this Pcb
+        //Also calculates the base and limit registers 
         public setPartition(partition: number): void{
           this.partition = partition;
           this.base = (partition - 1) * MEMORY_SIZE;

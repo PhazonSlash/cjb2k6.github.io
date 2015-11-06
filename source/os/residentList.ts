@@ -37,7 +37,7 @@ module TSOS {
           }
           return false;
         }
-
+        //Retrieves the specified Pcb from the list
         public getPcb(processID: number): Pcb {
           for(var i: number = 0; i < this.size; i++){
             if(processID === this.list[i].processID){
@@ -50,13 +50,14 @@ module TSOS {
         public isEmpty(): boolean{
           return this.size === 0;
         }
-
+        //Copies all processes from the ResidentList
+        //into the ReadyQueue
         public fillReadyQueue(): void{
           for(var i: number = 0; i < this.size; i++){
             _ReadyQueue.enqueue(this.list[i]);
           }
         }
-
+        //Print the list for testing purposes
         public printList(): void {
           console.log("Resident List");
           for(var i: number = 0; i < this.size; i++){

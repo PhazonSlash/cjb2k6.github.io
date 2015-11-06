@@ -33,6 +33,7 @@ module TSOS {
             return retVal;
         }
 
+        //Gets the item in the array at the specified index
         public peek(index: number): T {
           return(this.q[index]);
         }
