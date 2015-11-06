@@ -66,6 +66,7 @@ module TSOS {
             // ... Disable the Interrupts.
             this.krnTrace("Disabling the interrupts.");
             this.krnDisableInterrupts();
+            _CPU.isExecuting = false;
             //
             // Unload the Device Drivers?
             // More?
@@ -128,7 +129,7 @@ module TSOS {
                     _StdIn.handleInput();
                     break;
                 case CONTEXT_IRQ:
-                    _CpuScheduler.contextSwitch();   // Scheduler Context Switch 
+                    _CpuScheduler.contextSwitch();   // Scheduler Context Switch
                     break;
                 default:
                     this.krnTrapError("Invalid Interrupt Request. irq=" + irq + " params=[" + params + "]");

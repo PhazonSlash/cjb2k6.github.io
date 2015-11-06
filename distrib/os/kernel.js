@@ -29,6 +29,7 @@ var TSOS;
             this.krnTrace("begin shutdown OS");
             this.krnTrace("Disabling the interrupts.");
             this.krnDisableInterrupts();
+            _CPU.isExecuting = false;
             this.krnTrace("end shutdown OS");
         };
         Kernel.prototype.krnOnCPUClockPulse = function () {

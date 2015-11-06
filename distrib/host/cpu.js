@@ -30,9 +30,11 @@ var TSOS;
             _Kernel.krnTrace('CPU cycle');
             TSOS.Control.updateMemoryTable();
             TSOS.Control.updateCpuTable();
+            TSOS.Control.updatePcbTable();
             this.IR = _MemoryManager.getByteFromAddr(_CurrentPCB.programCounter, _CurrentPCB);
             TSOS.Control.updateMemoryTable();
             TSOS.Control.updateCpuTable();
+            TSOS.Control.updatePcbTable();
             this.executeCode(_CurrentPCB);
         };
         Cpu.prototype.executeCode = function (pcb) {
@@ -148,7 +150,7 @@ var TSOS;
             _MemoryManager.clearPartition(pcb.partition);
             _MemoryManager.setPartition(pcb.partition, false);
             _ResidentList.remove(pcb);
-            TSOS.Control.updatePcbTable(pcb);
+            TSOS.Control.updatePcbTable();
         };
         Cpu.prototype.compareZ = function (address) {
             address += _CurrentPCB.base;

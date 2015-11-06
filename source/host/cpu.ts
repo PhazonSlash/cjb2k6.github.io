@@ -44,10 +44,12 @@ module TSOS {
             // TODO: Accumulate CPU usage and profiling statistics here.
             Control.updateMemoryTable();
             Control.updateCpuTable();
+            Control.updatePcbTable();
             //Fetch/Decode/Execute
             this.IR = _MemoryManager.getByteFromAddr(_CurrentPCB.programCounter, _CurrentPCB);
             Control.updateMemoryTable();
             Control.updateCpuTable();
+            Control.updatePcbTable();
             this.executeCode(_CurrentPCB);
         }
 
@@ -182,7 +184,7 @@ module TSOS {
           _MemoryManager.clearPartition(pcb.partition);
           _MemoryManager.setPartition(pcb.partition, false);
           _ResidentList.remove(pcb);
-          Control.updatePcbTable(pcb);
+          Control.updatePcbTable();
         }
         //EC - Compare a byte in memory to the X reg, Sets the Z (zero) flag if equal
         public compareZ(address: number): void {

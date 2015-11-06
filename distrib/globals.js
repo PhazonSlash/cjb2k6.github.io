@@ -1,5 +1,5 @@
 var APP_NAME = "PhazonOS";
-var APP_VERSION = "0.06";
+var APP_VERSION = "0.6";
 var CPU_CLOCK_INTERVAL = 100;
 var TIMER_IRQ = 0;
 var KEYBOARD_IRQ = 1;

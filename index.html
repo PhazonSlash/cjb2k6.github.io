@@ -99,6 +99,31 @@
                   tabindex="3">
           </canvas>
        </div>
+       <div id="pcbDiv" style="margin:4px; width:500px; height:150px; float:right">
+         <label>
+            Ready Queue Display
+         </label>
+         <div id="pcbTableDiv" style="float:left; width:500px; height:200px;">
+          <table class="table table-bordered" id="pcbTable" style="background-color:#FFFFFF;">
+            <thead>
+              <tr>
+                <th>PID</th>
+                <th>State</th>
+                <th>PC</th>
+                <th>AC</th>
+                <th>IR</th>
+                <th>X</th>
+                <th>Y</th>
+                <th>Z</th>
+                <th>Base</th>
+                <th>Limit</th>
+                <th>Partition</th>
+              </tr>
+            </thead>
+            <tbody id="pcbTableBody"></tbody>
+          </table>
+        </div>
+       </div>
      </div>
        <div class="col-md-6">
          <div id="divLog">
@@ -113,12 +138,11 @@
              ></textarea>
           </label>
        </div>
-       <div id="cpuDiv" style="margin:4px; width:200px; height:100px; float:left">
+       <div id="cpuDiv" style="margin:4px; width:500px; height:100px; float:left">
          <label>
             CPU Display
          </label>
-         <div id="cpuTableDiv" style="background-color:#FFFFFF; float:left; width:200px; height:75px;">
-          <table class="table table-bordered" id="cpuTable">
+          <table class="table table-bordered" id="cpuTable" style="background-color:#FFFFFF; width:200px;">
             <thead>
               <tr>
                 <th>PC</th>
@@ -131,27 +155,6 @@
             </thead>
             <tbody id="cpuTableBody"></tbody>
           </table>
-        </div>
-       </div>
-       <div id="pcbDiv" style="margin:4px; width:250px; height:100px; float:left">
-         <label>
-            PCB Display
-         </label>
-         <div id="pcbTableDiv" style="background-color:#FFFFFF; float:left; width:200px; height:75px;">
-          <table class="table table-bordered" id="pcbTable">
-            <thead>
-              <tr>
-                <th>PC</th>
-                <th>AC</th>
-                <th>IR</th>
-                <th>X</th>
-                <th>Y</th>
-                <th>Z</th>
-              </tr>
-            </thead>
-            <tbody id="pcbTableBody"></tbody>
-          </table>
-        </div>
        </div>
        <div id="memoryDiv" style="margin:4px; width:500px; height:200px; float:left">
          <label>

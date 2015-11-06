@@ -191,15 +191,59 @@ module TSOS {
          table += "<td>" + _CPU.Zflag + "</td>";
         (<HTMLInputElement> document.getElementById("cpuTableBody")).innerHTML = table;
        }
-       public static updatePcbTable(pcb: Pcb): void {
+       public static updatePcbTable(): void {
+         var pcb: Pcb;
          var table: string = "";
+         if (_CurrentPCB === null){
+           console.log("No PCB to put in table");
+         } else {
+           pcb = _CurrentPCB;
+           table += this.buildPcbRow(pcb);
+           if (!_ReadyQueue.isEmpty()){
+             for (var i: number = 0; i < _ReadyQueue.getSize(); i++){
+               pcb = _ReadyQueue.peek(i);
+               table += this.buildPcbRow(pcb);
+             }
+           }
+         }
+         (<HTMLInputElement> document.getElementById("pcbTableBody")).innerHTML = table;
+       }
+       private static buildPcbRow(pcb: Pcb): string{
+         var table: string = "";
+         var state: string = "";
+         switch(pcb.processState){
+           case NEW:
+                  state = "NEW";
+                  break;
+           case RUNNING:
+                  state = "RUNNING";
+                  break;
+           case WAITING:
+                  state = "WAITING";
+                  break;
+           case READY:
+                  state = "READY";
+                  break;
+           case TERMINATED:
+                  state = "TERMINATED";
+                  break;
+          default:
+                  console.log("buildPcbRow: Invalid State");
+        }
+         table += "<tr>";
+         table += "<td>" + pcb.processID + "</td>";
+         table += "<td>" + state + "</td>";
          table += "<td>" + pcb.programCounter + "</td>";
          table += "<td>" + pcb.accumulator + "</td>";
          table += "<td>" + pcb.IR.getHex().toUpperCase() + "</td>";
          table += "<td>" + pcb.x + "</td>";
          table += "<td>" + pcb.y + "</td>";
          table += "<td>" + pcb.z + "</td>";
-        (<HTMLInputElement> document.getElementById("pcbTableBody")).innerHTML = table;
+         table += "<td>" + pcb.base + "</td>";
+         table += "<td>" + pcb.limit + "</td>";
+         table += "<td>" + pcb.partition + "</td>";
+         table += "</tr>";
+         return table;
        }
     }
 }

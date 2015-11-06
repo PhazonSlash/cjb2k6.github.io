@@ -13,6 +13,7 @@ var TSOS;
             if (_CurrentPCB === null || _CurrentPCB.processState === TERMINATED) {
                 if (!_ReadyQueue.isEmpty()) {
                     _CurrentPCB = _ReadyQueue.dequeue();
+                    _CurrentPCB.processState = RUNNING;
                     _CPU.setCPU(_CurrentPCB);
                 }
                 else {
@@ -22,6 +23,7 @@ var TSOS;
                         TSOS.Control.hostBtnSSToggle_click();
                     }
                     _CurrentPCB = null;
+                    TSOS.Control.updatePcbTable();
                 }
             }
             console.log("Clock Cycle: " + this.currCycle);
@@ -41,7 +43,7 @@ var TSOS;
             if (!_ReadyQueue.isEmpty()) {
                 if (_CurrentPCB.processState !== TERMINATED) {
                     _CurrentPCB.updatePcb();
-                    _CurrentPCB.processState = WAITING;
+                    _CurrentPCB.processState = READY;
                     _ReadyQueue.enqueue(_CurrentPCB);
                 }
                 _CurrentPCB = _ReadyQueue.dequeue();

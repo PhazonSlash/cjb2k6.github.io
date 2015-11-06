@@ -29,6 +29,7 @@ module TSOS {
             if(!_ReadyQueue.isEmpty()){
               //Load the process
               _CurrentPCB = _ReadyQueue.dequeue();
+              _CurrentPCB.processState = RUNNING;
               _CPU.setCPU(_CurrentPCB);
             } else {
               console.log("There was nothing in the ready queue.");
@@ -39,6 +40,7 @@ module TSOS {
                 Control.hostBtnSSToggle_click();
               }
               _CurrentPCB = null;
+              Control.updatePcbTable();
             }
           }
           console.log("Clock Cycle: " + this.currCycle);
@@ -62,7 +64,7 @@ module TSOS {
             //If it is not done, put it on the end of the queue
             if(_CurrentPCB.processState !== TERMINATED){
               _CurrentPCB.updatePcb();
-              _CurrentPCB.processState = WAITING;
+              _CurrentPCB.processState = READY;
               _ReadyQueue.enqueue(_CurrentPCB);
             }
             //Get the next process
