@@ -4,6 +4,7 @@ body {
   background: #909193 url(distrib/images/phendranaDrifts.png);
   background-size: cover;
   background-repeat: no-repeat;
+  background-position: center;
   padding-top: 140px;
   font-family: Helvetica, Verdana, Arial, sans-serif;
   font-size: 12pt;
@@ -106,7 +107,7 @@ div.pcb {
 }
 
 div.log {
-  padding-top: 20px;
+  padding-top: 32px;
 }
 
 div.cpu {
