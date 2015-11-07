@@ -5,7 +5,7 @@ body {
   background-size: cover;
   background-repeat: no-repeat;
   background-position: center;
-  padding-top: 140px;
+  padding-top: 150px;
   font-family: Helvetica, Verdana, Arial, sans-serif;
   font-size: 12pt;
   font-weight: normal;
@@ -86,10 +86,9 @@ label {
 
 
 div.buttonBar {
-  margin:4px;
   float:right;
   width:500px;
-  height:20px;
+  height:15px;
 }
 
 div.console {
@@ -107,7 +106,7 @@ div.pcb {
 }
 
 div.log {
-  padding-top: 32px;
+  padding-top: 20px;
 }
 
 div.cpu {

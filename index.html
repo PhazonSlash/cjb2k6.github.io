@@ -45,12 +45,6 @@
 <div id="divMain" style="width:100%;" class="container">
   <div class="row">
     <div class="col-md-6">
-      <div id="hud" style="margin:8px; margin-top:20px; float:right; width:500px; height:30px;">
-          <label id="dateTimeLabel">
-              Time: 0:00 | Status:
-          </label>
-      </div>
-      <br>
       <div id="divButtonBar" class="buttonBar">
         <button type="button"
                id = "btnStartOS"
@@ -58,7 +52,6 @@
                class="btn btn-sm btn-success"
                tabindex="0"
                onclick="TSOS.Control.hostBtnStartOS_click(this);">Start</button>
-
         <button type="button"
                id = "btnHaltOS"
                name="brnHaltOS"
@@ -66,7 +59,6 @@
                disabled="disabled"
                tabindex="1"
                onclick="TSOS.Control.hostBtnHaltOS_click(this);">Halt</button>
-
         <button type="button"
                id = "btnReset"
                name="brnReset"
@@ -74,24 +66,12 @@
                disabled="disabled"
                tabindex="2"
                onclick="TSOS.Control.hostBtnReset_click(this);">Reset</button>
-         <button type="button"
-                id = "btnSSToggle"
-                name="brnSSToggle"
-                class="btn btn-sm btn-default"
-                disabled="disabled"
-                tabindex="3"
-                onclick="TSOS.Control.hostBtnSSToggle_click(this);">Single Step: OFF</button>
-          <button type="button"
-                 id = "btnStep"
-                 name="brnStep"
-                 class="btn btn-sm btn-success"
-                 disabled="disabled"
-                 tabindex="4"
-                 data-toggle="tooltip"
-                 data-placement="top"
-                 title="Take a Step"
-                 onclick="TSOS.Control.hostBtnStep_click(this);">></button>
        </div>
+      <div id="hud" style="margin:8px; margin-top:20px; float:right; width:500px; height:30px;">
+          <label id="dateTimeLabel">
+              Time: 0:00 | Status:
+          </label>
+      </div>
        <div id="divConsole" class="console">
           <canvas id="display"
                   width="500px"
@@ -142,6 +122,23 @@
          <label>
             CPU Display
          </label>
+         <button type="button"
+                id = "btnSSToggle"
+                name="brnSSToggle"
+                class="btn btn-sm btn-default"
+                disabled="disabled"
+                tabindex="3"
+                onclick="TSOS.Control.hostBtnSSToggle_click(this);">Single Step: OFF</button>
+          <button type="button"
+                 id = "btnStep"
+                 name="brnStep"
+                 class="btn btn-sm btn-success"
+                 disabled="disabled"
+                 tabindex="4"
+                 data-toggle="tooltip"
+                 data-placement="top"
+                 title="Take a Step"
+                 onclick="TSOS.Control.hostBtnStep_click(this);">></button>
           <table class="table table-bordered" id="cpuTable" style="width:200px;">
             <thead>
               <tr>
