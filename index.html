@@ -51,7 +51,7 @@
           </label>
       </div>
       <br>
-      <div id="divButtonBar" style="margin:4px; float:right; width:500px; height:20px;">
+      <div id="divButtonBar" class="buttonBar">
         <button type="button"
                id = "btnStartOS"
                name="brnStartOS"
@@ -92,18 +92,17 @@
                  title="Take a Step"
                  onclick="TSOS.Control.hostBtnStep_click(this);">></button>
        </div>
-       <div id="divConsole" style="margin:10px; width:500px; height:500px; float:right;">
+       <div id="divConsole" class="console">
           <canvas id="display"
                   width="500px"
                   height="500px"
                   tabindex="3">
           </canvas>
        </div>
-       <div id="pcbDiv" style="margin:4px; width:500px; height:150px; float:right">
+       <div id="pcbDiv" class="pcb">
          <label>
             Ready Queue Display
          </label>
-         <div id="pcbTableDiv" style="float:left; width:500px; height:200px;">
           <table class="table table-bordered" id="pcbTable" style="background-color:#FFFFFF;">
             <thead>
               <tr>
@@ -122,11 +121,10 @@
             </thead>
             <tbody id="pcbTableBody"></tbody>
           </table>
-        </div>
        </div>
      </div>
        <div class="col-md-6">
-         <div id="divLog">
+         <div id="divLog" class="log">
           <label>
              <br>
              Host Log
@@ -138,7 +136,7 @@
              ></textarea>
           </label>
        </div>
-       <div id="cpuDiv" style="margin:4px; width:500px; height:100px; float:left">
+       <div id="cpuDiv" class="cpu">
          <label>
             CPU Display
          </label>
@@ -156,15 +154,15 @@
             <tbody id="cpuTableBody"></tbody>
           </table>
        </div>
-       <div id="memoryDiv" style="margin:4px; width:500px; height:200px; float:left">
+       <div id="memoryDiv" class="memory">
          <label>
             Memory Display
          </label>
-         <div id="memoryTableDiv" style="background-color:#FFFFFF; float:left; width:400px; height:160px; overflow:scroll">
-          <table class="table table-bordered" id="memoryTable"></table>
+         <div id="memoryTableDiv" class="memoryTable">
+          <table class="table table-bordered" id="memoryTable" style="background-color:#FFFFFF;"></table>
         </div>
        </div>
-       <div id="divUserProgramInput" style="float:left; width:600px; height:160px;">
+       <div id="divUserProgramInput" class="program">
           <label>
              User Program Input
              <br>

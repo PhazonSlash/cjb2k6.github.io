@@ -36,6 +36,59 @@ h3 {
   cursor: default;
 }
 
+div.buttonBar {
+  margin:4px;
+  float:right;
+  width:500px;
+  height:20px;
+}
+
+div.console {
+  margin:10px;
+  width:500px;
+  height:500px;
+  float:right;
+}
+
+div.pcb {
+  margin:4px;
+  width:500px;
+  height:150px;
+  float:right;
+}
+
+div.log {
+
+}
+
+div.cpu {
+  margin:4px;
+  width:500px;
+  height:100px;
+  float:left;
+}
+
+div.memory {
+  margin:4px;
+  width:500px;
+  height:200px;
+  float:left;
+}
+
+div.memoryTable {
+  background-color:#FFFFFF;
+  float:left;
+  width:400px;
+  height:160px;
+  overflow:scroll;
+}
+
+div.program {
+  float:left;
+  width:600px;
+  height:160px;
+}
+
 .normal_button {
   width: 100px;
 }
