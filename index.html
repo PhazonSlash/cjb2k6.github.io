@@ -96,6 +96,7 @@
           <canvas id="display"
                   width="500px"
                   height="500px"
+                  class="canvas"
                   tabindex="3">
           </canvas>
        </div>
@@ -103,7 +104,7 @@
          <label>
             Ready Queue Display
          </label>
-          <table class="table table-bordered" id="pcbTable" style="background-color:#FFFFFF;">
+          <table class="table table-bordered" id="pcbTable"">
             <thead>
               <tr>
                 <th>PID</th>
@@ -124,23 +125,24 @@
        </div>
      </div>
        <div class="col-md-6">
+         <div id="rightCol">
          <div id="divLog" class="log">
           <label>
-             <br>
              Host Log
-             <br>
-             <textarea name="taHostLog"
-                       id  ="taHostLog"
-                       rows="8"
-                       cols="48"
-             ></textarea>
           </label>
+          <br>
+         <textarea name="taHostLog"
+                   id  ="taHostLog"
+                   rows="6"
+                   cols="54"
+         ></textarea>
+
        </div>
        <div id="cpuDiv" class="cpu">
          <label>
             CPU Display
          </label>
-          <table class="table table-bordered" id="cpuTable" style="background-color:#FFFFFF; width:200px;">
+          <table class="table table-bordered" id="cpuTable" style="width:200px;">
             <thead>
               <tr>
                 <th>PC</th>
@@ -159,31 +161,30 @@
             Memory Display
          </label>
          <div id="memoryTableDiv" class="memoryTable">
-          <table class="table table-bordered" id="memoryTable" style="background-color:#FFFFFF;"></table>
+          <table class="table table-bordered" id="memoryTable"></table>
         </div>
        </div>
        <div id="divUserProgramInput" class="program">
           <label>
              User Program Input
+          </label>
              <br>
              <textarea name="taProgramInput"
                        id  ="taProgramInput"
                        rows="8"
                        cols="48"
              ></textarea>
-          </label>
        </div>
+      </div>
      </div>
    </div>
 </div>
 
 <p class="footerText" style="clear:both;">
-   <br><br><br>
    Copyright &copy; 2008 - 2015 No Rights Reserved.
    <br>
    Reproduction is inhibited without the express written consent of
    Ted Codd, Stevie Ray Vaughan, and Ian Fleming.
 </p>
-
 </body>
 </html>

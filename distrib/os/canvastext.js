@@ -1,21 +1,3 @@
-/* ----------------- *
- * CanvasText.ts   *
- *
- * Downloaded from http://www.federated.com/~jim/canvastext.
- *
- * This code is released to the public domain by Jim Studt, 2007.
- * He may keep some sort of up to date copy at http://www.federated.com/~jim/canvastext/
- *
- * Modifications by Alan G. Labouseur:
- *  - fixed comma
- *  - added semi-colon
- *  - renamed 'letter' object to 'symbol'
- *
- * Port to TypeScript by Bob Nisco in 2014.
- *
- * Note: You could theoretically make up your own letters and symbols for your OS.
- *       That might be fun.
- * ----------------- */
 var TSOS;
 (function (TSOS) {
     var CanvasTextFunctions = (function () {
@@ -48,7 +30,7 @@ var TSOS;
             ctx.save();
             ctx.lineCap = "round";
             ctx.lineWidth = 2.0 * mag;
-            ctx.strokeStyle = "black";
+            ctx.strokeStyle = "#85D5FA";
             for (var i = 0; i < len; i++) {
                 var c = CanvasTextFunctions.letter(str.charAt(i));
                 if (!c) {
