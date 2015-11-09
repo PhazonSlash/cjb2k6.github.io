@@ -118,6 +118,8 @@ module TSOS {
                       break; //Pointless, but I like it. Keeps things consistent
             default:
                     console.log("Code: " + this.IR.getHex() + " not found.");
+                    _CurrentPCB.processState = TERMINATED;
+                    _StdOut.putText("ERROR: INVALID OP CODE " + this.IR.getHex().toUpperCase() + ". PID[" + _CurrentPCB.processID + "]. ");
                     return false;
           }
           //Move on to the next code

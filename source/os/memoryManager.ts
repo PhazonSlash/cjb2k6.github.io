@@ -94,7 +94,9 @@ module TSOS {
         }
         if(address > limit || address < base){
           console.log("Memory Access Violation at: " + address);
-          _Kernel.krnTrapError("MEMORY ACCESS VIOLATION");
+          _CurrentPCB.processState = TERMINATED;
+          _StdOut.putText("ERROR: MEMORY ACCESS VIOLATION. PID[" + _CurrentPCB.processID + "]. ");
+          //_Kernel.krnTrapError("MEMORY ACCESS VIOLATION");
         } else {
         return this.mainMemory.mainMem[address];
       }
@@ -103,7 +105,9 @@ module TSOS {
 
       public setByteAtAddr(byte: Byte, address: number, pcb: Pcb): boolean {
         if(address > pcb.limit || address < pcb.base){
-          _Kernel.krnTrapError("MEMORY ACCESS VIOLATION");
+          _CurrentPCB.processState = TERMINATED;
+          _StdOut.putText("ERROR: MEMORY ACCESS VIOLATION. PID[" + _CurrentPCB.processID + "]. ");
+          //_Kernel.krnTrapError("MEMORY ACCESS VIOLATION");
         } else {
           this.mainMemory.mainMem[address] = byte;
           return true;

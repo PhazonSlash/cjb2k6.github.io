@@ -100,6 +100,8 @@ var TSOS;
                     break;
                 default:
                     console.log("Code: " + this.IR.getHex() + " not found.");
+                    _CurrentPCB.processState = TERMINATED;
+                    _StdOut.putText("ERROR: INVALID OP CODE " + this.IR.getHex().toUpperCase() + ". PID[" + _CurrentPCB.processID + "]. ");
                     return false;
             }
             pcb.incrementPC();
