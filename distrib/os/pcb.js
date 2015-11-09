@@ -1,7 +1,7 @@
 var TSOS;
 (function (TSOS) {
     var Pcb = (function () {
-        function Pcb(processState, processID, programCounter, accumulator, IR, x, y, z, partition, base, limit) {
+        function Pcb(processState, processID, programCounter, accumulator, IR, x, y, z, partition, base, limit, wait, turnAround) {
             if (processState === void 0) { processState = NEW; }
             if (processID === void 0) { processID = 0; }
             if (programCounter === void 0) { programCounter = 0; }
@@ -13,6 +13,8 @@ var TSOS;
             if (partition === void 0) { partition = 0; }
             if (base === void 0) { base = 0; }
             if (limit === void 0) { limit = 0; }
+            if (wait === void 0) { wait = 0; }
+            if (turnAround === void 0) { turnAround = 0; }
             this.processState = processState;
             this.processID = processID;
             this.programCounter = programCounter;
@@ -24,6 +26,8 @@ var TSOS;
             this.partition = partition;
             this.base = base;
             this.limit = limit;
+            this.wait = wait;
+            this.turnAround = turnAround;
             this.init();
         }
         Pcb.prototype.init = function () {
@@ -52,6 +56,14 @@ var TSOS;
             this.x = _CPU.Xreg;
             this.y = _CPU.Yreg;
             this.z = _CPU.Zflag;
+        };
+        Pcb.prototype.updateTimes = function () {
+            if (this.processState !== TERMINATED) {
+                this.turnAround++;
+                if (this.processState === READY || this.processState === NEW) {
+                    this.wait++;
+                }
+            }
         };
         Pcb.currentProcessNum = 0;
         return Pcb;

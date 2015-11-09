@@ -25,7 +25,9 @@ module TSOS {
                     public z: number = 0,
                     public partition: number = 0,
                     public base: number = 0,
-                    public limit: number = 0) {
+                    public limit: number = 0,
+                    public wait: number = 0,
+                    public turnAround: number = 0) {
           this.init();
         }
 
@@ -35,7 +37,7 @@ module TSOS {
         }
 
         //Assigns a memory partition to this Pcb
-        //Also calculates the base and limit registers 
+        //Also calculates the base and limit registers
         public setPartition(partition: number): void{
           this.partition = partition;
           this.base = (partition - 1) * MEMORY_SIZE;
@@ -62,5 +64,15 @@ module TSOS {
           this.y = _CPU.Yreg;
           this.z = _CPU.Zflag;
         }
+
+        public updateTimes(){
+          if(this.processState !== TERMINATED){
+            this.turnAround++;
+            if(this.processState === READY || this.processState === NEW){
+              this.wait++;
+            }
+          }
+        }
+
     }
 }
