@@ -45,7 +45,7 @@ module TSOS {
           }
           console.log("Clock Cycle: " + this.currCycle);
           //Check to see if it is time for a context switch
-          if(this.currCycle >= (_TimeQuantum - 1) && _CPU.isExecuting){
+          if(this.currCycle > (_TimeQuantum - 1) && _CPU.isExecuting){
             console.log("Performing Context Switch");
             //this.contextSwitch();
             this.currCycle = 0;
@@ -74,10 +74,11 @@ module TSOS {
             console.log("Switching to PCB: " + _CurrentPCB.processID);
             //Execute
             if(_CPU.isExecuting){
-              _CPU.cycle();
+              this.schedule();
             }
           }else{
             console.log("End of Scheduling");
+            this.schedule();
           }
 
 

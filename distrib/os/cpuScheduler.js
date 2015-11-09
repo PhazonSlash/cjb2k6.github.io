@@ -27,7 +27,7 @@ var TSOS;
                 }
             }
             console.log("Clock Cycle: " + this.currCycle);
-            if (this.currCycle >= (_TimeQuantum - 1) && _CPU.isExecuting) {
+            if (this.currCycle > (_TimeQuantum - 1) && _CPU.isExecuting) {
                 console.log("Performing Context Switch");
                 this.currCycle = 0;
                 _KernelInterruptQueue.enqueue(new TSOS.Interrupt(CONTEXT_IRQ, "I don't know what to put here yet."));
@@ -51,11 +51,12 @@ var TSOS;
                 _CPU.setCPU(_CurrentPCB);
                 console.log("Switching to PCB: " + _CurrentPCB.processID);
                 if (_CPU.isExecuting) {
-                    _CPU.cycle();
+                    this.schedule();
                 }
             }
             else {
                 console.log("End of Scheduling");
+                this.schedule();
             }
         };
         return CpuScheduler;

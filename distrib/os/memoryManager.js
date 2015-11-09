@@ -75,7 +75,8 @@ var TSOS;
                 base = pcb.base;
                 limit = pcb.limit;
             }
-            if (address >= limit || address < base) {
+            if (address > limit || address < base) {
+                console.log("Memory Access Violation at: " + address);
                 _Kernel.krnTrapError("MEMORY ACCESS VIOLATION");
             }
             else {
@@ -83,7 +84,7 @@ var TSOS;
             }
         };
         MemoryManager.prototype.setByteAtAddr = function (byte, address, pcb) {
-            if (address >= pcb.limit || address < pcb.base) {
+            if (address > pcb.limit || address < pcb.base) {
                 _Kernel.krnTrapError("MEMORY ACCESS VIOLATION");
             }
             else {
