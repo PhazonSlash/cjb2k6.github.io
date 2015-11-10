@@ -31,6 +31,7 @@ var TSOS;
             this.krnDisableInterrupts();
             _CPU.isExecuting = false;
             this.krnTrace("end shutdown OS");
+            clearInterval(_hardwareClockID);
         };
         Kernel.prototype.krnOnCPUClockPulse = function () {
             if (_KernelInterruptQueue.getSize() > 0) {

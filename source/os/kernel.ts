@@ -72,6 +72,7 @@ module TSOS {
             // More?
             //
             this.krnTrace("end shutdown OS");
+            clearInterval(_hardwareClockID);
         }
 
 
