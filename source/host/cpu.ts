@@ -42,6 +42,7 @@ module TSOS {
         public cycle(): void {
             _Kernel.krnTrace('CPU cycle');
             // TODO: Accumulate CPU usage and profiling statistics here.
+            _CpuScheduler.updatePcbTimes();
             Control.updateMemoryTable();
             Control.updateCpuTable();
             Control.updatePcbTable();
@@ -187,6 +188,9 @@ module TSOS {
           _MemoryManager.setPartition(pcb.partition, false);
           _ResidentList.remove(pcb);
           Control.updatePcbTable();
+          _Console.advanceLine();
+          _StdOut.putText("PID " + pcb.processID + " done. Wait: " + pcb.wait + " Turnaround: " + pcb.turnAround);
+          _Console.advanceLine();
         }
         //EC - Compare a byte in memory to the X reg, Sets the Z (zero) flag if equal
         public compareZ(address: number): void {

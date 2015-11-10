@@ -28,6 +28,7 @@ var TSOS;
         };
         Cpu.prototype.cycle = function () {
             _Kernel.krnTrace('CPU cycle');
+            _CpuScheduler.updatePcbTimes();
             TSOS.Control.updateMemoryTable();
             TSOS.Control.updateCpuTable();
             TSOS.Control.updatePcbTable();
@@ -153,6 +154,9 @@ var TSOS;
             _MemoryManager.setPartition(pcb.partition, false);
             _ResidentList.remove(pcb);
             TSOS.Control.updatePcbTable();
+            _Console.advanceLine();
+            _StdOut.putText("PID " + pcb.processID + " done. Wait: " + pcb.wait + " Turnaround: " + pcb.turnAround);
+            _Console.advanceLine();
         };
         Cpu.prototype.compareZ = function (address) {
             address += _CurrentPCB.base;

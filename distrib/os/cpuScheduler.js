@@ -59,6 +59,20 @@ var TSOS;
                 this.schedule();
             }
         };
+        CpuScheduler.prototype.updatePcbTimes = function () {
+            if (_CurrentPCB === null) {
+                console.log("No PCB to put in table");
+            }
+            else {
+                console.log("Updating Times");
+                _CurrentPCB.updateTimes();
+                if (!_ReadyQueue.isEmpty()) {
+                    for (var i = 0; i < _ReadyQueue.getSize(); i++) {
+                        _ReadyQueue.peek(i).updateTimes();
+                    }
+                }
+            }
+        };
         return CpuScheduler;
     })();
     TSOS.CpuScheduler = CpuScheduler;

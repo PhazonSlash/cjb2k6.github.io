@@ -80,8 +80,19 @@ module TSOS {
             console.log("End of Scheduling");
             this.schedule();
           }
-
-
         }
+      public updatePcbTimes(){
+        if (_CurrentPCB === null){
+          console.log("No PCB to put in table");
+        } else {
+          console.log("Updating Times");
+          _CurrentPCB.updateTimes();
+          if (!_ReadyQueue.isEmpty()){
+            for (var i: number = 0; i < _ReadyQueue.getSize(); i++){
+              _ReadyQueue.peek(i).updateTimes();
+            }
+          }
+        }
+      }
     }
 }
