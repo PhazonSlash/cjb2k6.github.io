@@ -89,7 +89,8 @@ module TSOS {
                 var interrupt = _KernelInterruptQueue.dequeue();
                 this.krnInterruptHandler(interrupt.irq, interrupt.params);
             } else if (_CPU.isExecuting && !_SingleStepMode) { // If there are no interrupts then run one CPU cycle if there is anything being processed. {
-                _CpuScheduler.schedule();
+                //_KernelInterruptQueue.enqueue(new Interrupt(TIMER_IRQ, "I don't know what to put here yet."));
+                this.krnTimerISR();
             } else {                      // If there are no interrupts and there is nothing being executed then just be idle. {
                 this.krnTrace("Idle");
             }
@@ -140,6 +141,7 @@ module TSOS {
         public krnTimerISR() {
             // The built-in TIMER (not clock) Interrupt Service Routine (as opposed to an ISR coming from a device driver). {
             // Check multiprogramming parameters and enforce quanta here. Call the scheduler / context switch here if necessary.
+            _CpuScheduler.schedule();
         }
 
         //

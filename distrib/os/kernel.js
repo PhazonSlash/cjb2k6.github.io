@@ -39,7 +39,7 @@ var TSOS;
                 this.krnInterruptHandler(interrupt.irq, interrupt.params);
             }
             else if (_CPU.isExecuting && !_SingleStepMode) {
-                _CpuScheduler.schedule();
+                this.krnTimerISR();
             }
             else {
                 this.krnTrace("Idle");
@@ -70,6 +70,7 @@ var TSOS;
             }
         };
         Kernel.prototype.krnTimerISR = function () {
+            _CpuScheduler.schedule();
         };
         Kernel.prototype.krnTrace = function (msg) {
             if (_Trace) {

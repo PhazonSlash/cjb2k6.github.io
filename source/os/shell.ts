@@ -424,12 +424,16 @@ module TSOS {
           if (!_ReadyQueue.isEmpty()){
             for(var i: number = 0; i < _ReadyQueue.getSize(); i++){
               if(i < _ReadyQueue.getSize() - 1){
-                str += _ReadyQueue.peek(i).processID + ", ";
+                if(_ReadyQueue.peek(i).processState != TERMINATED){
+                  str += _ReadyQueue.peek(i).processID + ", ";
+                }
               } else {
-                if (i > 0){
-                  str += "and " + _ReadyQueue.peek(i).processID + " are waiting.";
-                } else {
-                  str += _ReadyQueue.peek(i).processID + " is waiting.";
+                if(_ReadyQueue.peek(i).processState != TERMINATED){
+                  if (i > 0){
+                    str += "and " + _ReadyQueue.peek(i).processID + " are waiting.";
+                  } else {
+                    str += _ReadyQueue.peek(i).processID + " is waiting.";
+                  }
                 }
               }
 
