@@ -447,6 +447,7 @@ module TSOS {
               if (_CurrentPCB.processID === id){
                 _CurrentPCB.processState = TERMINATED;
                 _MemoryManager.setPartition(_CurrentPCB.partition, false);
+                _KernelInterruptQueue.enqueue(new Interrupt(CONTEXT_IRQ, "I don't know what to put here yet."));
                 killed = true;
               } else if (!_ReadyQueue.isEmpty()){
                 for(var i: number = 0; i < _ReadyQueue.getSize(); i++){
