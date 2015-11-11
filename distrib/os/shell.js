@@ -324,6 +324,7 @@ var TSOS;
         };
         Shell.prototype.shellClearMem = function (args) {
             _MemoryManager.clearAllMem();
+            _ResidentList.removeAll();
         };
         Shell.prototype.shellChangeWeapon = function (args) {
             weaponIndex++;

@@ -24,6 +24,12 @@ var TSOS;
             }
             return false;
         };
+        ResidentList.prototype.removeAll = function () {
+            while (this.size > 0) {
+                this.list.pop();
+                this.size--;
+            }
+        };
         ResidentList.prototype.getPcb = function (processID) {
             for (var i = 0; i < this.size; i++) {
                 if (processID === this.list[i].processID) {

@@ -478,6 +478,7 @@ module TSOS {
 
         public shellClearMem(args:string[]) {
           _MemoryManager.clearAllMem();
+          _ResidentList.removeAll();
         }
         //Command to change the beam weapon used for the shoot command
         //Weapons are Samus Aran's beam weapons from Metroid Prime

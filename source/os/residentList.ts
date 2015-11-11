@@ -37,6 +37,14 @@ module TSOS {
           }
           return false;
         }
+
+        public removeAll(): void{
+          while(this.size > 0){
+            this.list.pop();
+            this.size--;
+          }
+        }
+
         //Retrieves the specified Pcb from the list
         public getPcb(processID: number): Pcb {
           for(var i: number = 0; i < this.size; i++){
