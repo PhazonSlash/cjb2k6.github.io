@@ -64,7 +64,7 @@ module TSOS {
             // status
             sc = new ShellCommand(this.shellStatus,
                 "status",
-                "- Sets your current status.");
+                "<status> - Sets your current status.");
             this.commandList[this.commandList.length] = sc;
 
             // load
@@ -73,10 +73,10 @@ module TSOS {
                 "- Loads a program from the program input.");
             this.commandList[this.commandList.length] = sc;
 
-            // run
+            // run <PID>
             sc = new ShellCommand(this.shellRun,
                 "run",
-                "- Runs process of given Process ID (PID).");
+                "<PID> - Runs process of given Process ID number <PID>.");
             this.commandList[this.commandList.length] = sc;
 
             // runall
@@ -85,10 +85,22 @@ module TSOS {
                 "- Runs all loaded processes.");
             this.commandList[this.commandList.length] = sc;
 
-            // quantum
+            // quantum <integer>
             sc = new ShellCommand(this.shellQuantum,
                 "quantum",
-                "- Sets the time quantum for round robin scheduling.");
+                "<integer> - Sets the time quantum for round robin scheduling.");
+            this.commandList[this.commandList.length] = sc;
+
+            // setschedule <rr | fcfs | priority>
+            sc = new ShellCommand(this.shellSetSchedule,
+                "setschedule",
+                "<rr | fcfs | priority> - Sets the scheduling algorithm to be used (default: rr).");
+            this.commandList[this.commandList.length] = sc;
+
+            // getschedule
+            sc = new ShellCommand(this.shellGetSchedule,
+                "getschedule",
+                "- Returns the name of the scheduling algorithm currently in use.");
             this.commandList[this.commandList.length] = sc;
 
             // ps
@@ -97,16 +109,52 @@ module TSOS {
                 "- Displays all running processes.");
             this.commandList[this.commandList.length] = sc;
 
-            // kill
+            // kill <PID>
             sc = new ShellCommand(this.shellKill,
                 "kill",
-                "- Terminates a given process.");
+                "<PID> - Terminates a process by its process ID <PID>.");
             this.commandList[this.commandList.length] = sc;
 
             // clearmem
             sc = new ShellCommand(this.shellClearMem,
                 "clearmem",
                 "- Clears all partitions of memory.");
+            this.commandList[this.commandList.length] = sc;
+
+            // create <filename>
+            sc = new ShellCommand(this.shellCreate,
+                "create",
+                "<filename> - Create a file with the given <filename>.");
+            this.commandList[this.commandList.length] = sc;
+
+            // read <filename>
+            sc = new ShellCommand(this.shellRead,
+                "read",
+                "<filename> - Display the contents of a file with the given <filename>.");
+            this.commandList[this.commandList.length] = sc;
+
+            // write <filename> "data"
+            sc = new ShellCommand(this.shellWrite,
+                "write",
+                "<filename> \"data\" - Write the data in double quotes to the file <filename>.");
+            this.commandList[this.commandList.length] = sc;
+
+            // delete <filename>
+            sc = new ShellCommand(this.shellDelete,
+                "delete",
+                "<filename> - Remove <filename> from storage.");
+            this.commandList[this.commandList.length] = sc;
+
+            // format
+            sc = new ShellCommand(this.shellFormat,
+                "format",
+                "- Clears and initializes all data in the hard drive.");
+            this.commandList[this.commandList.length] = sc;
+
+            // ls
+            sc = new ShellCommand(this.shellLS,
+                "ls",
+                "- Lists the files that are currently in the file system.");
             this.commandList[this.commandList.length] = sc;
 
             // weaponchange
@@ -296,6 +344,48 @@ module TSOS {
            }
         }
 
+        public shellTrace(args:string[]) {
+            if (args.length > 0) {
+                var setting = args[0];
+                switch (setting) {
+                    case "on":
+                        if (_Trace && _SarcasticMode) {
+                            _StdOut.putText("Trace is already on, doofus.");
+                        } else {
+                            _Trace = true;
+                            _StdOut.putText("Trace ON");
+                        }
+                        break;
+                    case "off":
+                        _Trace = false;
+                        _StdOut.putText("Trace OFF");
+                        break;
+                    default:
+                        _StdOut.putText("Invalid arguement.  Usage: trace <on | off>.");
+                }
+            } else {
+                _StdOut.putText("Usage: trace <on | off>");
+            }
+        }
+
+        public shellRot13(args:string[]) {
+            if (args.length > 0) {
+                // Requires Utils.ts for rot13() function.
+                _StdOut.putText(args.join(' ') + " = '" + Utils.rot13(args.join(' ')) +"'");
+            } else {
+                _StdOut.putText("Usage: rot13 <string>  Please supply a string.");
+            }
+        }
+
+        public shellPrompt(args:string[]) {
+            if (args.length > 0) {
+                _OsShell.promptStr = args[0];
+            } else {
+                _StdOut.putText("Usage: prompt <string>  Please supply a string.");
+            }
+        }
+
+        //Information Commands --------------------------------------------------------------------------------------------------
         public shellTest(args:string[]) {
             _ResidentList.fillReadyQueue();
             var pcb: Pcb;
@@ -315,9 +405,34 @@ module TSOS {
             var currentDate = new Date();
             _StdOut.putText("Date: " + currentDate.toLocaleDateString() + " Time: " + currentDate.toLocaleTimeString());
         }
+
         //Phendrana Drifts is the snowy area of the planet Tallon IV in Metroid Prime
         public shellWhereAmI(args:string[]) {
             _StdOut.putText("Chillin' in Phendrana Drifts.");
+        }
+
+        public shellHelp(args:string[]) {
+            _StdOut.putText("Commands:");
+            for (var i in _OsShell.commandList) {
+                _StdOut.advanceLine();
+                _StdOut.putText("  " + _OsShell.commandList[i].command + " " + _OsShell.commandList[i].description);
+            }
+        }
+
+        public shellMan(args:string[]) {
+            if (args.length > 0) {
+                var topic = args[0];
+                switch (topic) {
+                    case "help":
+                        _StdOut.putText("Help displays a list of (hopefully) valid commands.");
+                        break;
+                    // TODO: Make descriptive MANual page entries for the the rest of the shell commands here.
+                    default:
+                        _StdOut.putText("No manual entry for " + args[0] + ".");
+                }
+            } else {
+                _StdOut.putText("Usage: man <topic>  Please supply a topic.");
+            }
         }
 
         public shellStatus(args:string[]) {
@@ -333,6 +448,7 @@ module TSOS {
             }
         }
 
+        //Program Commands ---------------------------------------------------------------------------------------------
         public shellLoad(args:string[]) {
             var prgm:string = (<HTMLInputElement>document.getElementById("taProgramInput")).value;
             if(prgm.length > 0){
@@ -364,7 +480,6 @@ module TSOS {
             }else{
                 _StdOut.putText("Error: Please type in a program.");
             }
-
         }
 
         public shellRun(args:string[]) {
@@ -396,7 +511,7 @@ module TSOS {
             _CPU.isExecuting = true;
           }
         }
-
+        //Process/Scheduling Commands ----------------------------------------------------------------------
         public shellQuantum(args:string[]) {
           if (args.length > 0){
             if (args[0].match(/[0-9]+/g)){
@@ -414,6 +529,14 @@ module TSOS {
           } else {
             _StdOut.putText("Error: Please enter a positive number.");
           }
+        }
+
+        public shellSetSchedule(args:string[]) {
+
+        }
+
+        public shellGetSchedule(args:string[]) {
+
         }
 
         public shellPs(args:string[]) {
@@ -476,10 +599,38 @@ module TSOS {
           }
         }
 
+        //Memory Commands ---------------------------------------------------------------------------------------------------
         public shellClearMem(args:string[]) {
           _MemoryManager.clearAllMem();
           _ResidentList.removeAll();
         }
+
+        //HDD/File System Commands ------------------------------------------------------------------------------------------
+        public shellCreate(args:string[]) {
+
+        }
+
+        public shellRead(args:string[]) {
+
+        }
+
+        public shellWrite(args:string[]) {
+
+        }
+
+        public shellDelete(args:string[]) {
+
+        }
+
+        public shellFormat(args:string[]) {
+
+        }
+
+        public shellLS(args:string[]) {
+
+        }
+
+        //Useless Commands --------------------------------------------------------------------------------------------------
         //Command to change the beam weapon used for the shoot command
         //Weapons are Samus Aran's beam weapons from Metroid Prime
         public shellChangeWeapon(args:string[]) {
@@ -507,18 +658,9 @@ module TSOS {
                     break;
             }
         }
-
+        //Break Everything Commands ------------------------------------------------------------------------------------
         public shellBSOD(args:string[]) {
-            //_DrawingContext.clearRect(0, 0, _Canvas.width, _Canvas.height);
             _Kernel.krnTrapError("BSOD Test");
-        }
-
-        public shellHelp(args:string[]) {
-            _StdOut.putText("Commands:");
-            for (var i in _OsShell.commandList) {
-                _StdOut.advanceLine();
-                _StdOut.putText("  " + _OsShell.commandList[i].command + " " + _OsShell.commandList[i].description);
-            }
         }
 
         public shellShutdown(args:string[]) {
@@ -527,68 +669,10 @@ module TSOS {
             _Kernel.krnShutdown();
             // TODO: Stop the final prompt from being displayed.  If possible.  Not a high priority.  (Damn OCD!)
         }
-
+        //Console Management Commands ---------------------------------------------------------------------------------
         public shellCls(args:string[]) {
             _StdOut.clearScreen();
             _StdOut.resetXY();
         }
-
-        public shellMan(args:string[]) {
-            if (args.length > 0) {
-                var topic = args[0];
-                switch (topic) {
-                    case "help":
-                        _StdOut.putText("Help displays a list of (hopefully) valid commands.");
-                        break;
-                    // TODO: Make descriptive MANual page entries for the the rest of the shell commands here.
-                    default:
-                        _StdOut.putText("No manual entry for " + args[0] + ".");
-                }
-            } else {
-                _StdOut.putText("Usage: man <topic>  Please supply a topic.");
-            }
-        }
-
-        public shellTrace(args:string[]) {
-            if (args.length > 0) {
-                var setting = args[0];
-                switch (setting) {
-                    case "on":
-                        if (_Trace && _SarcasticMode) {
-                            _StdOut.putText("Trace is already on, doofus.");
-                        } else {
-                            _Trace = true;
-                            _StdOut.putText("Trace ON");
-                        }
-                        break;
-                    case "off":
-                        _Trace = false;
-                        _StdOut.putText("Trace OFF");
-                        break;
-                    default:
-                        _StdOut.putText("Invalid arguement.  Usage: trace <on | off>.");
-                }
-            } else {
-                _StdOut.putText("Usage: trace <on | off>");
-            }
-        }
-
-        public shellRot13(args:string[]) {
-            if (args.length > 0) {
-                // Requires Utils.ts for rot13() function.
-                _StdOut.putText(args.join(' ') + " = '" + Utils.rot13(args.join(' ')) +"'");
-            } else {
-                _StdOut.putText("Usage: rot13 <string>  Please supply a string.");
-            }
-        }
-
-        public shellPrompt(args:string[]) {
-            if (args.length > 0) {
-                _OsShell.promptStr = args[0];
-            } else {
-                _StdOut.putText("Usage: prompt <string>  Please supply a string.");
-            }
-        }
-
     }
 }

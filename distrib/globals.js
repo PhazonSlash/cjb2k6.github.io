@@ -1,5 +1,5 @@
 var APP_NAME = "PhazonOS";
-var APP_VERSION = "0.6";
+var APP_VERSION = "6.6";
 var CPU_CLOCK_INTERVAL = 100;
 var TIMER_IRQ = 0;
 var KEYBOARD_IRQ = 1;
@@ -7,6 +7,10 @@ var CONTEXT_IRQ = 2;
 var MEMORY_SIZE = 256;
 var MEMORY_PARTITIONS = 3;
 var TOTAL_MEMORY_SIZE = MEMORY_PARTITIONS * MEMORY_SIZE;
+var TRACKS = 4;
+var SECTORS = 8;
+var BLOCKS = 8;
+var BLOCK_SIZE = 64;
 var NEW = 0;
 var RUNNING = 1;
 var WAITING = 2;

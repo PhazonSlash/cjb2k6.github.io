@@ -21,21 +21,37 @@ var TSOS;
             this.commandList[this.commandList.length] = sc;
             sc = new TSOS.ShellCommand(this.shellWhereAmI, "whereami", "- Displays your current location.");
             this.commandList[this.commandList.length] = sc;
-            sc = new TSOS.ShellCommand(this.shellStatus, "status", "- Sets your current status.");
+            sc = new TSOS.ShellCommand(this.shellStatus, "status", "<status> - Sets your current status.");
             this.commandList[this.commandList.length] = sc;
             sc = new TSOS.ShellCommand(this.shellLoad, "load", "- Loads a program from the program input.");
             this.commandList[this.commandList.length] = sc;
-            sc = new TSOS.ShellCommand(this.shellRun, "run", "- Runs process of given Process ID (PID).");
+            sc = new TSOS.ShellCommand(this.shellRun, "run", "<PID> - Runs process of given Process ID number <PID>.");
             this.commandList[this.commandList.length] = sc;
             sc = new TSOS.ShellCommand(this.shellRunAll, "runall", "- Runs all loaded processes.");
             this.commandList[this.commandList.length] = sc;
-            sc = new TSOS.ShellCommand(this.shellQuantum, "quantum", "- Sets the time quantum for round robin scheduling.");
+            sc = new TSOS.ShellCommand(this.shellQuantum, "quantum", "<integer> - Sets the time quantum for round robin scheduling.");
+            this.commandList[this.commandList.length] = sc;
+            sc = new TSOS.ShellCommand(this.shellSetSchedule, "setschedule", "<rr | fcfs | priority> - Sets the scheduling algorithm to be used (default: rr).");
+            this.commandList[this.commandList.length] = sc;
+            sc = new TSOS.ShellCommand(this.shellGetSchedule, "getschedule", "- Returns the name of the scheduling algorithm currently in use.");
             this.commandList[this.commandList.length] = sc;
             sc = new TSOS.ShellCommand(this.shellPs, "ps", "- Displays all running processes.");
             this.commandList[this.commandList.length] = sc;
-            sc = new TSOS.ShellCommand(this.shellKill, "kill", "- Terminates a given process.");
+            sc = new TSOS.ShellCommand(this.shellKill, "kill", "<PID> - Terminates a process by its process ID <PID>.");
             this.commandList[this.commandList.length] = sc;
             sc = new TSOS.ShellCommand(this.shellClearMem, "clearmem", "- Clears all partitions of memory.");
+            this.commandList[this.commandList.length] = sc;
+            sc = new TSOS.ShellCommand(this.shellCreate, "create", "<filename> - Create a file with the given <filename>.");
+            this.commandList[this.commandList.length] = sc;
+            sc = new TSOS.ShellCommand(this.shellRead, "read", "<filename> - Display the contents of a file with the given <filename>.");
+            this.commandList[this.commandList.length] = sc;
+            sc = new TSOS.ShellCommand(this.shellWrite, "write", "<filename> \"data\" - Write the data in double quotes to the file <filename>.");
+            this.commandList[this.commandList.length] = sc;
+            sc = new TSOS.ShellCommand(this.shellDelete, "delete", "<filename> - Remove <filename> from storage.");
+            this.commandList[this.commandList.length] = sc;
+            sc = new TSOS.ShellCommand(this.shellFormat, "format", "- Clears and initializes all data in the hard drive.");
+            this.commandList[this.commandList.length] = sc;
+            sc = new TSOS.ShellCommand(this.shellLS, "ls", "- Lists the files that are currently in the file system.");
             this.commandList[this.commandList.length] = sc;
             sc = new TSOS.ShellCommand(this.shellChangeWeapon, "changeweapon", "- Switches to next beam weapon.");
             this.commandList[this.commandList.length] = sc;
@@ -146,6 +162,47 @@ var TSOS;
                 _StdOut.putText("For what?");
             }
         };
+        Shell.prototype.shellTrace = function (args) {
+            if (args.length > 0) {
+                var setting = args[0];
+                switch (setting) {
+                    case "on":
+                        if (_Trace && _SarcasticMode) {
+                            _StdOut.putText("Trace is already on, doofus.");
+                        }
+                        else {
+                            _Trace = true;
+                            _StdOut.putText("Trace ON");
+                        }
+                        break;
+                    case "off":
+                        _Trace = false;
+                        _StdOut.putText("Trace OFF");
+                        break;
+                    default:
+                        _StdOut.putText("Invalid arguement.  Usage: trace <on | off>.");
+                }
+            }
+            else {
+                _StdOut.putText("Usage: trace <on | off>");
+            }
+        };
+        Shell.prototype.shellRot13 = function (args) {
+            if (args.length > 0) {
+                _StdOut.putText(args.join(' ') + " = '" + TSOS.Utils.rot13(args.join(' ')) + "'");
+            }
+            else {
+                _StdOut.putText("Usage: rot13 <string>  Please supply a string.");
+            }
+        };
+        Shell.prototype.shellPrompt = function (args) {
+            if (args.length > 0) {
+                _OsShell.promptStr = args[0];
+            }
+            else {
+                _StdOut.putText("Usage: prompt <string>  Please supply a string.");
+            }
+        };
         Shell.prototype.shellTest = function (args) {
             _ResidentList.fillReadyQueue();
             var pcb;
@@ -165,6 +222,28 @@ var TSOS;
         };
         Shell.prototype.shellWhereAmI = function (args) {
             _StdOut.putText("Chillin' in Phendrana Drifts.");
+        };
+        Shell.prototype.shellHelp = function (args) {
+            _StdOut.putText("Commands:");
+            for (var i in _OsShell.commandList) {
+                _StdOut.advanceLine();
+                _StdOut.putText("  " + _OsShell.commandList[i].command + " " + _OsShell.commandList[i].description);
+            }
+        };
+        Shell.prototype.shellMan = function (args) {
+            if (args.length > 0) {
+                var topic = args[0];
+                switch (topic) {
+                    case "help":
+                        _StdOut.putText("Help displays a list of (hopefully) valid commands.");
+                        break;
+                    default:
+                        _StdOut.putText("No manual entry for " + args[0] + ".");
+                }
+            }
+            else {
+                _StdOut.putText("Usage: man <topic>  Please supply a topic.");
+            }
         };
         Shell.prototype.shellStatus = function (args) {
             if (args.length > 0) {
@@ -261,6 +340,10 @@ var TSOS;
                 _StdOut.putText("Error: Please enter a positive number.");
             }
         };
+        Shell.prototype.shellSetSchedule = function (args) {
+        };
+        Shell.prototype.shellGetSchedule = function (args) {
+        };
         Shell.prototype.shellPs = function (args) {
             if (_CurrentPCB !== null) {
                 _StdOut.putText("PID " + _CurrentPCB.processID + " is currently running. ");
@@ -326,6 +409,18 @@ var TSOS;
             _MemoryManager.clearAllMem();
             _ResidentList.removeAll();
         };
+        Shell.prototype.shellCreate = function (args) {
+        };
+        Shell.prototype.shellRead = function (args) {
+        };
+        Shell.prototype.shellWrite = function (args) {
+        };
+        Shell.prototype.shellDelete = function (args) {
+        };
+        Shell.prototype.shellFormat = function (args) {
+        };
+        Shell.prototype.shellLS = function (args) {
+        };
         Shell.prototype.shellChangeWeapon = function (args) {
             weaponIndex++;
             if (weaponIndex >= 4) {
@@ -353,13 +448,6 @@ var TSOS;
         Shell.prototype.shellBSOD = function (args) {
             _Kernel.krnTrapError("BSOD Test");
         };
-        Shell.prototype.shellHelp = function (args) {
-            _StdOut.putText("Commands:");
-            for (var i in _OsShell.commandList) {
-                _StdOut.advanceLine();
-                _StdOut.putText("  " + _OsShell.commandList[i].command + " " + _OsShell.commandList[i].description);
-            }
-        };
         Shell.prototype.shellShutdown = function (args) {
             _StdOut.putText("Shutting down...");
             _Kernel.krnShutdown();
@@ -367,62 +455,6 @@ var TSOS;
         Shell.prototype.shellCls = function (args) {
             _StdOut.clearScreen();
             _StdOut.resetXY();
-        };
-        Shell.prototype.shellMan = function (args) {
-            if (args.length > 0) {
-                var topic = args[0];
-                switch (topic) {
-                    case "help":
-                        _StdOut.putText("Help displays a list of (hopefully) valid commands.");
-                        break;
-                    default:
-                        _StdOut.putText("No manual entry for " + args[0] + ".");
-                }
-            }
-            else {
-                _StdOut.putText("Usage: man <topic>  Please supply a topic.");
-            }
-        };
-        Shell.prototype.shellTrace = function (args) {
-            if (args.length > 0) {
-                var setting = args[0];
-                switch (setting) {
-                    case "on":
-                        if (_Trace && _SarcasticMode) {
-                            _StdOut.putText("Trace is already on, doofus.");
-                        }
-                        else {
-                            _Trace = true;
-                            _StdOut.putText("Trace ON");
-                        }
-                        break;
-                    case "off":
-                        _Trace = false;
-                        _StdOut.putText("Trace OFF");
-                        break;
-                    default:
-                        _StdOut.putText("Invalid arguement.  Usage: trace <on | off>.");
-                }
-            }
-            else {
-                _StdOut.putText("Usage: trace <on | off>");
-            }
-        };
-        Shell.prototype.shellRot13 = function (args) {
-            if (args.length > 0) {
-                _StdOut.putText(args.join(' ') + " = '" + TSOS.Utils.rot13(args.join(' ')) + "'");
-            }
-            else {
-                _StdOut.putText("Usage: rot13 <string>  Please supply a string.");
-            }
-        };
-        Shell.prototype.shellPrompt = function (args) {
-            if (args.length > 0) {
-                _OsShell.promptStr = args[0];
-            }
-            else {
-                _StdOut.putText("Usage: prompt <string>  Please supply a string.");
-            }
         };
         return Shell;
     })();

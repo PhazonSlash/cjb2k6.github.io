@@ -12,7 +12,7 @@
 // Global CONSTANTS (TypeScript 1.5 introduced const. Very cool.)
 //
 const APP_NAME: string    = "PhazonOS";   // 'cause Metroid Prime is awesome.
-const APP_VERSION: string = "0.6";   // What did you expect?
+const APP_VERSION: string = "6.6";   // What did you expect?
 
 const CPU_CLOCK_INTERVAL: number = 100;   // This is in ms (milliseconds) so 1000 = 1 second.
 
@@ -22,9 +22,16 @@ const KEYBOARD_IRQ: number = 1;
 
 const CONTEXT_IRQ: number = 2;
 
+//Memory Info
 const MEMORY_SIZE: number = 256;
 const MEMORY_PARTITIONS: number = 3;
 const TOTAL_MEMORY_SIZE: number = MEMORY_PARTITIONS * MEMORY_SIZE;
+
+//Harddrive Info
+const TRACKS: number = 4;
+const SECTORS: number = 8;
+const BLOCKS: number = 8;
+const BLOCK_SIZE: number = 64;
 
 //Process States
 const NEW: number = 0;
