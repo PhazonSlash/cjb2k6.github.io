@@ -97,6 +97,7 @@ module TSOS {
             _CPU.init();       //       There's more to do, like dealing with scheduling and such, but this would be a start. Pretty cool.
 
             _MemoryManager = new MemoryManager();
+            _HardDrive = new HardDrive();
             _ReadyQueue = new Queue<Pcb>();
             _ResidentList = new ResidentList();
             _CpuScheduler = new CpuScheduler();

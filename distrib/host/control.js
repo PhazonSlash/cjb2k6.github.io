@@ -32,6 +32,7 @@ var TSOS;
             _CPU = new TSOS.Cpu();
             _CPU.init();
             _MemoryManager = new TSOS.MemoryManager();
+            _HardDrive = new TSOS.HardDrive();
             _ReadyQueue = new TSOS.Queue();
             _ResidentList = new TSOS.ResidentList();
             _CpuScheduler = new TSOS.CpuScheduler();

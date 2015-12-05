@@ -46,6 +46,7 @@ const TERMINATED: number = 4;
 // TODO: Make a global object and use that instead of the "_" naming convention in the global namespace.
 //
 var _CPU: TSOS.Cpu;  // Utilize TypeScript's type annotation system to ensure that _CPU is an instance of the Cpu class.
+var _HardDrive: TSOS.HardDrive;
 
 var _OSclock: number = 0;  // Page 23.
 
@@ -91,6 +92,7 @@ var _SingleStepMode: boolean = false;
 
 // Global Device Driver Objects - page 12
 var _krnKeyboardDriver; //  = null;
+var _krnHardDriveDriver: TSOS.DeviceDriverHardDrive;
 
 var _hardwareClockID: number = null;
 

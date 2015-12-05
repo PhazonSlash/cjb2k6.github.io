@@ -204,14 +204,6 @@ var TSOS;
             }
         };
         Shell.prototype.shellTest = function (args) {
-            _ResidentList.fillReadyQueue();
-            var pcb;
-            while ((pcb = _ReadyQueue.dequeue()) != undefined) {
-                _ResidentList.remove(pcb);
-                _MemoryManager.setPartition(pcb.partition, false);
-                console.log("Removed: " + pcb.processID);
-            }
-            console.log(_ResidentList.printList());
         };
         Shell.prototype.shellVer = function (args) {
             _StdOut.putText(APP_NAME + " version " + APP_VERSION);
@@ -418,6 +410,8 @@ var TSOS;
         Shell.prototype.shellDelete = function (args) {
         };
         Shell.prototype.shellFormat = function (args) {
+            _krnHardDriveDriver.krnHddFormat();
+            _StdOut.putText("Hard Drive Formated.");
         };
         Shell.prototype.shellLS = function (args) {
         };

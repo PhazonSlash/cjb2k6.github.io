@@ -387,14 +387,7 @@ module TSOS {
 
         //Information Commands --------------------------------------------------------------------------------------------------
         public shellTest(args:string[]) {
-            _ResidentList.fillReadyQueue();
-            var pcb: Pcb;
-            while((pcb = _ReadyQueue.dequeue()) != undefined){
-              _ResidentList.remove(pcb);
-              _MemoryManager.setPartition(pcb.partition, false);
-              console.log("Removed: " + pcb.processID);
-            }
-            console.log(_ResidentList.printList());
+
         }
 
         public shellVer(args:string[]) {
@@ -623,7 +616,8 @@ module TSOS {
         }
 
         public shellFormat(args:string[]) {
-
+          _krnHardDriveDriver.krnHddFormat();
+          _StdOut.putText("Hard Drive Formated.");
         }
 
         public shellLS(args:string[]) {
