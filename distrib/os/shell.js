@@ -204,6 +204,9 @@ var TSOS;
             }
         };
         Shell.prototype.shellTest = function (args) {
+            _krnHardDriveDriver.createFile("alan");
+            console.log(_HardDrive.read("001"));
+            console.log(_HardDrive.read("100"));
         };
         Shell.prototype.shellVer = function (args) {
             _StdOut.putText(APP_NAME + " version " + APP_VERSION);
@@ -402,6 +405,23 @@ var TSOS;
             _ResidentList.removeAll();
         };
         Shell.prototype.shellCreate = function (args) {
+            if (args.length > 0) {
+                var name = args[0];
+                if (name.length <= 60) {
+                    if (_krnHardDriveDriver.createFile(name)) {
+                        _StdOut.putText("Created file \"" + name + "\".");
+                    }
+                    else {
+                        _StdOut.putText("Failed to create file \"" + name + "\". Check log for details.");
+                    }
+                }
+                else {
+                    _StdOut.putText("Error: Name must be 60 characters or less.");
+                }
+            }
+            else {
+                _StdOut.putText("Error: Please enter a name for the file.");
+            }
         };
         Shell.prototype.shellRead = function (args) {
         };

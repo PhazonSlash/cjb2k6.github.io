@@ -36,6 +36,83 @@ var TSOS;
             }
             this.formatted = true;
         };
+        DeviceDriverHardDrive.prototype.isInUse = function (tsb) {
+            return (_HardDrive.read(tsb).charAt(0) === "1");
+        };
+        DeviceDriverHardDrive.prototype.setInUse = function (tsb, inUse) {
+            var block = _HardDrive.read(tsb);
+            if (inUse) {
+                block = block.slice(1, block.length - 1);
+                block = "1" + block;
+            }
+            else {
+                block = block.slice(1, block.length - 1);
+                block = "0" + block;
+            }
+            _HardDrive.write(tsb, block);
+        };
+        DeviceDriverHardDrive.prototype.getNextFreeDir = function () {
+            var t = 0;
+            var tsb = "";
+            var found = false;
+            for (var s = 0; s < SECTORS && !found; s++) {
+                for (var b = 0; b < BLOCKS && !found; b++) {
+                    tsb = "" + t + s + b;
+                    if (!this.isInUse(tsb)) {
+                        found = true;
+                    }
+                }
+            }
+            if (!found) {
+                return "";
+            }
+            return tsb;
+        };
+        DeviceDriverHardDrive.prototype.getNextFreeFile = function () {
+            var tsb = "";
+            var found = false;
+            for (var t = 1; t < TRACKS && !found; t++) {
+                for (var s = 0; s < SECTORS && !found; s++) {
+                    for (var b = 0; b < BLOCKS && !found; b++) {
+                        tsb = "" + t + s + b;
+                        if (!this.isInUse(tsb)) {
+                            found = true;
+                        }
+                    }
+                }
+            }
+            if (!found) {
+                return "";
+            }
+            return tsb;
+        };
+        DeviceDriverHardDrive.prototype.createFile = function (name) {
+            var fileTSB = this.getNextFreeFile();
+            var index;
+            if (fileTSB !== "") {
+                this.setInUse(fileTSB, true);
+                var dirBlock = "1" + fileTSB;
+                for (index = 0; index < name.length; index++) {
+                    dirBlock += name.charCodeAt(index).toString(16).toUpperCase();
+                }
+                for (var i = index; i < BLOCK_SIZE - 4; i++) {
+                    dirBlock += "00";
+                }
+                var dirTSB = this.getNextFreeDir();
+                if (dirTSB !== "") {
+                    _HardDrive.write(dirTSB, dirBlock);
+                }
+                else {
+                    console.log("No free directory space found.");
+                    return false;
+                }
+            }
+            else {
+                console.log("No free file space found.");
+                return false;
+            }
+            return true;
+        };
         return DeviceDriverHardDrive;
     })(TSOS.DeviceDriver);
     TSOS.DeviceDriverHardDrive = DeviceDriverHardDrive;
