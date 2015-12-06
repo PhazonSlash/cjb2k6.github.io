@@ -106,6 +106,60 @@ module TSOS {
         return tsb;
       }
 
+      public getFileByName(name: string): string {
+        var tsb: string = ""; // The output tsb
+        var t: number = 0; // The track reserved for directories
+        var found: boolean = false;
+        //Search directory for filename
+        for (var s: number = 0; s < SECTORS && !found; s++){
+          for (var b: number = 0; b < BLOCKS  && !found; b++){
+            tsb = "" + t + s + b;
+            if (this.isInUse(tsb)){
+              if (this.checkFileName(name, tsb)) {
+                console.log("Found it!");
+                found = true;
+              }
+            }
+          }
+        }
+        if (!found) {
+          return "";
+        }
+        return tsb;
+      }
+
+      public checkFileName(name: string, tsb: string): boolean{
+        var data = this.getStringDataFromFile(tsb);
+        console.log(name + ".");
+        console.log(data + ".");
+        if (data.localeCompare(name) === 0){
+          console.log("Matched!");
+          return true;
+        }
+        return false;
+      }
+
+      public getStringDataFromFile(tsb: string): string {
+        var data = _HardDrive.read(tsb);
+        var str: string = "";
+        var currbyte: string = "";
+        var index = 4;
+
+        while (index + 1 < BLOCK_SIZE && currbyte !== "00"){
+          currbyte = data.charAt(index) + data.charAt(index + 1);
+          index += 2;
+
+          str += String.fromCharCode(parseInt(currbyte, 16));
+        }
+        return str;
+      }
+
+      public getTsbFromBlock(tsb: string): string{
+        var block = _HardDrive.read(tsb);
+        var tsb: string = "" + block.charAt(1) + block.charAt(2) + block.charAt(3);
+        return tsb;
+      }
+
       public createFile(name: string): boolean {
         var fileTSB: string = this.getNextFreeFile();
         var index: number;
@@ -135,6 +189,52 @@ module TSOS {
           return false;
         }
         return true;
+      }
+
+      public writeToFile(name: string, data: string){
+
+        //TODO check to see if file has existing reference tsbs and remove them
+
+        var dirTSB: string = this.getFileByName(name);
+        if (dirTSB === ""){
+          _StdOut.putText("Error: File " + name + " does not exist.");
+        } else {
+          var fileTSB: string = this.getTsbFromBlock(dirTSB);
+          var size: number = data.length;
+
+          this.writeData(fileTSB, data, size);
+        }
+      }
+
+      public writeData(fileTSB: string, data: string, size: number) {
+        var limit: number = 60;
+        var block: string = "";
+        var index: number;
+        //Convert file data to hex and write to block
+        for (index = 0; index < data.length && index < limit; index++) {
+          block += data.charCodeAt(index).toString(16).toUpperCase();
+        }
+
+        if (size <= limit){ //Base Case
+          //Fill the rest of the block with zeroes
+          for (var i: number = index; i < BLOCK_SIZE - 4; i++){
+            block += "00";
+          }
+          //Put a null reference to next block
+          block = "1~~~" + block;
+          //Write it
+          _HardDrive.write(fileTSB, block);
+          console.log("Wrote: " + _HardDrive.read(fileTSB));
+        } else { //Fill this file and put the rest in new ones
+          var newFileTSB = this.getNextFreeFile();
+          this.setInUse(newFileTSB, true);
+          block = "1" + newFileTSB + block;
+          _HardDrive.write(fileTSB, block);
+          console.log("Wrote: " + _HardDrive.read(fileTSB));
+          var remainingData = data.substring(limit, data.length);
+          console.log("Remaining data: " + remainingData);
+          this.writeData(newFileTSB, remainingData, size - limit);
+        }
       }
     }
 }

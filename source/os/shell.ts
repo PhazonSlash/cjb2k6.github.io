@@ -390,6 +390,8 @@ module TSOS {
           _krnHardDriveDriver.createFile("alan");
           console.log(_HardDrive.read("001"));
           console.log(_HardDrive.read("100"));
+
+          _krnHardDriveDriver.writeToFile("alan", "this right here is 68 bytes don't you know lololololololololalanalan");
         }
 
         public shellVer(args:string[]) {
@@ -572,8 +574,8 @@ module TSOS {
                 _KernelInterruptQueue.enqueue(new Interrupt(CONTEXT_IRQ, "I don't know what to put here yet."));
                 killed = true;
               } else if (!_ReadyQueue.isEmpty()){
-                for(var i: number = 0; i < _ReadyQueue.getSize(); i++){
-                  if(_ReadyQueue.peek(i).processID === id){
+                for (var i: number = 0; i < _ReadyQueue.getSize(); i++){
+                  if (_ReadyQueue.peek(i).processID === id){
                     _ReadyQueue.peek(i).processState = TERMINATED;
                     _MemoryManager.setPartition(_ReadyQueue.peek(i).partition, false);
                     killed = true;
@@ -623,7 +625,29 @@ module TSOS {
         }
 
         public shellWrite(args:string[]) {
-
+          if (_krnHardDriveDriver.formatted) {
+            if (args.length < 2) {
+              _StdOut.putText("Error: The proper syntax is: write filename \"data\"");
+            }
+            var name: string = args[0];
+            var data: string = "";
+            for (var i = 1; i < args.length; i++){
+              if ((i+1) <= args.length){
+                data += " ";
+              }
+              data += args[i];
+            }
+            if (("" + data.charAt(1)).localeCompare("\"") === 0 && ("" + data.charAt(data.length - 1)).localeCompare("\"") === 0) {
+              data = data.substring(2, data.length - 1);
+              console.log("data: " + data)
+              _krnHardDriveDriver.writeToFile(name, data);
+            } else {
+              console.log(data + data.charAt(1) + data.charAt(data.length - 1));
+              _StdOut.putText("Error: The data to be written must be within double quotes.");
+            }
+          } else {
+              _StdOut.putText("Error: Hard Drive must be formatted before use.");
+          }
         }
 
         public shellDelete(args:string[]) {
@@ -631,8 +655,12 @@ module TSOS {
         }
 
         public shellFormat(args:string[]) {
-          _krnHardDriveDriver.krnHddFormat();
-          _StdOut.putText("Hard Drive Formated.");
+          if (_HardDrive.supported) {
+            _krnHardDriveDriver.krnHddFormat();
+            _StdOut.putText("Hard Drive Formated.");
+          } else {
+            _StdOut.putText("Hard Drive is not supported in your browser.");
+          }
         }
 
         public shellLS(args:string[]) {

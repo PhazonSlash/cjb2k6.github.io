@@ -86,6 +86,53 @@ var TSOS;
             }
             return tsb;
         };
+        DeviceDriverHardDrive.prototype.getFileByName = function (name) {
+            var tsb = "";
+            var t = 0;
+            var found = false;
+            for (var s = 0; s < SECTORS && !found; s++) {
+                for (var b = 0; b < BLOCKS && !found; b++) {
+                    tsb = "" + t + s + b;
+                    if (this.isInUse(tsb)) {
+                        if (this.checkFileName(name, tsb)) {
+                            console.log("Found it!");
+                            found = true;
+                        }
+                    }
+                }
+            }
+            if (!found) {
+                return "";
+            }
+            return tsb;
+        };
+        DeviceDriverHardDrive.prototype.checkFileName = function (name, tsb) {
+            var data = this.getStringDataFromFile(tsb);
+            console.log(name + ".");
+            console.log(data + ".");
+            if (data.localeCompare(name) === 0) {
+                console.log("Matched!");
+                return true;
+            }
+            return false;
+        };
+        DeviceDriverHardDrive.prototype.getStringDataFromFile = function (tsb) {
+            var data = _HardDrive.read(tsb);
+            var str = "";
+            var currbyte = "";
+            var index = 4;
+            while (index + 1 < BLOCK_SIZE && currbyte !== "00") {
+                currbyte = data.charAt(index) + data.charAt(index + 1);
+                index += 2;
+                str += String.fromCharCode(parseInt(currbyte, 16));
+            }
+            return str;
+        };
+        DeviceDriverHardDrive.prototype.getTsbFromBlock = function (tsb) {
+            var block = _HardDrive.read(tsb);
+            var tsb = "" + block.charAt(1) + block.charAt(2) + block.charAt(3);
+            return tsb;
+        };
         DeviceDriverHardDrive.prototype.createFile = function (name) {
             var fileTSB = this.getNextFreeFile();
             var index;
@@ -112,6 +159,43 @@ var TSOS;
                 return false;
             }
             return true;
+        };
+        DeviceDriverHardDrive.prototype.writeToFile = function (name, data) {
+            var dirTSB = this.getFileByName(name);
+            if (dirTSB === "") {
+                _StdOut.putText("Error: File " + name + " does not exist.");
+            }
+            else {
+                var fileTSB = this.getTsbFromBlock(dirTSB);
+                var size = data.length;
+                this.writeData(fileTSB, data, size);
+            }
+        };
+        DeviceDriverHardDrive.prototype.writeData = function (fileTSB, data, size) {
+            var limit = 60;
+            var block = "";
+            var index;
+            for (index = 0; index < data.length && index < limit; index++) {
+                block += data.charCodeAt(index).toString(16).toUpperCase();
+            }
+            if (size <= limit) {
+                for (var i = index; i < BLOCK_SIZE - 4; i++) {
+                    block += "00";
+                }
+                block = "1~~~" + block;
+                _HardDrive.write(fileTSB, block);
+                console.log("Wrote: " + _HardDrive.read(fileTSB));
+            }
+            else {
+                var newFileTSB = this.getNextFreeFile();
+                this.setInUse(newFileTSB, true);
+                block = "1" + newFileTSB + block;
+                _HardDrive.write(fileTSB, block);
+                console.log("Wrote: " + _HardDrive.read(fileTSB));
+                var remainingData = data.substring(limit, data.length);
+                console.log("Remaining data: " + remainingData);
+                this.writeData(newFileTSB, remainingData, size - limit);
+            }
         };
         return DeviceDriverHardDrive;
     })(TSOS.DeviceDriver);

@@ -207,6 +207,7 @@ var TSOS;
             _krnHardDriveDriver.createFile("alan");
             console.log(_HardDrive.read("001"));
             console.log(_HardDrive.read("100"));
+            _krnHardDriveDriver.writeToFile("alan", "this right here is 68 bytes don't you know lololololololololalanalan");
         };
         Shell.prototype.shellVer = function (args) {
             _StdOut.putText(APP_NAME + " version " + APP_VERSION);
@@ -426,12 +427,42 @@ var TSOS;
         Shell.prototype.shellRead = function (args) {
         };
         Shell.prototype.shellWrite = function (args) {
+            if (_krnHardDriveDriver.formatted) {
+                if (args.length < 2) {
+                    _StdOut.putText("Error: The proper syntax is: write filename \"data\"");
+                }
+                var name = args[0];
+                var data = "";
+                for (var i = 1; i < args.length; i++) {
+                    if ((i + 1) <= args.length) {
+                        data += " ";
+                    }
+                    data += args[i];
+                }
+                if (("" + data.charAt(1)).localeCompare("\"") === 0 && ("" + data.charAt(data.length - 1)).localeCompare("\"") === 0) {
+                    data = data.substring(2, data.length - 1);
+                    console.log("data: " + data);
+                    _krnHardDriveDriver.writeToFile(name, data);
+                }
+                else {
+                    console.log(data + data.charAt(1) + data.charAt(data.length - 1));
+                    _StdOut.putText("Error: The data to be written must be within double quotes.");
+                }
+            }
+            else {
+                _StdOut.putText("Error: Hard Drive must be formatted before use.");
+            }
         };
         Shell.prototype.shellDelete = function (args) {
         };
         Shell.prototype.shellFormat = function (args) {
-            _krnHardDriveDriver.krnHddFormat();
-            _StdOut.putText("Hard Drive Formated.");
+            if (_HardDrive.supported) {
+                _krnHardDriveDriver.krnHddFormat();
+                _StdOut.putText("Hard Drive Formated.");
+            }
+            else {
+                _StdOut.putText("Hard Drive is not supported in your browser.");
+            }
         };
         Shell.prototype.shellLS = function (args) {
         };
