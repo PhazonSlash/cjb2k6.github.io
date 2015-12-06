@@ -121,7 +121,7 @@ var TSOS;
             var str = "";
             var currbyte = "";
             var index = 4;
-            while (index + 1 < BLOCK_SIZE && currbyte !== "00") {
+            while (index + 1 < BLOCK_SIZE * 2 && currbyte !== "00") {
                 currbyte = data.charAt(index) + data.charAt(index + 1);
                 index += 2;
                 str += String.fromCharCode(parseInt(currbyte, 16));
@@ -195,6 +195,25 @@ var TSOS;
                 var remainingData = data.substring(limit, data.length);
                 console.log("Remaining data: " + remainingData);
                 this.writeData(newFileTSB, remainingData, size - limit);
+            }
+        };
+        DeviceDriverHardDrive.prototype.readFromFile = function (name) {
+            var dirTSB = this.getFileByName(name);
+            if (dirTSB === "") {
+                return "Error: File \"" + name + "\" not found.";
+            }
+            var fileTSB = this.getTsbFromBlock(dirTSB);
+            return this.readData(fileTSB);
+        };
+        DeviceDriverHardDrive.prototype.readData = function (fileTSB) {
+            var data = this.getStringDataFromFile(fileTSB);
+            console.log("Read Data: " + data);
+            if (this.getTsbFromBlock(fileTSB) === "~~~") {
+                return data;
+            }
+            else {
+                var newFileTSB = this.getTsbFromBlock(fileTSB);
+                return (data + this.readData(newFileTSB));
             }
         };
         return DeviceDriverHardDrive;

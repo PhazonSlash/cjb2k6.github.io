@@ -207,7 +207,8 @@ var TSOS;
             _krnHardDriveDriver.createFile("alan");
             console.log(_HardDrive.read("001"));
             console.log(_HardDrive.read("100"));
-            _krnHardDriveDriver.writeToFile("alan", "this right here is 68 bytes don't you know lololololololololalanalan");
+            _krnHardDriveDriver.writeToFile("alan", "this right here is 68 bytes don't you know 0123456789abcdefgalanalan");
+            console.log(_krnHardDriveDriver.readFromFile("alan"));
         };
         Shell.prototype.shellVer = function (args) {
             _StdOut.putText(APP_NAME + " version " + APP_VERSION);
@@ -425,28 +426,42 @@ var TSOS;
             }
         };
         Shell.prototype.shellRead = function (args) {
+            if (_krnHardDriveDriver.formatted) {
+                if (args.length === 1) {
+                    var name = args[0];
+                    _StdOut.putText(_krnHardDriveDriver.readFromFile(name));
+                }
+                else {
+                    _StdOut.putText("Error: You must enter a single file name.");
+                }
+            }
+            else {
+                _StdOut.putText("Error: Hard Drive must be formatted before use.");
+            }
         };
         Shell.prototype.shellWrite = function (args) {
             if (_krnHardDriveDriver.formatted) {
                 if (args.length < 2) {
                     _StdOut.putText("Error: The proper syntax is: write filename \"data\"");
                 }
-                var name = args[0];
-                var data = "";
-                for (var i = 1; i < args.length; i++) {
-                    if ((i + 1) <= args.length) {
-                        data += " ";
-                    }
-                    data += args[i];
-                }
-                if (("" + data.charAt(1)).localeCompare("\"") === 0 && ("" + data.charAt(data.length - 1)).localeCompare("\"") === 0) {
-                    data = data.substring(2, data.length - 1);
-                    console.log("data: " + data);
-                    _krnHardDriveDriver.writeToFile(name, data);
-                }
                 else {
-                    console.log(data + data.charAt(1) + data.charAt(data.length - 1));
-                    _StdOut.putText("Error: The data to be written must be within double quotes.");
+                    var name = args[0];
+                    var data = "";
+                    for (var i = 1; i < args.length; i++) {
+                        if ((i + 1) <= args.length) {
+                            data += " ";
+                        }
+                        data += args[i];
+                    }
+                    if (("" + data.charAt(1)).localeCompare("\"") === 0 && ("" + data.charAt(data.length - 1)).localeCompare("\"") === 0) {
+                        data = data.substring(2, data.length - 1);
+                        console.log("data: " + data);
+                        _krnHardDriveDriver.writeToFile(name, data);
+                    }
+                    else {
+                        console.log(data + data.charAt(1) + data.charAt(data.length - 1));
+                        _StdOut.putText("Error: The data to be written must be within double quotes.");
+                    }
                 }
             }
             else {

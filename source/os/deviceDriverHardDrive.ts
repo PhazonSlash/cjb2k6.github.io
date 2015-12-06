@@ -144,8 +144,7 @@ module TSOS {
         var str: string = "";
         var currbyte: string = "";
         var index = 4;
-
-        while (index + 1 < BLOCK_SIZE && currbyte !== "00"){
+        while (index + 1 < BLOCK_SIZE * 2 && currbyte !== "00"){
           currbyte = data.charAt(index) + data.charAt(index + 1);
           index += 2;
 
@@ -234,6 +233,26 @@ module TSOS {
           var remainingData = data.substring(limit, data.length);
           console.log("Remaining data: " + remainingData);
           this.writeData(newFileTSB, remainingData, size - limit);
+        }
+      }
+
+      public readFromFile(name: string): string {
+        var dirTSB: string = this.getFileByName(name);
+        if (dirTSB === ""){
+          return "Error: File \"" + name + "\" not found.";
+        }
+        var fileTSB: string = this.getTsbFromBlock(dirTSB);
+        return this.readData(fileTSB);
+      }
+
+      public readData(fileTSB: string): string {
+        var data: string = this.getStringDataFromFile(fileTSB);
+        console.log("Read Data: " + data);
+        if (this.getTsbFromBlock(fileTSB) === "~~~") { //Base case
+          return data;
+        } else {
+          var newFileTSB = this.getTsbFromBlock(fileTSB);
+          return (data + this.readData(newFileTSB));
         }
       }
     }
