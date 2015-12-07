@@ -246,6 +246,23 @@ var TSOS;
                 this.deleteData(newFileTSB);
             }
         };
+        DeviceDriverHardDrive.prototype.listDir = function () {
+            var list = "";
+            var tsb;
+            var t = 0;
+            for (var s = 0; s < SECTORS; s++) {
+                for (var b = 0; b < BLOCKS; b++) {
+                    tsb = "" + t + s + b;
+                    if (this.isInUse(tsb) && tsb !== "000") {
+                        list += this.getStringDataFromFile(tsb) + " ";
+                    }
+                }
+            }
+            if (list === "") {
+                list = "No files exist in the directory.";
+            }
+            return list;
+        };
         return DeviceDriverHardDrive;
     })(TSOS.DeviceDriver);
     TSOS.DeviceDriverHardDrive = DeviceDriverHardDrive;

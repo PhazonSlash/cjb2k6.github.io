@@ -283,5 +283,24 @@ module TSOS {
           this.deleteData(newFileTSB);
         }
       }
+
+      public listDir(): string{
+        var list: string = ""; // The output list
+        var tsb: string; //Current tsb
+        var t: number = 0; // The track reserved for directories
+        //Search directory for filenames
+        for (var s: number = 0; s < SECTORS; s++){
+          for (var b: number = 0; b < BLOCKS; b++){
+            tsb = "" + t + s + b;
+            if (this.isInUse(tsb) && tsb !== "000"){
+              list += this.getStringDataFromFile(tsb) + " ";
+              }
+            }
+          }
+          if (list === ""){
+            list = "No files exist in the directory.";
+          }
+        return list;
+      }
     }
 }

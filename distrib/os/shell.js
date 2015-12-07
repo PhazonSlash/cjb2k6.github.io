@@ -493,6 +493,12 @@ var TSOS;
             }
         };
         Shell.prototype.shellLS = function (args) {
+            if (_HardDrive.supported) {
+                _StdOut.putText(_krnHardDriveDriver.listDir());
+            }
+            else {
+                _StdOut.putText("Hard Drive is not supported in your browser.");
+            }
         };
         Shell.prototype.shellChangeWeapon = function (args) {
             weaponIndex++;

@@ -687,7 +687,11 @@ module TSOS {
         }
 
         public shellLS(args:string[]) {
-
+          if (_HardDrive.supported) {
+            _StdOut.putText(_krnHardDriveDriver.listDir());
+          } else {
+            _StdOut.putText("Hard Drive is not supported in your browser.");
+          }
         }
 
         //Useless Commands --------------------------------------------------------------------------------------------------
