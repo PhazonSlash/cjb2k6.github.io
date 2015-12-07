@@ -209,6 +209,7 @@ var TSOS;
             console.log(_HardDrive.read("100"));
             _krnHardDriveDriver.writeToFile("alan", "this right here is 68 bytes don't you know 0123456789abcdefgalanalan");
             console.log(_krnHardDriveDriver.readFromFile("alan"));
+            console.log(_krnHardDriveDriver.deleteFile("alan"));
         };
         Shell.prototype.shellVer = function (args) {
             _StdOut.putText(APP_NAME + " version " + APP_VERSION);
@@ -469,6 +470,18 @@ var TSOS;
             }
         };
         Shell.prototype.shellDelete = function (args) {
+            if (_krnHardDriveDriver.formatted) {
+                if (args.length === 1) {
+                    var name = args[0];
+                    _StdOut.putText(_krnHardDriveDriver.deleteFile(name));
+                }
+                else {
+                    _StdOut.putText("Error: You must enter a single file name.");
+                }
+            }
+            else {
+                _StdOut.putText("Error: Hard Drive must be formatted before use.");
+            }
         };
         Shell.prototype.shellFormat = function (args) {
             if (_HardDrive.supported) {

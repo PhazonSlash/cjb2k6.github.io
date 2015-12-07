@@ -393,6 +393,7 @@ module TSOS {
 
           _krnHardDriveDriver.writeToFile("alan", "this right here is 68 bytes don't you know 0123456789abcdefgalanalan");
           console.log(_krnHardDriveDriver.readFromFile("alan"));
+          console.log(_krnHardDriveDriver.deleteFile("alan"));
         }
 
         public shellVer(args:string[]) {
@@ -664,7 +665,16 @@ module TSOS {
         }
 
         public shellDelete(args:string[]) {
-
+          if (_krnHardDriveDriver.formatted) {
+            if (args.length === 1) {
+              var name: string = args[0];
+              _StdOut.putText(_krnHardDriveDriver.deleteFile(name));
+            } else {
+              _StdOut.putText("Error: You must enter a single file name.");
+            }
+          } else {
+            _StdOut.putText("Error: Hard Drive must be formatted before use.");
+          }
         }
 
         public shellFormat(args:string[]) {

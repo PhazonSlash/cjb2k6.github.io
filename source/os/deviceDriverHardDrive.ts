@@ -2,7 +2,7 @@
 ///<reference path="deviceDriver.ts" />
 
 /* ----------------------------------
-   seviceDriverHardDrive.ts
+   deviceDriverHardDrive.ts
 
    Requires deviceDriver.ts
 
@@ -102,6 +102,13 @@ module TSOS {
         }
         if (!found) {
           return "";
+        } else {
+          //Make sure new block is clear
+          var emptyBlock: string = "0~~~"; //In-use, T, S, B
+          for (var i: number = 0; i < BLOCK_SIZE - 4; i++){
+            emptyBlock += "00"; //Zero out the remaining bytes
+          }
+          _HardDrive.write(tsb, emptyBlock);
         }
         return tsb;
       }
@@ -191,16 +198,16 @@ module TSOS {
       }
 
       public writeToFile(name: string, data: string){
-
-        //TODO check to see if file has existing reference tsbs and remove them
-
         var dirTSB: string = this.getFileByName(name);
         if (dirTSB === ""){
           _StdOut.putText("Error: File " + name + " does not exist.");
         } else {
           var fileTSB: string = this.getTsbFromBlock(dirTSB);
           var size: number = data.length;
-
+          //Check to see if file has existing reference tsbs and remove them
+          if (this.getTsbFromBlock(fileTSB) !== "~~~"){
+            this.deleteData(fileTSB);
+          }
           this.writeData(fileTSB, data, size);
         }
       }
@@ -250,9 +257,30 @@ module TSOS {
         console.log("Read Data: " + data);
         if (this.getTsbFromBlock(fileTSB) === "~~~") { //Base case
           return data;
-        } else {
+        } else { // If there is another file linked
           var newFileTSB = this.getTsbFromBlock(fileTSB);
           return (data + this.readData(newFileTSB));
+        }
+      }
+
+      public deleteFile(name): string{
+        var dirTSB: string = this.getFileByName(name);
+        if (dirTSB === ""){
+          return "Error: File \"" + name + "\" not found.";
+        }
+        var fileTSB: string = this.getTsbFromBlock(dirTSB);
+        this.deleteData(fileTSB);
+        this.setInUse(dirTSB, false);
+        return "File deleted.";
+      }
+
+      public deleteData(fileTSB: string){
+        this.setInUse(fileTSB, false);
+        if (this.getTsbFromBlock(fileTSB) === "~~~") { //Base case
+          console.log("Deletion Complete");
+        } else { // If there is another file linked
+          var newFileTSB = this.getTsbFromBlock(fileTSB);
+          this.deleteData(newFileTSB);
         }
       }
     }

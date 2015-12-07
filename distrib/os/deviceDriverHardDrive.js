@@ -84,6 +84,13 @@ var TSOS;
             if (!found) {
                 return "";
             }
+            else {
+                var emptyBlock = "0~~~";
+                for (var i = 0; i < BLOCK_SIZE - 4; i++) {
+                    emptyBlock += "00";
+                }
+                _HardDrive.write(tsb, emptyBlock);
+            }
             return tsb;
         };
         DeviceDriverHardDrive.prototype.getFileByName = function (name) {
@@ -168,6 +175,9 @@ var TSOS;
             else {
                 var fileTSB = this.getTsbFromBlock(dirTSB);
                 var size = data.length;
+                if (this.getTsbFromBlock(fileTSB) !== "~~~") {
+                    this.deleteData(fileTSB);
+                }
                 this.writeData(fileTSB, data, size);
             }
         };
@@ -214,6 +224,26 @@ var TSOS;
             else {
                 var newFileTSB = this.getTsbFromBlock(fileTSB);
                 return (data + this.readData(newFileTSB));
+            }
+        };
+        DeviceDriverHardDrive.prototype.deleteFile = function (name) {
+            var dirTSB = this.getFileByName(name);
+            if (dirTSB === "") {
+                return "Error: File \"" + name + "\" not found.";
+            }
+            var fileTSB = this.getTsbFromBlock(dirTSB);
+            this.deleteData(fileTSB);
+            this.setInUse(dirTSB, false);
+            return "File deleted.";
+        };
+        DeviceDriverHardDrive.prototype.deleteData = function (fileTSB) {
+            this.setInUse(fileTSB, false);
+            if (this.getTsbFromBlock(fileTSB) === "~~~") {
+                console.log("Deletion Complete");
+            }
+            else {
+                var newFileTSB = this.getTsbFromBlock(fileTSB);
+                this.deleteData(newFileTSB);
             }
         };
         return DeviceDriverHardDrive;
