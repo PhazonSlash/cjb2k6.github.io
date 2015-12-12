@@ -204,25 +204,6 @@ var TSOS;
             }
         };
         Shell.prototype.shellTest = function (args) {
-            console.log("Getting Program:");
-            var pcb = _ResidentList.list[0];
-            var program = _MemoryManager.getProgram(pcb);
-            console.log(program);
-            console.log("Swapping out first in ready queue");
-            _krnHardDriveDriver.rollOut(program, pcb.partition, pcb);
-            console.log("Swapping in last in ready queue");
-            _krnHardDriveDriver.rollIn(_ResidentList.list[3]);
-            console.log("Swapping 1 with 0");
-            console.log("Getting Program:");
-            pcb = _ResidentList.list[1];
-            program = _MemoryManager.getProgram(pcb);
-            console.log(program);
-            console.log("Swapping out second in ready queue");
-            _krnHardDriveDriver.rollOut(program, pcb.partition, pcb);
-            console.log("Swapping in first in ready queue");
-            _krnHardDriveDriver.rollIn(_ResidentList.list[0]);
-            TSOS.Control.updateCpuTable();
-            TSOS.Control.updateMemoryTable();
         };
         Shell.prototype.shellVer = function (args) {
             _StdOut.putText(APP_NAME + " version " + APP_VERSION);

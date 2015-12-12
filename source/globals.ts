@@ -40,6 +40,11 @@ const WAITING: number = 2;
 const READY: number = 3;
 const TERMINATED: number = 4;
 
+//Scheduling Modes
+const RR: number = 0; //Round Robin
+const FCFS: number = 1; //First Come, First Serve
+const PRTY: number = 2; //Non-premptive Priority
+
 
 //
 // Global Variables
@@ -60,6 +65,8 @@ var _ResidentList: TSOS.ResidentList;  //List of processes currently occupying m
 var _CpuScheduler: TSOS.CpuScheduler;
 
 var _TimeQuantum: number = 6;  //Measured in clock cycles
+
+var _SchedMode: number = RR; //Current Scheduling Algorithm. Default: Round Robin
 
 var _Canvas: HTMLCanvasElement;         // Initialized in Control.hostInit().
 var _DrawingContext: any; // = _Canvas.getContext("2d");  // Assigned here for type safety, but re-initialized in Control.hostInit() for OCD and logic.

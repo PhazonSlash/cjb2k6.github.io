@@ -137,7 +137,7 @@ var TSOS;
         };
         DeviceDriverHardDrive.prototype.getHexDataFromFile = function (fileTSB) {
             var data = _HardDrive.read(fileTSB);
-            data = data.substring(4, data.length - 1);
+            data = data.substring(4, data.length);
             return data;
         };
         DeviceDriverHardDrive.prototype.getTsbFromBlock = function (tsb) {
@@ -294,13 +294,19 @@ var TSOS;
             return fileTSB;
         };
         DeviceDriverHardDrive.prototype.rollIn = function (pcb) {
+            console.log("Rolling in PID " + pcb.processID);
             var fileTSB = "";
             if (pcb.location !== "MEM") {
                 fileTSB = pcb.location;
                 var program = this.readData(fileTSB, true);
+                this.deleteData(fileTSB);
+                console.log("Program " + program);
+                console.log("Program length: " + program.length);
                 var partition = _MemoryManager.getNextFreePartition();
                 _MemoryManager.loadProgram(program, partition);
+                console.log("Putting it into partition " + partition);
                 pcb.setPartition(partition, "MEM");
+                console.log("PID " + pcb.processID + "Base/Lim " + pcb.base + " " + pcb.limit);
             }
             else {
                 console.log("Tried to roll in pcb that was alread in MEM");

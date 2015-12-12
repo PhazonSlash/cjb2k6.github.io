@@ -216,6 +216,9 @@ var TSOS;
             return address;
         };
         Cpu.prototype.setCPU = function (pcb) {
+            console.log("Setting CPU from PID: " + pcb.processID);
+            console.log("Base/Limit = " + pcb.base + "/" + pcb.limit);
+            console.log("PC: " + pcb.programCounter);
             this.PC = pcb.programCounter;
             this.Acc = pcb.accumulator;
             this.IR = _MemoryManager.getByteFromAddr(pcb.programCounter, pcb);

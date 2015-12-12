@@ -40,10 +40,19 @@ module TSOS {
         //Assigns a memory partition to this Pcb
         //Also calculates the base and limit registers
         public setPartition(partition: number, location: string): void{
+          var offset = 0;
           this.partition = partition;
-          this.base = (partition - 1) * MEMORY_SIZE;
-          this.limit = (partition * MEMORY_SIZE) - 1;
-          this.programCounter = this.base;
+          if (this.programCounter > this.base){
+            offset = this.programCounter - this.base;
+          }
+          if (this.partition === -1){
+            this.base = 0;
+            this.limit = MEMORY_SIZE - 1;
+          } else {
+            this.base = (partition - 1) * MEMORY_SIZE;
+            this.limit = (partition * MEMORY_SIZE) - 1;
+          }
+          this.programCounter = this.base + offset;
           this.location = location;
           console.log("Partition: " + this.partition + " Base: " + this.base + " Limit: " + this.limit);
         }
