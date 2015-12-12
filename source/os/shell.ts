@@ -387,7 +387,7 @@ module TSOS {
 
         //Information Commands --------------------------------------------------------------------------------------------------
         public shellTest(args:string[]) {
-          
+
         }
 
         public shellVer(args:string[]) {
@@ -511,30 +511,68 @@ module TSOS {
         }
         //Process/Scheduling Commands ----------------------------------------------------------------------
         public shellQuantum(args:string[]) {
-          if (args.length > 0){
-            if (args[0].match(/[0-9]+/g)){
-              var quant: number = parseInt(args[0]);
-              if (quant < 0){
-                  _StdOut.putText("Error: You can't have negative time.");
-                } else {
-                  _TimeQuantum = quant;
-                  _StdOut.putText("Time quantum is now " + quant + ".");
-                }
+          if(_SchedMode === RR){
+            if (args.length > 0){
+              if (args[0].match(/[0-9]+/g)){
+                var quant: number = parseInt(args[0]);
+                if (quant < 0){
+                    _StdOut.putText("Error: You can't have negative time.");
+                  } else {
+                    _TimeQuantum = quant;
+                    _StdOut.putText("Time quantum is now " + quant + ".");
+                  }
 
-              }  else {
-              _StdOut.putText("Error: Please enter a positive numeric quantum.");
+                }  else {
+                _StdOut.putText("Error: Please enter a positive numeric quantum.");
+              }
+            } else {
+              _StdOut.putText("Error: Please enter a positive number.");
             }
           } else {
-            _StdOut.putText("Error: Please enter a positive number.");
+            _StdOut.putText("Error: You must first set Round Robin scheduling.");
           }
+
         }
 
         public shellSetSchedule(args:string[]) {
+          if (args.length < 1){
+            _StdOut.putText("Error: You must enter a scheduling algorithm: [rr, fcfs, priority].");
+          } else {
+            switch (args[0].toLowerCase()){
+              case "rr":
+                        _SchedMode = RR;
+                        _TimeQuantum = 6;
+                        _StdOut.putText("Scheduling set to Round Robin with quantum of 6.");
+                        break;
+              case "fcfs":
+                        _SchedMode = FCFS;
+                        _TimeQuantum = 9000000000;
+                        _StdOut.putText("Scheduling set to First Come, First Serve.");
+                        break;
+              case "priority":
+                        _SchedMode = PRTY;
+                        _StdOut.putText("Scheduling set to Priority.");
+                        break;
+              default:
+                    _StdOut.putText("Please enter a valid scheduling algorithm: [rr, fcfs, priority]");
+
+            }
+          }
 
         }
 
         public shellGetSchedule(args:string[]) {
-
+          switch (_SchedMode){
+            case RR:
+                      _StdOut.putText("Scheduling mode is Round Robin.");
+                      break;
+            case FCFS:
+                      _StdOut.putText("Scheduling mode is First Come, First Serve.");
+                      break;
+            case PRTY:
+                      _StdOut.putText("Scheduling mode is Priority.");
+                      break;
+          }
         }
 
         public shellPs(args:string[]) {
