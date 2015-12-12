@@ -160,6 +160,12 @@ module TSOS {
         return str;
       }
 
+      public getHexDataFromFile(fileTSB: string){
+        var data = _HardDrive.read(fileTSB);
+        data = data.substring(4, data.length - 1);
+        return data;
+      }
+
       public getTsbFromBlock(tsb: string): string{
         var block = _HardDrive.read(tsb);
         var tsb: string = "" + block.charAt(1) + block.charAt(2) + block.charAt(3);
@@ -208,19 +214,25 @@ module TSOS {
           if (this.getTsbFromBlock(fileTSB) !== "~~~"){
             this.deleteData(fileTSB);
           }
-          this.writeData(fileTSB, data, size);
+          this.writeData(fileTSB, data, size, false);
         }
       }
 
-      public writeData(fileTSB: string, data: string, size: number) {
+      public writeData(fileTSB: string, data: string, size: number, isProgram: boolean) {
         var limit: number = 60;
         var block: string = "";
         var index: number;
-        //Convert file data to hex and write to block
-        for (index = 0; index < data.length && index < limit; index++) {
-          block += data.charCodeAt(index).toString(16).toUpperCase();
+        if (isProgram){
+          limit = limit * 2;
+          block += data.substring(0, limit);
+        } else {
+          //Convert file data to hex and write to block
+          for (index = 0; index < data.length && index < limit; index++) {
+            block += data.charCodeAt(index).toString(16).toUpperCase();
+          }
         }
 
+        console.log("Writing to " + fileTSB);
         if (size <= limit){ //Base Case
           //Fill the rest of the block with zeroes
           for (var i: number = index; i < BLOCK_SIZE - 4; i++){
@@ -230,6 +242,7 @@ module TSOS {
           block = "1~~~" + block;
           //Write it
           _HardDrive.write(fileTSB, block);
+
           console.log("Wrote: " + _HardDrive.read(fileTSB));
         } else { //Fill this file and put the rest in new ones
           var newFileTSB = this.getNextFreeFile();
@@ -239,7 +252,7 @@ module TSOS {
           console.log("Wrote: " + _HardDrive.read(fileTSB));
           var remainingData = data.substring(limit, data.length);
           console.log("Remaining data: " + remainingData);
-          this.writeData(newFileTSB, remainingData, size - limit);
+          this.writeData(newFileTSB, remainingData, size - limit, isProgram);
         }
       }
 
@@ -249,17 +262,22 @@ module TSOS {
           return "Error: File \"" + name + "\" not found.";
         }
         var fileTSB: string = this.getTsbFromBlock(dirTSB);
-        return this.readData(fileTSB);
+        return this.readData(fileTSB, false);
       }
 
-      public readData(fileTSB: string): string {
-        var data: string = this.getStringDataFromFile(fileTSB);
-        console.log("Read Data: " + data);
+      public readData(fileTSB: string, isProgram: boolean): string {
+        var data: string = "";
+        if (isProgram){
+          data = this.getHexDataFromFile(fileTSB);
+        } else {
+          data = this.getStringDataFromFile(fileTSB);
+          console.log("Read Data: " + data);
+        }
         if (this.getTsbFromBlock(fileTSB) === "~~~") { //Base case
           return data;
         } else { // If there is another file linked
           var newFileTSB = this.getTsbFromBlock(fileTSB);
-          return (data + this.readData(newFileTSB));
+          return (data + this.readData(newFileTSB, isProgram));
         }
       }
 
@@ -301,6 +319,32 @@ module TSOS {
             list = "No files exist in the directory.";
           }
         return list;
+      }
+      //Swapper
+      public rollOut(program: string, partition: number, pcb?: Pcb): string{
+        var fileTSB: string = this.getNextFreeFile();
+        this.setInUse(fileTSB, true);
+        this.writeData(fileTSB, program, program.length, true);
+        if (partition !== -1){
+          _MemoryManager.clearPartition(partition);
+        }
+        if(pcb !== undefined){
+          pcb.location = fileTSB;
+        }
+        return fileTSB;
+      }
+
+      public rollIn(pcb: Pcb){
+        var fileTSB: string = "";
+        if (pcb.location !== "MEM"){
+          fileTSB = pcb.location;
+          var program: string = this.readData(fileTSB, true);
+          var partition = _MemoryManager.getNextFreePartition();
+          _MemoryManager.loadProgram(program, partition);
+          pcb.setPartition(partition, "MEM");
+        } else {
+          console.log("Tried to roll in pcb that was alread in MEM");
+        }
       }
     }
 }

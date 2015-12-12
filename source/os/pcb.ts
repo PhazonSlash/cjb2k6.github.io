@@ -24,6 +24,7 @@ module TSOS {
                     public y: number = 0,
                     public z: number = 0,
                     public partition: number = 0,
+                    public location: string = "",
                     public base: number = 0,
                     public limit: number = 0,
                     public wait: number = 0,
@@ -38,11 +39,12 @@ module TSOS {
 
         //Assigns a memory partition to this Pcb
         //Also calculates the base and limit registers
-        public setPartition(partition: number): void{
+        public setPartition(partition: number, location: string): void{
           this.partition = partition;
           this.base = (partition - 1) * MEMORY_SIZE;
           this.limit = (partition * MEMORY_SIZE) - 1;
           this.programCounter = this.base;
+          this.location = location;
           console.log("Partition: " + this.partition + " Base: " + this.base + " Limit: " + this.limit);
         }
 

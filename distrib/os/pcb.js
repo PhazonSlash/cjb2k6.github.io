@@ -1,7 +1,7 @@
 var TSOS;
 (function (TSOS) {
     var Pcb = (function () {
-        function Pcb(processState, processID, programCounter, accumulator, IR, x, y, z, partition, base, limit, wait, turnAround) {
+        function Pcb(processState, processID, programCounter, accumulator, IR, x, y, z, partition, location, base, limit, wait, turnAround) {
             if (processState === void 0) { processState = NEW; }
             if (processID === void 0) { processID = 0; }
             if (programCounter === void 0) { programCounter = 0; }
@@ -11,6 +11,7 @@ var TSOS;
             if (y === void 0) { y = 0; }
             if (z === void 0) { z = 0; }
             if (partition === void 0) { partition = 0; }
+            if (location === void 0) { location = ""; }
             if (base === void 0) { base = 0; }
             if (limit === void 0) { limit = 0; }
             if (wait === void 0) { wait = 0; }
@@ -24,6 +25,7 @@ var TSOS;
             this.y = y;
             this.z = z;
             this.partition = partition;
+            this.location = location;
             this.base = base;
             this.limit = limit;
             this.wait = wait;
@@ -34,11 +36,12 @@ var TSOS;
             this.processID = Pcb.currentProcessNum;
             Pcb.currentProcessNum++;
         };
-        Pcb.prototype.setPartition = function (partition) {
+        Pcb.prototype.setPartition = function (partition, location) {
             this.partition = partition;
             this.base = (partition - 1) * MEMORY_SIZE;
             this.limit = (partition * MEMORY_SIZE) - 1;
             this.programCounter = this.base;
+            this.location = location;
             console.log("Partition: " + this.partition + " Base: " + this.base + " Limit: " + this.limit);
         };
         Pcb.prototype.incrementPC = function () {

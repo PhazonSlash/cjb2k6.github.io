@@ -12,19 +12,25 @@ var TSOS;
         };
         MemoryManager.prototype.loadProgram = function (prgm, partition) {
             var currByte = "";
-            var memLoc = (MEMORY_SIZE * partition) - MEMORY_SIZE;
-            console.log("Loading at :" + memLoc);
-            for (var i = 0; i < prgm.length; i++) {
-                currByte = currByte + prgm[i];
-                if (currByte.length > 1) {
-                    this.mainMemory.mainMem[memLoc].setHex(currByte);
-                    memLoc++;
-                    currByte = "";
-                }
+            var tsb = "MEM";
+            if (partition === -1) {
+                tsb = _krnHardDriveDriver.rollOut(prgm, partition);
             }
-            this.setPartition(partition, true);
-            TSOS.Control.updateMemoryTable();
-            return true;
+            else {
+                var memLoc = (MEMORY_SIZE * partition) - MEMORY_SIZE;
+                console.log("Loading at :" + memLoc);
+                for (var i = 0; i < prgm.length; i++) {
+                    currByte = currByte + prgm[i];
+                    if (currByte.length > 1) {
+                        this.mainMemory.mainMem[memLoc].setHex(currByte);
+                        memLoc++;
+                        currByte = "";
+                    }
+                }
+                this.setPartition(partition, true);
+                TSOS.Control.updateMemoryTable();
+            }
+            return tsb;
         };
         MemoryManager.prototype.clearAllMem = function () {
             this.mainMemory.clear(0);
@@ -83,6 +89,13 @@ var TSOS;
             else {
                 return this.mainMemory.mainMem[address];
             }
+        };
+        MemoryManager.prototype.getProgram = function (pcb) {
+            var program = "";
+            for (var i = pcb.base; i < pcb.limit; i++) {
+                program += this.getByteFromAddr(i, pcb).getHex();
+            }
+            return program;
         };
         MemoryManager.prototype.setByteAtAddr = function (byte, address, pcb) {
             if (address > pcb.limit || address < pcb.base) {

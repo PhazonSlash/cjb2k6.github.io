@@ -387,13 +387,25 @@ module TSOS {
 
         //Information Commands --------------------------------------------------------------------------------------------------
         public shellTest(args:string[]) {
-          _krnHardDriveDriver.createFile("alan");
-          console.log(_HardDrive.read("001"));
-          console.log(_HardDrive.read("100"));
-
-          _krnHardDriveDriver.writeToFile("alan", "this right here is 68 bytes don't you know 0123456789abcdefgalanalan");
-          console.log(_krnHardDriveDriver.readFromFile("alan"));
-          console.log(_krnHardDriveDriver.deleteFile("alan"));
+          console.log("Getting Program:");
+          var pcb: Pcb = _ResidentList.list[0];
+          var program = _MemoryManager.getProgram(pcb);
+          console.log(program);
+          console.log("Swapping out first in ready queue");
+          _krnHardDriveDriver.rollOut(program, pcb.partition, pcb);
+          console.log("Swapping in last in ready queue");
+          _krnHardDriveDriver.rollIn(_ResidentList.list[3]);
+          console.log("Swapping 1 with 0");
+          console.log("Getting Program:");
+          pcb = _ResidentList.list[1];
+          program = _MemoryManager.getProgram(pcb);
+          console.log(program);
+          console.log("Swapping out second in ready queue");
+          _krnHardDriveDriver.rollOut(program, pcb.partition, pcb);
+          console.log("Swapping in first in ready queue");
+          _krnHardDriveDriver.rollIn(_ResidentList.list[0]);
+          Control.updateCpuTable();
+          Control.updateMemoryTable();
         }
 
         public shellVer(args:string[]) {
@@ -461,14 +473,19 @@ module TSOS {
                     _StdOut.putText("Program cannot be more than 256 bytes long.");
                   } else{
                     var partition: number = _MemoryManager.getNextFreePartition();
-                    if(partition === -1){
-                      _StdOut.putText("Error: No memory partitions available.");
+                    if (partition === -1 && (!_HardDrive.supported || !_krnHardDriveDriver.formatted)){
+                      if (!_krnHardDriveDriver.formatted){
+                        _StdOut.putText("Error: Format hard drive to load more programs.");
+                      } else {
+                        _StdOut.putText("Error: No memory partitions available.");
+                      }
                     } else {
-                      _MemoryManager.loadProgram(prgm, partition);
+                      //Calculate and store location of program
+                      var loc = _MemoryManager.loadProgram(prgm, partition);
                       //Creates a new PCB for the process. Stores it in temp variable
                       //that will be replaced with the Ready Queue in the future
                       var pcb: Pcb = new Pcb();
-                      pcb.setPartition(partition);
+                      pcb.setPartition(partition, loc);
                       _ResidentList.add(pcb);
 
                       _StdOut.putText("Program loaded. PID: " + pcb.processID);

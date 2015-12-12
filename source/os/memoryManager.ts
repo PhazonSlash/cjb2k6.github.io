@@ -20,22 +20,30 @@ module TSOS {
 
         }
 
-        public loadProgram(prgm: string, partition:number): boolean{
-          //Insert into memory
+        public loadProgram(prgm: string, partition:number): string{
           var currByte: string = ""; //Holds the current byte from program
-          var memLoc: number = (MEMORY_SIZE * partition) - MEMORY_SIZE; //Current location in memory to insert byte into
-          console.log("Loading at :" + memLoc);
-          for(var i: number = 0; i < prgm.length; i++){
-            currByte = currByte + prgm[i];
-            if(currByte.length > 1){
-              this.mainMemory.mainMem[memLoc].setHex(currByte);
-              memLoc++;
-              currByte = "";
+          var tsb: string = "MEM"; //Stores TSB if we end up writing to hard drive, if not, then location in MEMory
+
+          if (partition === -1){
+            //Write to disk
+            tsb = _krnHardDriveDriver.rollOut(prgm, partition);
+          } else {
+            //Insert into memory
+            var memLoc: number = (MEMORY_SIZE * partition) - MEMORY_SIZE; //Current location in memory to insert byte into
+            console.log("Loading at :" + memLoc);
+            for(var i: number = 0; i < prgm.length; i++){
+              currByte = currByte + prgm[i];
+              if(currByte.length > 1){
+                this.mainMemory.mainMem[memLoc].setHex(currByte);
+                memLoc++;
+                currByte = "";
+              }
             }
+            this.setPartition(partition, true);
+            Control.updateMemoryTable();
           }
-          this.setPartition(partition, true);
-          Control.updateMemoryTable();
-          return true;
+
+          return tsb;
       }
 
       public clearAllMem(): void {
@@ -101,6 +109,14 @@ module TSOS {
         return this.mainMemory.mainMem[address];
       }
 
+      }
+
+      public getProgram(pcb: Pcb): string{
+        var program = "";
+        for (var i = pcb.base; i < pcb.limit; i++){
+          program += this.getByteFromAddr(i, pcb).getHex();
+        }
+        return program;
       }
 
       public setByteAtAddr(byte: Byte, address: number, pcb: Pcb): boolean {
