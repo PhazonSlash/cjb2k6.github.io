@@ -80,8 +80,8 @@ label {
 }
 
 #rightCol {
-  padding-left: 50px;
-  padding-top: 30px;
+  padding-left: 10px;
+  padding-top: 70px;
 }
 
 
@@ -105,21 +105,28 @@ div.pcb {
   float:right;
 }
 
-div.log {
-  padding-top: 20px;
-}
-
 div.cpu {
-  width:500px;
+  width:260px;
   height:100px;
+  padding-top: 5px;
+  margin-right: 10px;
   float:left;
 
 }
 
+div.log {
+  width:200px;
+  height:100px;
+  padding-top: 5px;
+  margin-right: 200px;
+  float: left;
+}
+
 div.memory {
-  width:500px;
+  width:450px;
   height:180px;
-  padding-top: 15px;
+  padding-top: 30px;
+  margin-right: 100px;
   float:left;
 }
 
@@ -127,7 +134,7 @@ div.memoryTable {
   background-color:rgba(0,0,0,0.5);
   border: 2px solid #85D5FA;
   float:left;
-  width:400px;
+  width:340px;
   height:150px;
   overflow-y: scroll;
   overflow-x: hidden;
@@ -135,9 +142,9 @@ div.memoryTable {
 
 div.program {
   float:left;
-  width:600px;
+  width:400px;
   height:160px;
-  padding-top: 22px;
+  padding-top: 40px;
 
 }
 
