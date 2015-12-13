@@ -27,6 +27,7 @@ module TSOS {
                     public location: string = "",
                     public base: number = 0,
                     public limit: number = 0,
+                    public priority: number = 0,
                     public wait: number = 0,
                     public turnAround: number = 0) {
           this.init();
@@ -55,6 +56,10 @@ module TSOS {
           this.programCounter = this.base + offset;
           this.location = location;
           console.log("Partition: " + this.partition + " Base: " + this.base + " Limit: " + this.limit);
+        }
+
+        public setPriority(priority: number):void {
+          this.priority = priority;
         }
 
         public incrementPC(): void{

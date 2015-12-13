@@ -250,40 +250,52 @@ var TSOS;
             }
         };
         Shell.prototype.shellLoad = function (args) {
-            var prgm = document.getElementById("taProgramInput").value;
-            if (prgm.length > 0) {
-                var pattern = /([^0123456789abcdefABCDEF\s])/g;
-                var result = prgm.search(pattern);
-                if (result >= 0) {
-                    _StdOut.putText("Error: Programs can only contain hex digits and spaces.");
-                }
-                else {
-                    prgm = TSOS.Utils.removeSpaces(prgm);
-                    if (prgm.length > 512) {
-                        _StdOut.putText("Program cannot be more than 256 bytes long.");
-                    }
-                    else {
-                        var partition = _MemoryManager.getNextFreePartition();
-                        if (partition === -1 && (!_HardDrive.supported || !_krnHardDriveDriver.formatted)) {
-                            if (!_krnHardDriveDriver.formatted) {
-                                _StdOut.putText("Error: Format hard drive to load more programs.");
-                            }
-                            else {
-                                _StdOut.putText("Error: No memory partitions available.");
-                            }
-                        }
-                        else {
-                            var loc = _MemoryManager.loadProgram(prgm, partition);
-                            var pcb = new TSOS.Pcb();
-                            pcb.setPartition(partition, loc);
-                            _ResidentList.add(pcb);
-                            _StdOut.putText("Program loaded. PID: " + pcb.processID);
-                        }
-                    }
+            var priority = 6;
+            var priorityErr = false;
+            if (args.length > 0) {
+                priority = parseInt(args[0]);
+                if (priority < 0 || priority > 100) {
+                    _StdOut.putText("Error: Priority must be between 0 and 100 inclusive.");
+                    priorityErr = true;
                 }
             }
-            else {
-                _StdOut.putText("Error: Please type in a program.");
+            if (!priorityErr) {
+                var prgm = document.getElementById("taProgramInput").value;
+                if (prgm.length > 0) {
+                    var pattern = /([^0123456789abcdefABCDEF\s])/g;
+                    var result = prgm.search(pattern);
+                    if (result >= 0) {
+                        _StdOut.putText("Error: Programs can only contain hex digits and spaces.");
+                    }
+                    else {
+                        prgm = TSOS.Utils.removeSpaces(prgm);
+                        if (prgm.length > 512) {
+                            _StdOut.putText("Program cannot be more than 256 bytes long.");
+                        }
+                        else {
+                            var partition = _MemoryManager.getNextFreePartition();
+                            if (partition === -1 && (!_HardDrive.supported || !_krnHardDriveDriver.formatted)) {
+                                if (!_krnHardDriveDriver.formatted) {
+                                    _StdOut.putText("Error: Format hard drive to load more programs.");
+                                }
+                                else {
+                                    _StdOut.putText("Error: No memory partitions available.");
+                                }
+                            }
+                            else {
+                                var loc = _MemoryManager.loadProgram(prgm, partition);
+                                var pcb = new TSOS.Pcb();
+                                pcb.setPartition(partition, loc);
+                                pcb.setPriority(priority);
+                                _ResidentList.add(pcb);
+                                _StdOut.putText("Program loaded. PID: " + pcb.processID);
+                            }
+                        }
+                    }
+                }
+                else {
+                    _StdOut.putText("Error: Please type in a program.");
+                }
             }
         };
         Shell.prototype.shellRun = function (args) {
@@ -355,7 +367,7 @@ var TSOS;
                         break;
                     case "fcfs":
                         _SchedMode = FCFS;
-                        _TimeQuantum = 9000000000;
+                        _TimeQuantum = 900000000;
                         _StdOut.putText("Scheduling set to First Come, First Serve.");
                         break;
                     case "priority":

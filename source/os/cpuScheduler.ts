@@ -13,7 +13,8 @@ module TSOS {
 
     export class CpuScheduler {
 
-        constructor(public currCycle: number = 0) {
+        constructor(public currCycle: number = 0,
+                    public oldRqSize: number = 1000) {
           this.init();
         }
 
@@ -94,11 +95,8 @@ module TSOS {
               if (!found){
                 console.log("SOMETHING WENT HORRIBLY WRONG!!!!!!!!!!");
               }
-              //Is there a reason to swap? If a swap just happened, then I think not
-              //if (index > MEMORY_PARTITIONS - 1){
-                //Yeah, lets swap
+
                 this.swap(_CurrentPCB, _ReadyQueue.peek(index));
-            //  }
             }
             console.log("Performing Context Switch");
             this.currCycle = 0;
@@ -112,7 +110,99 @@ module TSOS {
         }
 
         public prioritySchedule() {
+          console.log("Old: " + this.oldRqSize + " New: " + _ReadyQueue.getSize());
+          //Is there not process in execution?
+          if (_CurrentPCB === null || _CurrentPCB.processState === TERMINATED){
+            //Is there a new process to load?
+            if (!_ReadyQueue.isEmpty()){
+              //Find the process with highest priority
+              _CurrentPCB = _ReadyQueue.dequeue();
+              for (var i: number = 0; i < _ReadyQueue.getSize(); i++){
+                if (this.comparePriority(_CurrentPCB, _ReadyQueue.peek(0)) < 1){
+                  _ReadyQueue.enqueue(_CurrentPCB);
+                  _CurrentPCB = _ReadyQueue.dequeue();
+                }
+              }
+              //Check to see if process is on disk
+              if (_CurrentPCB.location !== "MEM"){
+                //Check to see if partition is free
+                var partition = _MemoryManager.getNextFreePartition();
+                if (partition !== -1){
+                  _krnHardDriveDriver.rollIn(_CurrentPCB);
+                } else {
+                  //Swap it with lowest priority
+                  var lowest = _ReadyQueue.peek(0);
+                  for (var i: number = 1; i < _ReadyQueue.getSize(); i++){
+                    if (this.comparePriority(_ReadyQueue.peek(i), lowest) < 1 && _ReadyQueue.peek(i).location === "MEM"){
+                      lowest = _ReadyQueue.peek(i);
+                    }
+                  }
+                  console.log("1 Swapping " + _CurrentPCB.processID + " with Lowest: " + lowest.processID);
+                  this.swap(lowest, _CurrentPCB);
+                }
+                }
 
+              _CurrentPCB.processState = RUNNING;
+              _CPU.setCPU(_CurrentPCB);
+            } else {
+              console.log("There was nothing in the ready queue.");
+              //We are done executing
+              _CPU.isExecuting = false;
+              //Turn off single step mode
+              if(_SingleStepMode){
+                Control.hostBtnSSToggle_click();
+              }
+              _CurrentPCB = null;
+              Control.updatePcbTable();
+            }
+          }
+          console.log("-----------------");
+          console.log("Clock Cycle: " + this.currCycle);
+          //Check to see if it is time for a context switch
+            console.log("Checking Old: " + this.oldRqSize + " New: " + _ReadyQueue.getSize());
+          if(_ReadyQueue.getSize() > this.oldRqSize && _CPU.isExecuting){
+            var testPCB: Pcb;
+            for (var i: number = 0; i < _ReadyQueue.getSize(); i++){
+              testPCB = _ReadyQueue.dequeue();
+              if (this.comparePriority(_CurrentPCB, testPCB) < 1){
+                console.log("Switching " + _CurrentPCB.processID + " with " + testPCB.processID);
+                _CurrentPCB.processState = READY;
+                _ReadyQueue.enqueue(_CurrentPCB);
+                _CurrentPCB = testPCB;
+              } else {
+                _ReadyQueue.enqueue(testPCB);
+              }
+            }
+            //Check to see if process is on disk
+            if (_CurrentPCB.location !== "MEM"){
+              //Check to see if partition is free
+              var partition = _MemoryManager.getNextFreePartition();
+              if (partition !== -1){
+                _krnHardDriveDriver.rollIn(_CurrentPCB);
+              } else {
+                //Swap it with lowest priority
+                var lowest = _ReadyQueue.peek(0);
+                for (var i: number = 1; i < _ReadyQueue.getSize(); i++){
+                  if (this.comparePriority(lowest, _ReadyQueue.peek(i)) < 1 && _ReadyQueue.peek(i).location === "MEM"){
+                    lowest = _ReadyQueue.peek(i);
+                  }
+                }
+                console.log("2 Swapping " + _CurrentPCB.processID + " with Lowest: " + lowest.processID);
+                this.swap(lowest, _CurrentPCB);
+              }
+            }
+            _CurrentPCB.processState = RUNNING;
+            _CPU.setCPU(_CurrentPCB);
+            this.currCycle++;
+            this.oldRqSize = _ReadyQueue.getSize();
+            this.schedule();
+          } else {
+            this.currCycle++;
+            this.oldRqSize = _ReadyQueue.getSize();
+            if(_CPU.isExecuting){
+              _CPU.cycle();
+            }
+          }
         }
 
         //Handles the switching of processes
@@ -141,7 +231,15 @@ module TSOS {
             this.schedule();
           }
         }
-
+      public comparePriority(pcb1: Pcb, pcb2: Pcb): number{
+        if (pcb1.priority < pcb2.priority){
+          return 1;
+        }
+        if (pcb1.priority > pcb2.priority){
+          return -1;
+        }
+        return 0;
+      }
       public swap(pcbMem: Pcb, pcbDrive: Pcb){
         console.log("Swapping PID:" + pcbMem.processID + " with PID" + pcbDrive.processID);
         var program = _MemoryManager.getProgram(pcbMem);

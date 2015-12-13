@@ -443,8 +443,20 @@ module TSOS {
 
         //Program Commands ---------------------------------------------------------------------------------------------
         public shellLoad(args:string[]) {
+          var priority: number = 6;
+          var priorityErr: boolean = false;
+
+          if (args.length > 0){
+            priority = parseInt(args[0]);
+            if (priority < 0 || priority > 100){
+              _StdOut.putText("Error: Priority must be between 0 and 100 inclusive.");
+              priorityErr = true;
+            }
+          }
+
+          if (!priorityErr){
             var prgm:string = (<HTMLInputElement>document.getElementById("taProgramInput")).value;
-            if(prgm.length > 0){
+            if (prgm.length > 0){
               var pattern:RegExp = /([^0123456789abcdefABCDEF\s])/g;
               var result:number = prgm.search(pattern);
               if (result >= 0){ //Check to see if there are any non hex digits
@@ -468,6 +480,7 @@ module TSOS {
                       //that will be replaced with the Ready Queue in the future
                       var pcb: Pcb = new Pcb();
                       pcb.setPartition(partition, loc);
+                      pcb.setPriority(priority);
                       _ResidentList.add(pcb);
 
                       _StdOut.putText("Program loaded. PID: " + pcb.processID);
@@ -478,6 +491,7 @@ module TSOS {
             }else{
                 _StdOut.putText("Error: Please type in a program.");
             }
+          }
         }
 
         public shellRun(args:string[]) {
@@ -546,7 +560,7 @@ module TSOS {
                         break;
               case "fcfs":
                         _SchedMode = FCFS;
-                        _TimeQuantum = 9000000000;
+                        _TimeQuantum = 900000000;
                         _StdOut.putText("Scheduling set to First Come, First Serve.");
                         break;
               case "priority":

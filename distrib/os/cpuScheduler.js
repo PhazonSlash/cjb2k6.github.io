@@ -1,9 +1,11 @@
 var TSOS;
 (function (TSOS) {
     var CpuScheduler = (function () {
-        function CpuScheduler(currCycle) {
+        function CpuScheduler(currCycle, oldRqSize) {
             if (currCycle === void 0) { currCycle = 0; }
+            if (oldRqSize === void 0) { oldRqSize = 1000; }
             this.currCycle = currCycle;
+            this.oldRqSize = oldRqSize;
             this.init();
         }
         CpuScheduler.prototype.init = function () {
@@ -83,6 +85,91 @@ var TSOS;
             }
         };
         CpuScheduler.prototype.prioritySchedule = function () {
+            console.log("Old: " + this.oldRqSize + " New: " + _ReadyQueue.getSize());
+            if (_CurrentPCB === null || _CurrentPCB.processState === TERMINATED) {
+                if (!_ReadyQueue.isEmpty()) {
+                    _CurrentPCB = _ReadyQueue.dequeue();
+                    for (var i = 0; i < _ReadyQueue.getSize(); i++) {
+                        if (this.comparePriority(_CurrentPCB, _ReadyQueue.peek(0)) < 1) {
+                            _ReadyQueue.enqueue(_CurrentPCB);
+                            _CurrentPCB = _ReadyQueue.dequeue();
+                        }
+                    }
+                    if (_CurrentPCB.location !== "MEM") {
+                        var partition = _MemoryManager.getNextFreePartition();
+                        if (partition !== -1) {
+                            _krnHardDriveDriver.rollIn(_CurrentPCB);
+                        }
+                        else {
+                            var lowest = _ReadyQueue.peek(0);
+                            for (var i = 1; i < _ReadyQueue.getSize(); i++) {
+                                if (this.comparePriority(_ReadyQueue.peek(i), lowest) < 1 && _ReadyQueue.peek(i).location === "MEM") {
+                                    lowest = _ReadyQueue.peek(i);
+                                }
+                            }
+                            console.log("1 Swapping " + _CurrentPCB.processID + " with Lowest: " + lowest.processID);
+                            this.swap(lowest, _CurrentPCB);
+                        }
+                    }
+                    _CurrentPCB.processState = RUNNING;
+                    _CPU.setCPU(_CurrentPCB);
+                }
+                else {
+                    console.log("There was nothing in the ready queue.");
+                    _CPU.isExecuting = false;
+                    if (_SingleStepMode) {
+                        TSOS.Control.hostBtnSSToggle_click();
+                    }
+                    _CurrentPCB = null;
+                    TSOS.Control.updatePcbTable();
+                }
+            }
+            console.log("-----------------");
+            console.log("Clock Cycle: " + this.currCycle);
+            console.log("Checking Old: " + this.oldRqSize + " New: " + _ReadyQueue.getSize());
+            if (_ReadyQueue.getSize() > this.oldRqSize && _CPU.isExecuting) {
+                var testPCB;
+                for (var i = 0; i < _ReadyQueue.getSize(); i++) {
+                    testPCB = _ReadyQueue.dequeue();
+                    if (this.comparePriority(_CurrentPCB, testPCB) < 1) {
+                        console.log("Switching " + _CurrentPCB.processID + " with " + testPCB.processID);
+                        _CurrentPCB.processState = READY;
+                        _ReadyQueue.enqueue(_CurrentPCB);
+                        _CurrentPCB = testPCB;
+                    }
+                    else {
+                        _ReadyQueue.enqueue(testPCB);
+                    }
+                }
+                if (_CurrentPCB.location !== "MEM") {
+                    var partition = _MemoryManager.getNextFreePartition();
+                    if (partition !== -1) {
+                        _krnHardDriveDriver.rollIn(_CurrentPCB);
+                    }
+                    else {
+                        var lowest = _ReadyQueue.peek(0);
+                        for (var i = 1; i < _ReadyQueue.getSize(); i++) {
+                            if (this.comparePriority(lowest, _ReadyQueue.peek(i)) < 1 && _ReadyQueue.peek(i).location === "MEM") {
+                                lowest = _ReadyQueue.peek(i);
+                            }
+                        }
+                        console.log("2 Swapping " + _CurrentPCB.processID + " with Lowest: " + lowest.processID);
+                        this.swap(lowest, _CurrentPCB);
+                    }
+                }
+                _CurrentPCB.processState = RUNNING;
+                _CPU.setCPU(_CurrentPCB);
+                this.currCycle++;
+                this.oldRqSize = _ReadyQueue.getSize();
+                this.schedule();
+            }
+            else {
+                this.currCycle++;
+                this.oldRqSize = _ReadyQueue.getSize();
+                if (_CPU.isExecuting) {
+                    _CPU.cycle();
+                }
+            }
         };
         CpuScheduler.prototype.contextSwitch = function () {
             if (!_ReadyQueue.isEmpty()) {
@@ -106,6 +193,15 @@ var TSOS;
                 console.log("End of Scheduling");
                 this.schedule();
             }
+        };
+        CpuScheduler.prototype.comparePriority = function (pcb1, pcb2) {
+            if (pcb1.priority < pcb2.priority) {
+                return 1;
+            }
+            if (pcb1.priority > pcb2.priority) {
+                return -1;
+            }
+            return 0;
         };
         CpuScheduler.prototype.swap = function (pcbMem, pcbDrive) {
             console.log("Swapping PID:" + pcbMem.processID + " with PID" + pcbDrive.processID);
