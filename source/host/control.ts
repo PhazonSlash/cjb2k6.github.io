@@ -182,6 +182,21 @@ module TSOS {
          table += "</tbody>";
          (<HTMLInputElement> document.getElementById("memoryTable")).innerHTML = table;
        }
+       public static updateHDDTable(): void {
+         var table: string = "";
+         var data: string = "";
+         var tsb: string = "";
+         for (var t: number = 0; t < TRACKS; t++){
+           for (var s: number = 0; s < SECTORS; s++){
+             for (var b: number = 0; b < BLOCKS; b++){
+               tsb = "" + t + s + b;
+               data = _HardDrive.read(tsb);
+               table += "<tr><td>" + tsb + "</td><td>" + data + "</td></tr>";
+               }
+             }
+           }
+         (<HTMLInputElement> document.getElementById("hddTableBody")).innerHTML = table;
+       }
        public static updateCpuTable(): void {
          var table: string = "";
          table += "<td>" + _CPU.PC + "</td>";

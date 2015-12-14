@@ -50,6 +50,7 @@ module TSOS {
             }
           }
           this.formatted = true;
+          Control.updateHDDTable();
         }
 
       public isInUse(tsb: string): boolean {
@@ -200,6 +201,7 @@ module TSOS {
           console.log("No free file space found.");
           return false;
         }
+        Control.updateHDDTable();
         return true;
       }
 
@@ -254,6 +256,7 @@ module TSOS {
           console.log("Remaining data: " + remainingData);
           this.writeData(newFileTSB, remainingData, size - limit, isProgram);
         }
+        Control.updateHDDTable();
       }
 
       public readFromFile(name: string): string {
@@ -289,6 +292,7 @@ module TSOS {
         var fileTSB: string = this.getTsbFromBlock(dirTSB);
         this.deleteData(fileTSB);
         this.setInUse(dirTSB, false);
+        Control.updateHDDTable();
         return "File deleted.";
       }
 
@@ -300,6 +304,7 @@ module TSOS {
           var newFileTSB = this.getTsbFromBlock(fileTSB);
           this.deleteData(newFileTSB);
         }
+        Control.updateHDDTable();
       }
 
       public listDir(): string{

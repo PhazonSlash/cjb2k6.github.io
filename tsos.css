@@ -67,6 +67,12 @@ label {
   color: #85D5FA;
 }
 
+#hddTable {
+  background-color:rgba(0,0,0,0.5);
+  border: 2px solid #85D5FA;
+  color: #85D5FA;
+}
+
 #pcbTable {
   background-color:rgba(0,0,0,0.5);
   border: 2px solid #85D5FA;
@@ -138,6 +144,24 @@ div.memoryTable {
   height:150px;
   overflow-y: scroll;
   overflow-x: hidden;
+}
+
+div.hardDrive {
+  width:550px;
+  height:130px;
+  padding-top: 90px;
+  margin-right: 100px;
+  float:left;
+}
+
+div.hardDriveTable {
+  background-color:rgba(0,0,0,0.5);
+  border: 2px solid #85D5FA;
+  float:left;
+  width:550px;
+  height:130px;
+  overflow-y: scroll;
+  overflow-x: scroll;
 }
 
 div.program {

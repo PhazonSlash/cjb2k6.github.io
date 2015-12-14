@@ -101,6 +101,21 @@ var TSOS;
             table += "</tbody>";
             document.getElementById("memoryTable").innerHTML = table;
         };
+        Control.updateHDDTable = function () {
+            var table = "";
+            var data = "";
+            var tsb = "";
+            for (var t = 0; t < TRACKS; t++) {
+                for (var s = 0; s < SECTORS; s++) {
+                    for (var b = 0; b < BLOCKS; b++) {
+                        tsb = "" + t + s + b;
+                        data = _HardDrive.read(tsb);
+                        table += "<tr><td>" + tsb + "</td><td>" + data + "</td></tr>";
+                    }
+                }
+            }
+            document.getElementById("hddTableBody").innerHTML = table;
+        };
         Control.updateCpuTable = function () {
             var table = "";
             table += "<td>" + _CPU.PC + "</td>";

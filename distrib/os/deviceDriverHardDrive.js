@@ -35,6 +35,7 @@ var TSOS;
                 }
             }
             this.formatted = true;
+            TSOS.Control.updateHDDTable();
         };
         DeviceDriverHardDrive.prototype.isInUse = function (tsb) {
             return (_HardDrive.read(tsb).charAt(0) === "1");
@@ -170,6 +171,7 @@ var TSOS;
                 console.log("No free file space found.");
                 return false;
             }
+            TSOS.Control.updateHDDTable();
             return true;
         };
         DeviceDriverHardDrive.prototype.writeToFile = function (name, data) {
@@ -218,6 +220,7 @@ var TSOS;
                 console.log("Remaining data: " + remainingData);
                 this.writeData(newFileTSB, remainingData, size - limit, isProgram);
             }
+            TSOS.Control.updateHDDTable();
         };
         DeviceDriverHardDrive.prototype.readFromFile = function (name) {
             var dirTSB = this.getFileByName(name);
@@ -252,6 +255,7 @@ var TSOS;
             var fileTSB = this.getTsbFromBlock(dirTSB);
             this.deleteData(fileTSB);
             this.setInUse(dirTSB, false);
+            TSOS.Control.updateHDDTable();
             return "File deleted.";
         };
         DeviceDriverHardDrive.prototype.deleteData = function (fileTSB) {
@@ -263,6 +267,7 @@ var TSOS;
                 var newFileTSB = this.getTsbFromBlock(fileTSB);
                 this.deleteData(newFileTSB);
             }
+            TSOS.Control.updateHDDTable();
         };
         DeviceDriverHardDrive.prototype.listDir = function () {
             var list = "";
