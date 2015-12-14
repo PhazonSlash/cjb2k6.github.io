@@ -657,6 +657,7 @@ module TSOS {
 
         //HDD/File System Commands ------------------------------------------------------------------------------------------
         public shellCreate(args:string[]) {
+          if (_krnHardDriveDriver.formatted) {
             if (args.length > 0){
               var name: string = args[0];
               if (name.length <= 60){
@@ -671,6 +672,9 @@ module TSOS {
             } else {
               _StdOut.putText("Error: Please enter a name for the file.");
             }
+          } else {
+            _StdOut.putText("Error: Hard Drive must be formatted before use.");
+          }
         }
 
         public shellRead(args:string[]) {
@@ -703,6 +707,7 @@ module TSOS {
                 data = data.substring(2, data.length - 1);
                 console.log("data: " + data)
                 _krnHardDriveDriver.writeToFile(name, data);
+                _StdOut.putText("Wrote data to file \"" + name + "\".");
               } else {
                 console.log(data + data.charAt(1) + data.charAt(data.length - 1));
                 _StdOut.putText("Error: The data to be written must be within double quotes.");
@@ -738,12 +743,16 @@ module TSOS {
         }
 
         public shellLS(args:string[]) {
-          if (_HardDrive.supported) {
-            _StdOut.putText(_krnHardDriveDriver.listDir());
+          if (_krnHardDriveDriver.formatted) {
+            if (_HardDrive.supported) {
+              _StdOut.putText(_krnHardDriveDriver.listDir());
+            } else {
+              _StdOut.putText("Hard Drive is not supported in your browser.");
+            }
           } else {
-            _StdOut.putText("Hard Drive is not supported in your browser.");
+              _StdOut.putText("Error: Hard Drive must be formatted before use.");
+            }
           }
-        }
 
         //Useless Commands --------------------------------------------------------------------------------------------------
         //Command to change the beam weapon used for the shoot command

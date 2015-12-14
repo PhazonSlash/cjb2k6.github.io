@@ -458,22 +458,27 @@ var TSOS;
             _ResidentList.removeAll();
         };
         Shell.prototype.shellCreate = function (args) {
-            if (args.length > 0) {
-                var name = args[0];
-                if (name.length <= 60) {
-                    if (_krnHardDriveDriver.createFile(name)) {
-                        _StdOut.putText("Created file \"" + name + "\".");
+            if (_krnHardDriveDriver.formatted) {
+                if (args.length > 0) {
+                    var name = args[0];
+                    if (name.length <= 60) {
+                        if (_krnHardDriveDriver.createFile(name)) {
+                            _StdOut.putText("Created file \"" + name + "\".");
+                        }
+                        else {
+                            _StdOut.putText("Failed to create file \"" + name + "\". Check log for details.");
+                        }
                     }
                     else {
-                        _StdOut.putText("Failed to create file \"" + name + "\". Check log for details.");
+                        _StdOut.putText("Error: Name must be 60 characters or less.");
                     }
                 }
                 else {
-                    _StdOut.putText("Error: Name must be 60 characters or less.");
+                    _StdOut.putText("Error: Please enter a name for the file.");
                 }
             }
             else {
-                _StdOut.putText("Error: Please enter a name for the file.");
+                _StdOut.putText("Error: Hard Drive must be formatted before use.");
             }
         };
         Shell.prototype.shellRead = function (args) {
@@ -508,6 +513,7 @@ var TSOS;
                         data = data.substring(2, data.length - 1);
                         console.log("data: " + data);
                         _krnHardDriveDriver.writeToFile(name, data);
+                        _StdOut.putText("Wrote data to file \"" + name + "\".");
                     }
                     else {
                         console.log(data + data.charAt(1) + data.charAt(data.length - 1));
@@ -543,11 +549,16 @@ var TSOS;
             }
         };
         Shell.prototype.shellLS = function (args) {
-            if (_HardDrive.supported) {
-                _StdOut.putText(_krnHardDriveDriver.listDir());
+            if (_krnHardDriveDriver.formatted) {
+                if (_HardDrive.supported) {
+                    _StdOut.putText(_krnHardDriveDriver.listDir());
+                }
+                else {
+                    _StdOut.putText("Hard Drive is not supported in your browser.");
+                }
             }
             else {
-                _StdOut.putText("Hard Drive is not supported in your browser.");
+                _StdOut.putText("Error: Hard Drive must be formatted before use.");
             }
         };
         Shell.prototype.shellChangeWeapon = function (args) {

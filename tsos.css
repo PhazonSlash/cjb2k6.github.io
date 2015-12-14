@@ -109,6 +109,7 @@ div.pcb {
   width:500px;
   height:150px;
   float:right;
+  font-size: 90%;
 }
 
 div.cpu {
@@ -141,9 +142,10 @@ div.memoryTable {
   border: 2px solid #85D5FA;
   float:left;
   width:340px;
-  height:150px;
+  height:144px;
   overflow-y: scroll;
   overflow-x: hidden;
+  font-size: 90%;
 }
 
 div.hardDrive {
@@ -162,6 +164,7 @@ div.hardDriveTable {
   height:130px;
   overflow-y: scroll;
   overflow-x: scroll;
+  font-size: 90%;
 }
 
 div.program {

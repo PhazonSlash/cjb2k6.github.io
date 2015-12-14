@@ -258,6 +258,8 @@ module TSOS {
          table += "<td>" + pcb.base + "</td>";
          table += "<td>" + pcb.limit + "</td>";
          table += "<td>" + pcb.partition + "</td>";
+         table += "<td>" + pcb.location + "</td>";
+         table += "<td>" + pcb.priority + "</td>";
          table += "</tr>";
          return table;
        }
