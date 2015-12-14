@@ -23,7 +23,7 @@ var TSOS;
             this.commandList[this.commandList.length] = sc;
             sc = new TSOS.ShellCommand(this.shellStatus, "status", "<status> - Sets your current status.");
             this.commandList[this.commandList.length] = sc;
-            sc = new TSOS.ShellCommand(this.shellLoad, "load", "- Loads a program from the program input.");
+            sc = new TSOS.ShellCommand(this.shellLoad, "load", "<priority> - Loads a program from the program input.");
             this.commandList[this.commandList.length] = sc;
             sc = new TSOS.ShellCommand(this.shellRun, "run", "<PID> - Runs process of given Process ID number <PID>.");
             this.commandList[this.commandList.length] = sc;

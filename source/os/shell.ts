@@ -70,7 +70,7 @@ module TSOS {
             // load
             sc = new ShellCommand(this.shellLoad,
                 "load",
-                "- Loads a program from the program input.");
+                "<priority> - Loads a program from the program input.");
             this.commandList[this.commandList.length] = sc;
 
             // run <PID>
