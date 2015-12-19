@@ -17,7 +17,7 @@ module TSOS {
 
         public init(){
           //Modernizr.sessionstorage
-          if (true) {
+          if (Modernizr.sessionstorage) {
                this.supported = true;
            }
         }

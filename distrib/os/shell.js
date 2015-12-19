@@ -541,8 +541,13 @@ var TSOS;
         };
         Shell.prototype.shellFormat = function (args) {
             if (_HardDrive.supported) {
-                _krnHardDriveDriver.krnHddFormat();
-                _StdOut.putText("Hard Drive Formated.");
+                if (_CPU.isExecuting) {
+                    _StdOut.putText("You may not format while programs are running.");
+                }
+                else {
+                    _krnHardDriveDriver.krnHddFormat();
+                    _StdOut.putText("Hard Drive Formated.");
+                }
             }
             else {
                 _StdOut.putText("Hard Drive is not supported in your browser.");

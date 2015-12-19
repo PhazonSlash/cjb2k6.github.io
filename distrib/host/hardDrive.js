@@ -7,7 +7,7 @@ var TSOS;
             this.init();
         }
         HardDrive.prototype.init = function () {
-            if (true) {
+            if (Modernizr.sessionstorage) {
                 this.supported = true;
             }
         };
